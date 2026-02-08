@@ -43,7 +43,11 @@ export function SampleCard({ id, title, description, icon, params, onClaim }: Sa
   };
 
   return (
-    <div className="group h-full flex flex-col rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden bg-white/60 backdrop-blur-lg border border-white/20 hover:border-pink-200/50">
+    <div className="group h-full flex flex-col rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden bg-white/60 backdrop-blur-lg border border-white/20 hover:border-pink-200/50 relative">
+      {/* Floating Badge */}
+      <div className="absolute top-4 right-4 bg-gradient-to-r from-pink-500 to-purple-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg">
+        3分钟见效
+      </div>
       {/* Header with Icon */}
       <div className="p-6 pb-2">
         <div className="w-16 h-16 mb-4 rounded-2xl bg-gradient-to-br from-pink-50/80 to-purple-50/80 flex items-center justify-center p-3 group-hover:scale-110 transition-transform duration-300 shadow-inner">

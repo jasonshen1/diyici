@@ -42,22 +42,22 @@ const featureConfigs: Record<string, FeatureConfig> = {
     inputs: [
       {
         id: "rawMaterial",
-        label: "你的原始素材（随便写点碎碎念）",
+        label: "请放入你需要修饰的原始文字",
         type: "textarea",
-        placeholder: "例如：本周做了很多事情，比如完成了项目的原型设计，解决了用户登录的问题...",
+        placeholder: "请输入你的周报内容，剩下的交给职场除皱霜为您精心调理",
         defaultValue: "本周做了很多事情，比如完成了项目的原型设计，解决了用户登录的问题，还参加了几个会议..."
       },
       {
         id: "audience",
-        label: "汇报对象（例如：直接上级、部门总监）",
+        label: "请告知您的汇报对象",
         type: "text",
-        placeholder: "例如：直接上级、部门总监",
+        placeholder: "例如：直接上级、部门总监，我们会为您调整最适合的语气",
         defaultValue: "直接上级"
       }
     ],
     submitText: "即刻抹平",
-    loadingText: "配方调配中...",
-    successText: "职场除皱成功！",
+    loadingText: "阿一正在为你调配配方...",
+    successText: "阿一为你完成了职场除皱！",
     systemPrompt: (inputs) => `角色设定：你是一位拥有 20 年经验的顶级大厂幕僚，擅长向上管理。
 
 任务：将用户的碎碎念转化为具备'结构化、结果导向、高情商'特质的周报。
@@ -78,166 +78,32 @@ const featureConfigs: Record<string, FeatureConfig> = {
 - 体现专业性和结果导向
 - 适合直接向上级汇报使用`
   },
-  ppt: {
-    id: "ppt",
-    title: "PPT 大纲生成",
-    description: "输入主题和目标，领取专业 PPT 大纲",
+  social: {
+    id: "social",
+    title: "社交隔离乳",
+    description: "隔离社交表达中的多余情绪，让沟通更得体",
     inputs: [
       {
-        id: "topic",
-        label: "演讲主题",
-        type: "text",
-        placeholder: "例如：2024 产品 roadmap",
-        defaultValue: "产品 Q3 季度规划"
-      },
-      {
-        id: "audience",
-        label: "目标 audience",
-        type: "text",
-        placeholder: "例如：公司高管、客户",
-        defaultValue: "公司内部团队"
-      }
-    ],
-    submitText: "生成大纲",
-    loadingText: "构建框架中...",
-    successText: "PPT 大纲生成成功！",
-    systemPrompt: (inputs) => `角色设定：你是一位专业的 PPT 设计师，擅长制作结构清晰、逻辑严密的演示文稿。
-
-任务：根据用户提供的主题和目标 audience，生成一份专业的 PPT 大纲。
-
-禁令：禁止出现'你好'、'以下是建议'等废话，直接给出成品。
-
-演讲主题：${inputs.topic}
-目标 audience：${inputs.audience}
-
-请按照以下结构输出：
-1. 封面页：包含主题、副标题和演讲人
-2. 目录页：列出主要章节
-3. 每个章节：包含标题、内容要点和视觉建议
-4. 总结页：总结核心观点
-5. Q&A 页：预留问答环节
-
-输出要求：
-- 结构清晰，层次分明
-- 内容要点具体，有可操作性
-- 视觉建议实用，符合主题风格
-- 适合直接用于 PPT 制作`
-  },
-  meeting: {
-    id: "meeting",
-    title: "会议纪要",
-    description: "输入会议内容，领取结构化会议纪要",
-    inputs: [
-      {
-        id: "topic",
-        label: "会议主题",
-        type: "text",
-        placeholder: "例如：产品评审会",
-        defaultValue: "周例会"
-      },
-      {
-        id: "content",
-        label: "讨论要点",
+        id: "rawMaterial",
+        label: "请放入你需要修饰的原始文字",
         type: "textarea",
-        placeholder: "例如：项目进度、问题讨论",
-        defaultValue: "项目进度、资源分配"
+        placeholder: "请输入你想要表达的内容，社交隔离乳会为您隔离负面情绪，塑造得体回应",
+        defaultValue: "我觉得这个想法不太好，可能会有问题。"
       }
     ],
-    submitText: "生成纪要",
-    loadingText: "整理纪要中...",
-    successText: "会议纪要生成成功！",
-    systemPrompt: (inputs) => `角色设定：你是一位专业的会议纪要整理专家，擅长从会议内容中提取关键信息，形成结构化的纪要。
-
-任务：根据用户提供的会议主题和讨论要点，生成一份专业的会议纪要。
-
-禁令：禁止出现'你好'、'以下是建议'等废话，直接给出成品。
-
-会议主题：${inputs.topic}
-讨论要点：${inputs.content}
-
-请按照以下结构输出：
-1. 会议基本信息：主题、时间、地点、参会人员
-2. 会议议程：主要讨论议题
-3. 讨论内容：每个议题的具体讨论情况
-4. 决议事项：会议达成的共识和决定
-5. 行动项：需要后续跟进的任务，包括负责人和截止时间
-6. 下次会议安排
-
-输出要求：
-- 结构清晰，层次分明
-- 内容准确，重点突出
-- 语言简洁，专业规范
-- 适合直接作为正式会议纪要使用`
-  },
-  speech: {
-    id: "speech",
-    title: "发言稿生成",
-    description: "输入场合和要点，领取专业发言稿",
-    inputs: [
-      {
-        id: "occasion",
-        label: "演讲场合",
-        type: "text",
-        placeholder: "例如：公司年会、客户答谢会",
-        defaultValue: "部门周会"
-      },
-      {
-        id: "keyPoints",
-        label: "核心要点",
-        type: "textarea",
-        placeholder: "例如：感谢团队、未来计划",
-        defaultValue: "工作总结、未来目标"
-      }
-    ],
-    submitText: "生成发言稿",
-    loadingText: "撰写发言稿中...",
-    successText: "发言稿生成成功！",
-    systemPrompt: (inputs) => `角色设定：你是一位专业的演讲稿撰写专家，擅长根据不同场合和要点，撰写得体、有感染力的发言稿。
-
-任务：根据用户提供的演讲场合和核心要点，生成一份专业的发言稿。
-
-禁令：禁止出现'你好'、'以下是建议'等废话，直接给出成品。
-
-演讲场合：${inputs.occasion}
-核心要点：${inputs.keyPoints}
-
-请按照以下结构输出：
-1. 开场白：问候语、自我介绍、对场合的简要说明
-2. 主体内容：围绕核心要点展开，每个要点详细阐述
-3. 结尾：总结核心观点、表达感谢、展望未来
-
-输出要求：
-- 语言流畅，有感染力
-- 结构清晰，层次分明
-- 内容符合场合特点
-- 适合直接上台演讲使用`
-  },
-  reply: {
-    id: "reply",
-    title: "高情商回复",
-    description: "输入场景，领取得体回复",
-    inputs: [
-      {
-        id: "scene",
-        label: "回复场景",
-        type: "textarea",
-        placeholder: "例如：拒绝借钱、客户投诉",
-        defaultValue: "拒绝同事借钱"
-      }
-    ],
-    submitText: "生成回复",
-    loadingText: "构思回复中...",
-    successText: "高情商回复生成成功！",
+    submitText: "即刻隔离",
+    loadingText: "阿一正在为你涂抹隔离霜...",
+    successText: "阿一为你完成了社交隔离！",
     systemPrompt: (inputs) => `角色设定：你是一位情商专家，擅长在各种场合下给出得体、恰当的回复。
 
-任务：根据用户提供的场景，生成一份高情商的回复。
+任务：根据用户提供的内容，生成一份高情商的社交表达。
 
 禁令：禁止出现'你好'、'以下是建议'等废话，直接给出成品。
 
-回复场景：${inputs.scene}
+原始内容：${inputs.rawMaterial}
 
 请按照以下要求输出：
-1. 回复内容：得体、恰当，符合场景特点
+1. 回复内容：得体、恰当，符合社交场景特点
 2. 语气：友好、真诚，体现高情商
 3. 结构：开头问候，中间表达观点，结尾表达祝愿
 4. 长度：适中，简洁明了
@@ -246,7 +112,43 @@ const featureConfigs: Record<string, FeatureConfig> = {
 - 语言得体，符合社交礼仪
 - 内容恰当，解决实际问题
 - 语气友好，体现真诚
-- 适合直接用于回复对方`
+- 适合直接用于社交场合`
+  },
+  logic: {
+    id: "logic",
+    title: "逻辑遮瑕膏",
+    description: "修饰逻辑漏洞，让表达更严谨有力",
+    inputs: [
+      {
+        id: "rawMaterial",
+        label: "请放入你需要修饰的原始文字",
+        type: "textarea",
+        placeholder: "请输入你需要逻辑优化的内容，逻辑遮瑕膏会为您修饰逻辑漏洞",
+        defaultValue: "我们应该立即执行这个计划，因为它很好。"
+      }
+    ],
+    submitText: "即刻遮瑕",
+    loadingText: "阿一正在为你修饰逻辑漏洞...",
+    successText: "阿一为你完成了逻辑遮瑕！",
+    systemPrompt: (inputs) => `角色设定：你是一位逻辑思维专家，擅长分析和优化各种表达中的逻辑结构。
+
+任务：根据用户提供的内容，优化其逻辑结构，使其更加严谨有力。
+
+禁令：禁止出现'你好'、'以下是建议'等废话，直接给出成品。
+
+原始内容：${inputs.rawMaterial}
+
+请按照以下要求输出：
+1. 分析原始内容的逻辑结构
+2. 识别并修正逻辑漏洞
+3. 增强论证的说服力
+4. 保持原意不变，同时提升表达效果
+
+输出要求：
+- 逻辑清晰，结构严谨
+- 论证有力，说服力强
+- 语言流畅，表达自然
+- 适合直接用于正式场合`
   }
 };
 
@@ -291,14 +193,10 @@ export function FeatureModal({ isOpen, onClose, featureId }: FeatureModalProps) 
       let userInput = "";
       if (currentConfig.id === "weekly") {
         userInput = `用户原始素材：\n${inputs.rawMaterial}`;
-      } else if (currentConfig.id === "ppt") {
-        userInput = `演讲主题：${inputs.topic}\n目标 audience：${inputs.audience}`;
-      } else if (currentConfig.id === "meeting") {
-        userInput = `会议主题：${inputs.topic}\n讨论要点：${inputs.content}`;
-      } else if (currentConfig.id === "speech") {
-        userInput = `演讲场合：${inputs.occasion}\n核心要点：${inputs.keyPoints}`;
-      } else if (currentConfig.id === "reply") {
-        userInput = `回复场景：${inputs.scene}`;
+      } else if (currentConfig.id === "social") {
+        userInput = `用户原始素材：\n${inputs.rawMaterial}`;
+      } else if (currentConfig.id === "logic") {
+        userInput = `用户原始素材：\n${inputs.rawMaterial}`;
       }
 
       // Build prompt and call API
@@ -380,6 +278,32 @@ ${apiResult}
               {currentConfig.description}
             </DialogDescription>
           </div>
+          <div className="flex items-center gap-2">
+            <div className="w-10 h-10 rounded-full bg-pink-200 flex items-center justify-center">
+              <span className="text-pink-600 font-medium">阿一</span>
+            </div>
+            <span className="text-sm text-slate-600">店长</span>
+          </div>
+        </div>
+
+        {/* Steps Guide */}
+        <div className="px-6 py-4 border-b bg-white">
+          <div className="flex justify-between items-center">
+            <div className="flex items-center gap-6">
+              <div className="flex items-center gap-2">
+                <div className="w-6 h-6 rounded-full bg-pink-500 text-white flex items-center justify-center text-xs font-bold">1</div>
+                <span className="text-sm text-slate-700">领取小样（选择场景）</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-6 h-6 rounded-full bg-pink-300 text-slate-700 flex items-center justify-center text-xs font-bold">2</div>
+                <span className="text-sm text-slate-700">注入素材（简单填空）</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-6 h-6 rounded-full bg-pink-200 text-slate-600 flex items-center justify-center text-xs font-bold">3</div>
+                <span className="text-sm text-slate-700">焕新交付（见证你的第一次 AI 成功）</span>
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* Body */}
@@ -429,6 +353,7 @@ ${apiResult}
                     </>
                   )}
                 </Button>
+                <p className="text-center text-xs text-pink-600 mt-2">只需 3 分钟，完成你的第一次 AI 交付。</p>
               </div>
 
               <div className="pt-4 p-4 bg-pink-50 rounded-lg border border-pink-100 text-pink-800 text-sm">
@@ -441,6 +366,12 @@ ${apiResult}
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="w-6 h-6 text-green-500" />
                 <h3 className="text-xl font-bold text-slate-900">生成结果</h3>
+              </div>
+
+              <div className="p-4 bg-gradient-to-r from-pink-50 to-purple-50 rounded-xl border border-pink-100 text-center">
+                <h2 className="text-2xl font-bold text-slate-900">
+                  🎉 恭喜！这是你拿到的第一份 AI 成功单品
+                </h2>
               </div>
 
               <Card className="p-6 shadow-sm border-slate-200 bg-white overflow-hidden">
@@ -462,6 +393,9 @@ ${apiResult}
                       return <p key={index} className="text-slate-600 mb-2">{line}</p>;
                     }
                   })}
+                  <div className="mt-8 pt-6 border-t border-pink-100 text-center">
+                    <p className="text-pink-600 font-medium italic">这是你在 diyici.ai 的第一次成功。从此，AI 只有零次和无数次。</p>
+                  </div>
                 </div>
               </Card>
 

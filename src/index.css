@@ -42,25 +42,25 @@
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.15 0.04 250);
   
-  /* Trust Blue - Primary Brand Color */
-  --primary: oklch(0.45 0.16 260);
+  /* Warm Beige - Primary Brand Color */
+  --primary: oklch(0.55 0.1 20);
   --primary-foreground: oklch(1 0 0);
   
-  /* Success Green-ish Accent / Secondary */
-  --secondary: oklch(0.96 0.02 240);
-  --secondary-foreground: oklch(0.45 0.16 260);
+  /* Soft Green - Secondary Brand Color */
+  --secondary: oklch(0.96 0.02 160);
+  --secondary-foreground: oklch(0.55 0.1 20);
   
-  --muted: oklch(0.96 0.01 240);
-  --muted-foreground: oklch(0.55 0.03 240);
+  --muted: oklch(0.96 0.01 160);
+  --muted-foreground: oklch(0.55 0.03 160);
   
-  --accent: oklch(0.95 0.02 260);
-  --accent-foreground: oklch(0.45 0.16 260);
+  --accent: oklch(0.95 0.02 20);
+  --accent-foreground: oklch(0.55 0.1 20);
   
   --destructive: oklch(0.577 0.245 27.325);
   
-  --border: oklch(0.92 0.01 240);
-  --input: oklch(0.92 0.01 240);
-  --ring: oklch(0.45 0.16 260);
+  --border: oklch(0.92 0.01 160);
+  --input: oklch(0.92 0.01 160);
+  --ring: oklch(0.55 0.1 20);
 }
 
 .dark {

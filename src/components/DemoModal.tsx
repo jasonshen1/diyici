@@ -183,6 +183,32 @@ export function DemoModal({ scenarioId, isOpen, onClose }: DemoModalProps) {
               {config.description} | 左侧修改，右侧实时预览
             </DialogDescription>
           </div>
+          <div className="flex items-center gap-2">
+            <div className="w-10 h-10 rounded-full bg-pink-200 flex items-center justify-center">
+              <span className="text-pink-600 font-medium">阿一</span>
+            </div>
+            <span className="text-sm text-slate-600">店长</span>
+          </div>
+        </div>
+
+        {/* Steps Guide */}
+        <div className="px-6 py-4 border-b bg-gradient-to-r from-pink-50 to-purple-50">
+          <div className="flex justify-between items-center">
+            <div className="flex items-center gap-6">
+              <div className="flex items-center gap-2">
+                <div className="w-6 h-6 rounded-full bg-pink-500 text-white flex items-center justify-center text-xs font-bold">1</div>
+                <span className="text-sm text-slate-700">领取小样（选择场景）</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-6 h-6 rounded-full bg-pink-300 text-slate-700 flex items-center justify-center text-xs font-bold">2</div>
+                <span className="text-sm text-slate-700">注入素材（简单填空）</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-6 h-6 rounded-full bg-pink-200 text-slate-600 flex items-center justify-center text-xs font-bold">3</div>
+                <span className="text-sm text-slate-700">焕新交付（见证你的第一次 AI 成功）</span>
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* Body - Two Columns */}
@@ -229,8 +255,8 @@ export function DemoModal({ scenarioId, isOpen, onClose }: DemoModalProps) {
                 </div>
               ))}
 
-              <div className="pt-4 p-4 bg-blue-50 rounded-lg border border-blue-100 text-blue-800 text-sm">
-                💡 提示：这只是 A 版的极简演示。在完整版中，系统会自动读取你的历史偏好，无需每次重复输入。
+              <div className="pt-4 p-4 bg-pink-50 rounded-lg border border-pink-100 text-pink-800 text-sm">
+                💡 阿一提示：这只是 A 版的极简演示。在完整版中，我会自动记住你的偏好，无需每次重复输入。
               </div>
             </div>
           </div>
@@ -249,11 +275,35 @@ export function DemoModal({ scenarioId, isOpen, onClose }: DemoModalProps) {
               {loading ? (
                 <div className="h-full flex items-center justify-center text-slate-400 gap-2">
                   <Loader2 className="w-6 h-6 animate-spin" />
-                  生成中...
+                  阿一正在为你调配配方...
                 </div>
               ) : (
                 <div className="animate-in fade-in duration-500">
                   {result}
+                  <div className="mt-8 pt-6 border-t border-pink-100 text-center">
+                    <p className="text-pink-600 font-medium italic">阿一为你完成了第一次成功。从此，AI 只有零次和无数次。</p>
+                  </div>
+                  
+                  {/* 阿一的叮嘱 */}
+                  <div className="mt-8 p-4 bg-pink-50 rounded-lg border border-pink-100">
+                    <h3 className="text-lg font-semibold text-pink-700 mb-3">阿一的叮嘱</h3>
+                    <blockquote className="text-slate-700 italic">
+                      {scenarioId === "weekly" && "配方已抹平褶皱。发送前，记得检查一下领导的名字有没有写错哦！"}
+                      {scenarioId === "social" && "防护层已开启。如果对方继续纠缠，阿一建议你直接开启飞行模式。"}
+                      {scenarioId === "logic" && "漏洞已覆盖。阿一觉得这份方案已经足够惊艳你的老板了。"}
+                      {(!scenarioId || (scenarioId !== "weekly" && scenarioId !== "social" && scenarioId !== "logic")) && "阿一希望这份结果能帮到你。如果有任何问题，随时告诉我哦！"}
+                    </blockquote>
+                  </div>
+                  
+                  {/* 感谢阿一按钮 */}
+                  <div className="mt-8 text-center">
+                    <Button 
+                      onClick={onClose} 
+                      className="bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white shadow-md hover:shadow-lg transition-all duration-300 font-medium"
+                    >
+                      感谢阿一
+                    </Button>
+                  </div>
                 </div>
               )}
             </Card>

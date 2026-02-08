@@ -6,8 +6,6 @@ import { toast } from "sonner";
 import heroBg from "@/assets/hero-bg.jpg";
 import iconWeekly from "@/assets/weekly-report.png";
 import iconPpt from "@/assets/ppt-outline.png";
-import iconMeeting from "@/assets/meeting-notes.png";
-import iconSpeech from "@/assets/speech-draft.png";
 import iconReply from "@/assets/business-reply.png";
 import { ArrowDown, CheckCircle2 } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -24,74 +22,97 @@ const samples = [
     title: "职场除皱霜",
     description: "一键平复周报里的逻辑褶皱",
     icon: iconWeekly,
-    params: []
-  },
-  {
-    id: "ppt",
-    title: "PPT 大纲生成",
-    description: "输入主题和目标，领取专业 PPT 大纲",
-    icon: iconPpt,
     params: [
       {
-        label: "演讲主题",
-        placeholder: "例如：2024 产品 roadmap",
-        defaultValue: "产品 Q3 季度规划"
-      },
-      {
-        label: "目标 audience",
-        placeholder: "例如：公司高管、客户",
-        defaultValue: "公司内部团队"
+        label: "请放入你需要修饰的原始文字",
+        placeholder: "请输入你的周报内容...",
+        defaultValue: "本周完成了项目的初步规划，遇到了一些问题，下周继续推进。"
       }
     ]
   },
   {
-    id: "meeting",
-    title: "会议纪要",
-    description: "输入会议内容，领取结构化会议纪要",
-    icon: iconMeeting,
-    params: [
-      {
-        label: "会议主题",
-        placeholder: "例如：产品评审会",
-        defaultValue: "周例会"
-      },
-      {
-        label: "讨论要点",
-        placeholder: "例如：项目进度、问题讨论",
-        defaultValue: "项目进度、资源分配"
-      }
-    ]
-  },
-  {
-    id: "speech",
-    title: "发言稿生成",
-    description: "输入场合和要点，领取专业发言稿",
-    icon: iconSpeech,
-    params: [
-      {
-        label: "演讲场合",
-        placeholder: "例如：公司年会、客户答谢会",
-        defaultValue: "部门周会"
-      },
-      {
-        label: "核心要点",
-        placeholder: "例如：感谢团队、未来计划",
-        defaultValue: "工作总结、未来目标"
-      }
-    ]
-  },
-  {
-    id: "reply",
-    title: "高情商回复",
-    description: "输入场景，领取得体回复",
+    id: "social",
+    title: "社交隔离乳",
+    description: "隔离社交表达中的多余情绪，让沟通更得体",
     icon: iconReply,
     params: [
       {
-        label: "回复场景",
-        placeholder: "例如：拒绝借钱、客户投诉",
-        defaultValue: "拒绝同事借钱"
+        label: "请放入你需要修饰的原始文字",
+        placeholder: "请输入你的社交表达内容...",
+        defaultValue: "我觉得这个想法不太好，可能会有问题。"
       }
     ]
+  },
+  {
+    id: "logic",
+    title: "逻辑遮瑕膏",
+    description: "修饰逻辑漏洞，让表达更严谨有力",
+    icon: iconPpt,
+    params: [
+      {
+        label: "请放入你需要修饰的原始文字",
+        placeholder: "请输入你需要逻辑优化的内容...",
+        defaultValue: "我们应该立即执行这个计划，因为它很好。"
+      }
+    ]
+  }
+];
+
+// 按“生活体感”重新组织的场景卡片
+const sceneCards = [
+  {
+    category: "职场急救包",
+    items: [
+      {
+        id: "weekly",
+        title: "职场除皱霜",
+        description: "一键平复周报里的逻辑褶皱",
+        icon: iconWeekly
+      },
+      {
+        id: "meeting",
+        title: "会议提纯乳",
+        description: "快速提炼会议要点，节省时间",
+        icon: iconWeekly
+      }
+    ],
+    narrative: "解决你最焦躁的 10 分钟。"
+  },
+  {
+    category: "社交防护林",
+    items: [
+      {
+        id: "social",
+        title: "社交隔离乳",
+        description: "隔离社交表达中的多余情绪，让沟通更得体",
+        icon: iconReply
+      },
+      {
+        id: "emotion",
+        title: "高情商精华",
+        description: "提升社交表达的情商，让沟通更顺畅",
+        icon: iconReply
+      }
+    ],
+    narrative: "保护你的体面与边界。"
+  },
+  {
+    category: "认知破壁机",
+    items: [
+      {
+        id: "logic",
+        title: "逻辑遮瑕膏",
+        description: "修饰逻辑漏洞，让表达更严谨有力",
+        icon: iconPpt
+      },
+      {
+        id: "terms",
+        title: "条款拆解液",
+        description: "拆解复杂条款，让信息更易懂",
+        icon: iconPpt
+      }
+    ],
+    narrative: "消除你对复杂信息的恐惧。"
   }
 ];
 
@@ -151,22 +172,17 @@ export default function Home({ targetSection }: HomeProps) {
         <div className="relative z-10 container mx-auto px-6 text-center max-w-4xl">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 backdrop-blur-sm border border-white/20 text-white mb-8 animate-fade-in-up">
             <span className="w-2 h-2 rounded-full bg-pink-400 animate-pulse" />
-            <span className="text-sm font-medium">AI 小样分发平台</span>
+            <span className="text-sm font-medium">你的第一次 AI 成功</span>
           </div>
           
           <h1 className="text-5xl md:text-7xl font-extrabold text-white mb-6 leading-tight tracking-tight drop-shadow-sm">
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-200 to-purple-100">
-              diyici.ai：
-            </span>
-            <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-100 to-white">
-              你的第一份 AI 小样
+              diyici.ai
             </span>
           </h1>
           
           <p className="text-xl md:text-2xl text-slate-200 mb-10 max-w-2xl mx-auto leading-relaxed">
-            只需 1-2 个核心参数，点击「领取」即可获得结果。<br className="hidden md:block"/>
-            像领取化妆品小样一样简单，轻盈、见效快。
+            你好，我是阿一。我为你准备了几个 AI 小样，帮你搞定第一次成功。
           </p>
           
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -196,20 +212,37 @@ export default function Home({ targetSection }: HomeProps) {
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {samples.map((sample) => (
-              <div key={sample.id} className="h-full">
-                <SampleCard
-                  id={sample.id}
-                  title={sample.title}
-                  description={sample.description}
-                  icon={sample.icon}
-                  params={sample.params}
-                  onClaim={handleClaim}
-                />
+          {sceneCards.map((scene, index) => (
+            <div key={index} className="mb-16">
+              <div className="mb-8">
+                <h3 className="text-2xl font-bold text-slate-900 mb-2">
+                  {scene.category}
+                </h3>
+                <p className="text-lg text-slate-500">
+                  {scene.narrative}
+                </p>
               </div>
-            ))}
-          </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {scene.items.map((item) => {
+                  // 找到对应的 sample 对象，获取 params
+                  const sample = samples.find(s => s.id === item.id);
+                  return (
+                    <div key={item.id} className="h-full">
+                      <SampleCard
+                        id={item.id}
+                        title={item.title}
+                        description={item.description}
+                        icon={item.icon}
+                        params={sample?.params || []}
+                        onClaim={handleClaim}
+                      />
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          ))}
         </div>
       </section>
 
@@ -253,7 +286,7 @@ export default function Home({ targetSection }: HomeProps) {
         <div className="container mx-auto px-6 text-center">
           <div className="mb-8">
             <h3 className="text-2xl font-bold text-white mb-2">diyici.ai</h3>
-            <p className="text-slate-500">AI 小样分发平台</p>
+            <p className="text-slate-500">从此，AI 只有零次和无数次</p>
           </div>
           <div className="flex justify-center gap-8 text-sm mb-8">
             <a href="#" className="hover:text-white transition-colors">关于我们</a>
