@@ -16,9 +16,9 @@ export function SceneCard({ title, description, iconName, ctaText = "立即生�
   // Better approach: Parent component imports images and passes the src.
   
   return (
-    <Card className="group h-full flex flex-col border-border/60 shadow-sm hover:shadow-xl hover:border-primary/20 hover:-translate-y-1 transition-all duration-300 overflow-hidden bg-white/80 backdrop-blur-sm">
+    <Card className="group h-full flex flex-col border border-white/20 shadow-sm hover:shadow-xl hover:border-pink-200/50 hover:-translate-y-1 transition-all duration-300 overflow-hidden bg-white/60 backdrop-blur-lg">
       <CardHeader className="p-6 pb-2">
-        <div className="w-14 h-14 mb-4 rounded-xl bg-gradient-to-br from-blue-50 to-indigo-50 flex items-center justify-center p-2 group-hover:scale-110 transition-transform duration-300">
+        <div className="w-14 h-14 mb-4 rounded-xl bg-gradient-to-br from-pink-50/80 to-purple-50/80 flex items-center justify-center p-2 group-hover:scale-110 transition-transform duration-300 shadow-inner">
            {/* We will rely on an img tag here. The parent will pass the mapped image. */}
            <img 
              src={`/assets/${iconName}.png`} 
@@ -30,7 +30,7 @@ export function SceneCard({ title, description, iconName, ctaText = "立即生�
              }}
            />
         </div>
-        <h3 className="text-xl font-bold text-slate-900 group-hover:text-primary transition-colors">
+        <h3 className="text-xl font-bold text-slate-900 group-hover:text-pink-600 transition-colors">
           {title}
         </h3>
       </CardHeader>
@@ -40,7 +40,7 @@ export function SceneCard({ title, description, iconName, ctaText = "立即生�
         </p>
       </CardContent>
       <CardFooter className="p-6 pt-0">
-        <Button className="w-full group-hover:bg-primary group-hover:text-white transition-all shadow-none group-hover:shadow-md" variant="secondary">
+        <Button className="w-full group-hover:bg-gradient-to-r group-hover:from-pink-500 group-hover:to-purple-500 group-hover:text-white transition-all shadow-none group-hover:shadow-lg group-hover:shadow-pink-500/20 animate-pulse-slow" variant="secondary">
           {ctaText}
           <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
         </Button>

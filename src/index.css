@@ -92,3 +92,18 @@
     @apply bg-background text-foreground font-sans antialiased;
   }
 }
+
+@layer utilities {
+  .animate-pulse-slow {
+    animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+  
+  @keyframes pulse {
+    0%, 100% {
+      box-shadow: 0 0 0 0 rgba(236, 72, 153, 0.4);
+    }
+    50% {
+      box-shadow: 0 0 0 10px rgba(236, 72, 153, 0);
+    }
+  }
+}
