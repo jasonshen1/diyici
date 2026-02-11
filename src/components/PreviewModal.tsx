@@ -30,7 +30,7 @@ export function PreviewModal({ isOpen, onClose, scenario, onUse }: PreviewModalP
               <span className="w-2 h-2 rounded-full bg-gray-300"></span>
               你的原始素材
             </div>
-            <p className="text-gray-600 text-sm md:text-base leading-relaxed whitespace-pre-wrap font-mono">
+            <p className="text-[#91A398] text-sm md:text-base leading-relaxed whitespace-pre-wrap font-mono">
               {scenario.previewInput}
             </p>
           </div>
@@ -65,7 +65,7 @@ export function PreviewModal({ isOpen, onClose, scenario, onUse }: PreviewModalP
             onClose();
             onUse();
           }}
-          className="bg-[#91A398] hover:bg-[#7e8f84] text-white rounded-xl px-8 shadow-md hover:shadow-lg transition-all"
+          className="bg-[#91A398] hover:bg-[#7e8f84] text-white rounded-3xl px-8 shadow-md hover:shadow-lg transition-all"
         >
           这就去拿捏
         </Button>

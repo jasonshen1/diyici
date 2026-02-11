@@ -84,7 +84,7 @@ export function SampleCard({ id, title, description, icon, params, onClaim, onPr
                 value={inputValues[param.label]}
                 onChange={(e) => handleInputChange(param.label, e.target.value)}
                 placeholder={param.placeholder}
-                className="w-full px-3 py-2 rounded-xl border border-border bg-white/80 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all text-sm"
+                className="w-full px-3 py-2 rounded-3xl border border-border bg-white/80 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all text-sm"
               />
             </div>
           ))}

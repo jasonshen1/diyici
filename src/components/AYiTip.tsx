@@ -26,15 +26,15 @@ export function AYiTip({ scenarioId }: AYiTipProps) {
   };
 
   return (
-    <div className="mt-6 p-5 bg-[#FFF9C4] rounded-xl border border-yellow-200 shadow-sm">
+    <div className="mt-6 p-5 bg-[#FFF9C4] rounded-3xl border border-yellow-200 shadow-sm">
       <div className="flex items-start gap-3">
         <div className="w-10 h-10 rounded-full bg-yellow-200 flex items-center justify-center flex-shrink-0">
-          <Sparkles className="w-5 h-5 text-yellow-600" />
+          <Sparkles className="w-5 h-5 text-[#91A398]" />
         </div>
         <div>
           <h4 className="text-lg font-medium text-gray-800 mb-2 flex items-center gap-2 font-serif">
             <span>阿一的叮嘱</span>
-            <span className="text-xs font-normal text-yellow-600">新品体验</span>
+            <span className="text-xs font-normal text-[#91A398]">新品体验</span>
           </h4>
           <p className="text-gray-700 leading-relaxed font-light">
             {getTipContent()}

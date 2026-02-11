@@ -130,7 +130,7 @@ ${apiResult}
                   value={inputs.rawMaterial}
                   onChange={(e) => handleInputChange("rawMaterial", e.target.value)}
                   placeholder="例如：本周做了很多事情，比如完成了项目的原型设计，解决了用户登录的问题..."
-                  className="min-h-[150px] bg-slate-50 border-slate-200 focus:border-pink-300 focus:ring-pink-100 transition-all"
+                  className="min-h-[150px] bg-[#F0F0E8] border-slate-200 focus:border-pink-300 focus:ring-pink-100 transition-all"
                 />
               </div>
 
@@ -142,7 +142,7 @@ ${apiResult}
                   value={inputs.audience}
                   onChange={(e) => handleInputChange("audience", e.target.value)}
                   placeholder="例如：直接上级、部门总监"
-                  className="bg-slate-50 border-slate-200 focus:border-pink-300 focus:ring-pink-100 transition-all"
+                  className="bg-[#F0F0E8] border-slate-200 focus:border-pink-300 focus:ring-pink-100 transition-all"
                 />
               </div>
 
@@ -176,24 +176,24 @@ ${apiResult}
             <div className="space-y-6">
               <div className="flex items-center gap-2">
                 <CheckCircle2 className="w-6 h-6 text-green-500" />
-                <h3 className="text-xl font-bold text-slate-900">诊断结果</h3>
+                <h3 className="text-xl font-bold text-[#4A4A4A]">诊断结果</h3>
               </div>
 
               <Card className="p-6 shadow-sm border-slate-200 bg-white overflow-hidden">
                 <div className="prose max-w-none">
                   {result.split('\n').map((line, index) => {
                     if (line.startsWith('# ')) {
-                      return <h1 key={index} className="text-2xl font-bold text-slate-900 mb-4">{line.substring(2)}</h1>;
+                      return <h1 key={index} className="text-2xl font-bold text-[#4A4A4A] mb-4">{line.substring(2)}</h1>;
                     } else if (line.startsWith('## ')) {
                       return <h2 key={index} className="text-xl font-semibold text-slate-800 mb-3 mt-6">{line.substring(3)}</h2>;
                     } else if (line.startsWith('### ')) {
                       return <h3 key={index} className="text-lg font-medium text-slate-700 mb-2 mt-4">{line.substring(4)}</h3>;
                     } else if (line.startsWith('- ')) {
-                      return <p key={index} className="text-slate-600 mb-1">{line}</p>;
+                      return <p key={index} className="text-[#91A398] mb-1">{line}</p>;
                     } else if (line === '') {
                       return <br key={index} />;
                     } else {
-                      return <p key={index} className="text-slate-600 mb-2">{line}</p>;
+                      return <p key={index} className="text-[#91A398] mb-2">{line}</p>;
                     }
                   })}
                 </div>
@@ -213,7 +213,7 @@ ${apiResult}
                       }
                     );
                   }}
-                  className="rounded-full bg-white border border-pink-200 text-pink-600 hover:bg-pink-50 transition-all"
+                  className="rounded-full bg-white border border-pink-200 text-[#91A398] hover:bg-pink-50 transition-all"
                 >
                   复制结果
                 </Button>

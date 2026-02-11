@@ -41,7 +41,7 @@ export function SceneCard({ scene, onClick, onPreview }: SceneCardProps) {
         {/* 预览按钮 (阻止冒泡，避免触发主卡片点击) */}
         <Button
           variant="outline"
-          className="flex-1 rounded-xl border-gray-200 text-gray-600 hover:text-[#91A398] hover:bg-[#91A398]/5 hover:border-[#91A398]/30 transition-all"
+          className="flex-1 rounded-3xl border-gray-200 text-[#91A398] hover:text-[#91A398] hover:bg-[#91A398]/5 hover:border-[#91A398]/30 transition-all"
           onClick={(e) => {
             e.stopPropagation();
             onPreview();
@@ -53,7 +53,7 @@ export function SceneCard({ scene, onClick, onPreview }: SceneCardProps) {
 
         {/* 主按钮 */}
         <Button
-          className="flex-1 rounded-xl bg-gray-50 text-gray-900 group-hover:bg-[#91A398] group-hover:text-white transition-all shadow-none group-hover:shadow-md"
+          className="flex-1 rounded-3xl bg-gray-50 text-gray-900 group-hover:bg-[#91A398] group-hover:text-white transition-all shadow-none group-hover:shadow-md"
         >
           搞定
           <ArrowRight size={16} className="ml-2 opacity-50 group-hover:opacity-100" />

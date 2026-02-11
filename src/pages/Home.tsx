@@ -23,7 +23,7 @@ const scenarios = [
     title: "写周报",
     description: "碎碎念秒变精英汇报",
     icon: "📝",
-    color: "bg-blue-50 text-blue-600",
+    color: "bg-blue-50 text-[#91A398]",
     category: "work",
     previewInput: "这周主要就是跟进那个A项目，没什么大进展，还在等客户反馈。然后B项目那个PPT我改完了发给总监了。下周打算继续跟进A，然后看看有没有新活。",
     previewOutput: "【本周核心进展】\n1. 项目A推进：已完成阶段性交付，目前处于客户验收反馈期，预计下周二前回收修改意见。\n2. 项目B攻坚：PPT方案经过三轮迭代，已终稿并提交总监审核，等待下一步指示。\n\n【下周重点规划】\n1. 闭环管理：重点追踪A项目反馈，确保零延迟响应。\n2. 增量探索：在保证交付质量的前提下，主动梳理部门待办，挖掘新的业务切入点。"
@@ -33,7 +33,7 @@ const scenarios = [
     title: "拒请求",
     description: "想说不又怕伤面子？阿一替你开口",
     icon: "🛡️",
-    color: "bg-purple-50 text-purple-600",
+    color: "bg-purple-50 text-[#91A398]",
     category: "social",
     previewInput: "老同学借钱，不想借，但是不想撕破脸，怎么回？",
     previewOutput: "【阿一·薄涂版】\n兄弟，最近手头确实有点紧，家里几笔大开销刚好赶在一起了。这阵子实在周转不开，不好意思啊，希望能理解。\n\n【阿一·中厚版】\n真不凑巧，我的钱大部分都放在理财和定期里了，最近取不出来。这次真的帮不上忙，抱歉哈。"
@@ -43,7 +43,7 @@ const scenarios = [
     title: "理方案",
     description: "只有点子没逻辑？阿一帮你通顺",
     icon: "💡",
-    color: "bg-amber-50 text-amber-600",
+    color: "bg-amber-50 text-[#91A398]",
     category: "creative",
     previewInput: "要做个短视频账号，卖咖啡的。想拍点搞笑的，或者拍制作过程？名字想叫'觉醒咖啡'。目标是上班族。",
     previewOutput: "【项目一页纸：觉醒咖啡短视频启动案】\n\n1. 核心定位\n- Slogan：'觉醒咖啡 —— 专治职场不开窍。'\n- 人设：一位看透职场潜规则的'毒舌咖啡师'。\n\n2. 内容策略\n- 系列A（流量型）：'这杯咖啡送给那个甩锅的同事'——结合职场吐槽与咖啡制作，解压爽感。\n- 系列B（干货型）：'早八人续命指南'——30秒极速特调教程。\n\n3. 变现路径\n- 挂车卖挂耳包/浓缩液 -> 职场周边（摸鱼杯） -> 线下快闪店联名。"
@@ -53,7 +53,7 @@ const scenarios = [
     title: "整会议",
     description: "废话太多？阿一帮你萃取重点",
     icon: "🎯",
-    color: "bg-emerald-50 text-emerald-600",
+    color: "bg-emerald-50 text-[#91A398]",
     category: "work",
     previewInput: "那个，咱们下周团建去哪？小王说去爬山，但我看天气预报有雨。小李提议去轰趴馆，但我怕太吵。经费的话，每个人预算300块吧。最后定下来还是去轰趴馆吧，就在公司附近那个。时间定在周五下午。",
     previewOutput: "【会议决议】\n- 活动形式：室内轰趴（考虑到天气风险及交通便利性）。\n- 地点：公司附近轰趴馆（具体定位待发）。\n- 时间：本周五下午。\n- 预算：300元/人。\n\n【待办事项】\n- @小李：负责预定场地及零食采购（截止：周三下班前）。"
@@ -63,7 +63,7 @@ const scenarios = [
     title: "回甲方",
     description: "死磕合同？阿一帮你变共赢",
     icon: "🤝",
-    color: "bg-indigo-50 text-indigo-600",
+    color: "bg-indigo-50 text-[#91A398]",
     category: "work",
     previewInput: "客户非要让我们把LOGO放大，还要加红，简直丑哭了。能不能让他别改了？",
     previewOutput: "尊敬的客户您好，\n\n关于调整LOGO大小及颜色的建议，我们进行了多轮视觉测试。从专业设计的角度来看，目前的比例在移动端屏幕上的识别度最高，且更符合高端品牌的极简趋势。\n\n如果强制放大加红，可能会导致画面重心失衡，反而降低了品牌的“高级感”。建议我们可以保留一版当前方案，同时出一版微调方案供您对比决策。您看如何？"
@@ -73,7 +73,7 @@ const scenarios = [
     title: "找灵感",
     description: "脑子枯竭？阿一帮你撞出火花",
     icon: "✨",
-    color: "bg-rose-50 text-rose-600",
+    color: "bg-rose-50 text-[#91A398]",
     category: "creative",
     previewInput: "怎么让年轻人喜欢上喝茶？",
     previewOutput: "【乔布斯视角】\n重新定义茶。不要卖茶叶，要卖“来自东方的禅意冥想时刻”。把茶具做成极致的极简主义工业品，像发布iPhone一样发布一款茶饮。\n\n【苏格拉底视角】\n反问年轻人：你喝的真的是奶茶吗？还是糖分带来的多巴胺？如果是为了清醒与思考，为什么不尝试一种更纯粹的液体？"

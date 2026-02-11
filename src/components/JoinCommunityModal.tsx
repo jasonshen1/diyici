@@ -60,7 +60,7 @@ export function JoinCommunityModal({ isOpen, onClose }: JoinCommunityModalProps)
             <img 
               src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=QR%20code%20with%20chat%20bubbles%20icon%20in%20the%20center%2C%20black%20background%2C%20white%20QR%20code%20pattern%2C%20clear%20and%20scannable&image_size=square_hd" 
               alt="内测群二维码" 
-              className="max-w-full max-h-full rounded-xl"
+              className="max-w-full max-h-full rounded-3xl"
             />
           </div>
         </div>
