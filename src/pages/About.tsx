@@ -45,19 +45,22 @@ export default function About({ targetSection }: AboutProps) {
               diyici.ai：所有 AI 故事的起点
             </h1>
             <p className="text-xl md:text-2xl text-[#4A4A4A] max-w-3xl mx-auto leading-relaxed mb-10">
-              在这个 AI 浪潮日新月异的时代，我们每天都被各种新名词轰炸：Agent、RAG、Prompt Engineering... 这种"技术爆炸"带来的往往不是便利，而是普通人的进场焦虑。
+              你好，我是阿一。
             </p>
             <p className="text-xl md:text-2xl text-[#4A4A4A] max-w-3xl mx-auto leading-relaxed mb-10">
-              我们相信，比起追逐浪潮，你更需要的是一次确定的上岸感。
+              我的故事始于一个普通的夜晚。那时我还是一名产品经理，盯着电脑屏幕上的周报模板，脑子里一片空白。我试着用 AI 来帮忙，却在对话框前发呆了整整一小时——出来的全是"作为 AI 模型..."的废话。
             </p>
             <p className="text-xl md:text-2xl text-[#4A4A4A] max-w-3xl mx-auto leading-relaxed mb-10">
-              diyici.ai（第一次）的诞生只为了一个纯粹的目的：帮你拿走属于你的第一次 AI 成功。
+              那一刻，我突然明白：这个世界不需要更多复杂的 AI 工具，而是需要一个能真正帮普通人拿到结果的朋友。
             </p>
             <p className="text-xl md:text-2xl text-[#4A4A4A] max-w-3xl mx-auto leading-relaxed mb-10">
-              我们不卖复杂的课程，也不教你高深的指令。阿一店长已经把最前沿的 AI 技术封装成了开盖即用的"小样"。在这里，没有失败的尝试，只有 180 秒后准时抵达的"首胜"。
+              于是，我在实验室里待了三个月，把最前沿的 AI 技术像调配化妆品一样，封装成了一支支"小样"。不需要复杂的指令，不需要专业的知识，只要你注入一点你的需求，180 秒后，就能拿到一份像样的成功。
+            </p>
+            <p className="text-xl md:text-2xl text-[#4A4A4A] max-w-3xl mx-auto leading-relaxed mb-10">
+              这就是 diyici.ai 的起源——不是为了追逐技术浪潮，而是为了让每一个普通人都能在 AI 时代，第一次就赢。
             </p>
             <p className="text-2xl md:text-3xl font-bold text-[#91A398] max-w-3xl mx-auto leading-relaxed">
-              从此，你的 AI 只有零次和无数次。
+              世界日新月异，阿一只想让你第一次就赢。
             </p>
           </section>
 

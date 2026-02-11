@@ -20,8 +20,8 @@ interface HomeProps {
 const samples = [
   {
     id: "weekly",
-    title: "第一次 AI 汇报首胜",
-    description: "从此周报不挨骂",
+    title: "第一次拿捏老板",
+    description: "碎碎念秒变精英周报",
     icon: iconWeekly,
     params: [
       {
@@ -33,8 +33,8 @@ const samples = [
   },
   {
     id: "social",
-    title: "第一次 AI 沟通首胜",
-    description: "从此拒绝不尴尬",
+    title: "第一次拿捏杠精",
+    description: "得体拒绝所有尴尬请求",
     icon: iconReply,
     params: [
       {
@@ -46,8 +46,8 @@ const samples = [
   },
   {
     id: "logic",
-    title: "第一次 AI 方案首胜",
-    description: "从此点子有逻辑",
+    title: "第一次拿捏方案",
+    description: "凌乱点子瞬间变专业文档",
     icon: iconPpt,
     params: [
       {
@@ -59,8 +59,8 @@ const samples = [
   },
   {
     id: "meeting",
-    title: "第一次 AI 代理首胜",
-    description: "体验 AI Agent 自动提纯",
+    title: "第一次拿捏开会",
+    description: "废话全消，只留重点",
     icon: iconWeekly,
     params: [
       {
@@ -72,8 +72,8 @@ const samples = [
   },
   {
     id: "negotiation",
-    title: "第一次 AI 谈判首胜",
-    description: "拿捏商业博弈感",
+    title: "第一次拿捏甲方",
+    description: "硬要求变成共赢话术",
     icon: iconReply,
     params: [
       {
@@ -85,8 +85,8 @@ const samples = [
   },
   {
     id: "thinking",
-    title: "第一次 AI 跨界首胜",
-    description: "像天才一样思考",
+    title: "第一次拿捏创意",
+    description: "击碎脑壳，吐出天才解法",
     icon: iconPpt,
     params: [
       {
@@ -105,32 +105,32 @@ const sceneCards = [
     items: [
       {
         id: "weekly",
-        title: "第一次 AI 汇报首胜",
-        description: "从此周报不挨骂",
+        title: "第一次拿捏老板",
+        description: "碎碎念秒变精英周报",
         icon: iconWeekly
       },
       {
         id: "social",
-        title: "第一次 AI 沟通首胜",
-        description: "从此拒绝不尴尬",
+        title: "第一次拿捏杠精",
+        description: "得体拒绝所有尴尬请求",
         icon: iconReply
       }
     ],
-    narrative: "迈出 AI 成功的第一步。"
+    narrative: "迈出 AI 搞定的第一步。"
   },
   {
     category: "进阶级（第一次用 AI 代理/Agent）",
     items: [
       {
         id: "meeting",
-        title: "第一次 AI 代理首胜",
-        description: "体验 AI Agent 自动提纯",
+        title: "第一次拿捏开会",
+        description: "废话全消，只留重点",
         icon: iconWeekly
       },
       {
         id: "negotiation",
-        title: "第一次 AI 谈判首胜",
-        description: "拿捏商业博弈感",
+        title: "第一次拿捏甲方",
+        description: "硬要求变成共赢话术",
         icon: iconReply
       }
     ],
@@ -141,14 +141,14 @@ const sceneCards = [
     items: [
       {
         id: "logic",
-        title: "第一次 AI 方案首胜",
-        description: "从此点子有逻辑",
+        title: "第一次拿捏方案",
+        description: "凌乱点子瞬间变专业文档",
         icon: iconPpt
       },
       {
         id: "thinking",
-        title: "第一次 AI 跨界首胜",
-        description: "像天才一样思考",
+        title: "第一次拿捏创意",
+        description: "击碎脑壳，吐出天才解法",
         icon: iconPpt
       }
     ],
@@ -228,16 +228,16 @@ export default function Home({ targetSection }: HomeProps) {
           
           <h1 className="text-5xl md:text-7xl font-extrabold text-white mb-6 leading-tight tracking-tight drop-shadow-sm">
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#91A398]/90 to-[#A47864]/90">
-              diyici.ai —— 拿走你的第一次 AI 成功
+              diyici.ai —— 找阿一，AI 第一次就搞定
             </span>
           </h1>
           
           <p className="text-xl md:text-2xl text-slate-200 mb-6 max-w-2xl mx-auto leading-relaxed">
-            AI 只有零次和无数次。如果你还没拿到过满意的结果，那是配方太重。来阿一这里，像领小样一样，领取你的第一次 AI 首胜。
+            别折腾指令了。来领个小样，不管是周报还是回微信，180秒，带你第一次体验"AI 成了"的爽感。
           </p>
           
           <p className="text-base md:text-lg text-slate-300 mb-10 max-w-2xl mx-auto leading-relaxed">
-            世界日新月异，阿一只想让你第一次就赢。
+            AI 只有 0 次和无数次，阿一帮你搞定第 1 次。
           </p>
           
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">

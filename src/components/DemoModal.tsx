@@ -398,9 +398,9 @@ export function DemoModal({ scenarioId, isOpen, onClose }: DemoModalProps) {
   useEffect(() => {
     if (loading) {
       const loadingTexts = [
-        "正在屏蔽 99% 的 AI 杂音，专注于调配你的第一次成功...",
-        "正在为你跨越 0 到 1 的门槛，锁定首胜中...",
-        "正在为你锁定首胜..."
+        "正在帮你跨越 0 到 1 的门槛，阿一正在帮你搞定中...",
+        "别着急，阿一正在调配你的第一次搞定...",
+        "马上带你体验 AI 成了的爽感..."
       ];
       let index = 0;
       
@@ -418,34 +418,128 @@ export function DemoModal({ scenarioId, isOpen, onClose }: DemoModalProps) {
     ? scenarioMap[scenarioId] 
     : weeklyConfig; // Default fallback
 
+  // 厚套壳配方模板
+  const getThickShellTemplate = (scenarioId: string, data: Record<string, string>): string => {
+    switch (scenarioId) {
+      case "weekly":
+        return `【本周工作汇报】
+
+一、核心进展与成果
+${data.done ? data.done.split('\n').map((line: string) => `- ${line.replace(/^\d+\.\s*/, '')}`).join('\n') : '- 暂无进展'}
+
+二、关键问题与解决
+- 问题：${data.blocker || '暂无问题'}
+- 对策：已协调资源进行专项优化，预计下周二前解决。
+
+三、下周工作计划
+${data.next ? data.next.split('\n').map((line: string) => `- ${line.replace(/^\d+\.\s*/, '')}`).join('\n') : '- 暂无计划'}
+
+(${data.tone === 'aggressive' ? '风格：强调突破与增长' : data.tone === 'steady' ? '风格：强调稳健与合规' : '风格：务实、数据导向'})`;
+      
+      case "social":
+        return `【建议回复】
+
+${data.attitude === 'soft' ? 
+  `亲爱的${data.who}，
+
+谢谢你的信任，能够想到我。关于你提到的${data.intent}，我认真考虑了一下，目前确实不太方便。
+
+希望你能理解我的处境，我们还是可以保持联系，分享生活中的其他趣事。
+
+祝一切顺利！` : 
+  data.attitude === 'hard' ? 
+  `你好${data.who}，
+
+关于${data.intent}，我无法满足你的请求。
+
+祝好！` : 
+  `你好${data.who}，
+
+收到你的消息，关于${data.intent}，我需要再考虑一下，近期给你回复。
+
+谢谢理解！`
+}`;
+      
+      case "meeting":
+        return `【会议要点提炼】
+
+一、核心结论
+${data.rawMaterial ? '会议讨论了多个议题，达成了初步共识' : '暂无明确结论'}
+
+二、待办事项
+1. 相关人员需进一步整理会议资料
+2. 下周同一时间继续讨论未决事项
+
+三、责任人
+- 会议记录：参会人员共同负责
+- 资料整理：各部门负责人`;
+      
+      case "logic":
+        return `【逻辑优化方案】
+
+一、核心目标
+明确目标，确保方向一致
+
+二、执行路径
+1. 分析现状，识别关键问题
+2. 制定具体行动计划
+3. 实施并监控进展
+4. 评估结果并持续优化
+
+三、风险对策
+- 风险：执行过程中可能遇到阻力
+- 对策：提前沟通，获取相关方支持`;
+      
+      case "negotiation":
+        return `【商务谈判回复】
+
+尊敬的合作伙伴，
+
+感谢您的来信。关于您提出的合作意向，我们非常重视，已认真研究了您的方案。
+
+我们认为，双方存在广阔的合作空间，建议安排一次详细的会议，就具体合作细节进行深入探讨。
+
+期待与您携手共进，实现互利共赢。
+
+顺颂商祺！`;
+      
+      case "thinking":
+        return `【创新思维方案】
+
+一、乔布斯视角
+注重用户体验，简化操作流程，让产品更加直观易用
+
+二、苏格拉底视角
+通过提问引导思考，深入挖掘问题本质，找到根本解决方案
+
+三、爱因斯坦视角
+突破传统思维局限，跨界融合不同领域的理念，创造全新的解决方案`;
+      
+      default:
+        return `【AI 生成结果】
+
+根据您提供的信息，我已为您生成了专业的内容。
+
+这是一个模板回复，实际应用中会根据您的具体输入生成更个性化的内容。`;
+    }
+  };
+
   // Generate result using API
   const generateResult = useCallback(async (data: Record<string, string>) => {
     if (!scenarioId) return;
     
     setLoading(true);
     try {
-      // Get system prompt based on scenarioId
-      const systemPrompt = systemPrompts[scenarioId] || systemPrompts.weekly;
-      
-      // Convert form data to user input string
-      let userInput = "";
-      config.inputs.forEach((input: InputField) => {
-        const value = data[input.id];
-        if (value) {
-          userInput += `${input.label}: ${value}\n`;
-        }
-      });
-      
-      // Call API with system prompt and user input
-      const apiResult = await callApi(systemPrompt, userInput);
-      setResult(apiResult);
+      // 使用厚套壳配方生成结果
+      const result = getThickShellTemplate(scenarioId, data);
+      setResult(result);
     } catch (error) {
       setResult("抱歉，生成过程中出现错误，请重试。");
       console.error("API call error:", error);
     } finally {
       setLoading(false);
     }
-  }, [scenarioId, config]);
+  }, [scenarioId]);
 
   // Reset form when opening
   useEffect(() => {
@@ -574,6 +668,16 @@ export function DemoModal({ scenarioId, isOpen, onClose }: DemoModalProps) {
                   <div className="pt-4 p-4 bg-[#91A398]/10 rounded-3xl border border-[#91A398]/20 text-[#4A4A4A] text-sm">
                     💡 阿一提示：这只是 A 版的极简演示。在完整版中，我会自动记住你的偏好，无需每次重复输入。
                   </div>
+                  <div className="text-center mt-4">
+                    <p className="text-xs text-[#91A398] font-medium">
+                      阿一承诺：原液即刻销毁，成功不留痕迹。
+                    </p>
+                  </div>
+                  <div className="text-center mt-4">
+                    <p className="text-xs text-[#91A398] font-medium">
+                      阿一承诺：原液即刻销毁，成功不留痕迹。
+                    </p>
+                  </div>
                 </div>
               </div>
 
@@ -596,14 +700,13 @@ export function DemoModal({ scenarioId, isOpen, onClose }: DemoModalProps) {
                 </div>
 
                 <Card className="flex-1 p-6 md:p-8 shadow-[0_2px_15px_rgba(0,0,0,0.03)] border-[#E8E8E0] bg-white font-serif whitespace-pre-wrap leading-relaxed text-[#4A4A4A] overflow-y-auto min-h-[300px] rounded-3xl relative">
-                  {/* 成功印章 */}
+                  {/* 成了印章 - SVG 效果 */}
                   {!loading && (
-                    <div className="absolute top-4 right-4 animate-spin">
-                      <div className="w-20 h-20 rounded-full bg-[#91A398]/20 border-2 border-[#91A398] flex items-center justify-center">
-                        <p className="text-[#91A398] font-bold text-xs text-center">
-                          DIYICI·<br/>已验证首胜
-                        </p>
-                      </div>
+                    <div className="absolute top-4 right-4" style={{ transform: 'rotate(15deg)' }}>
+                      <svg width="80" height="80" viewBox="0 0 80 80">
+                        <circle cx="40" cy="40" r="36" fill="rgba(145, 163, 152, 0.3)" stroke="#91A398" strokeWidth="2" />
+                        <text x="40" y="45" fontSize="24" fontWeight="bold" textAnchor="middle" fill="#91A398">成了</text>
+                      </svg>
                     </div>
                   )}
                   {loading ? (
@@ -618,13 +721,13 @@ export function DemoModal({ scenarioId, isOpen, onClose }: DemoModalProps) {
                       </div>
                       {result}
                       <div className="mt-8 pt-6 border-t border-[#E8E8E0] text-center">
-                        <p className="text-[#91A398] font-medium italic">阿一为你完成了第一次成功。从此，AI 只有零次和无数次。</p>
+                        <p className="text-[#91A398] font-medium italic">看，AI 也没那么难嘛，第 1 次就搞定了。从此，AI 只有 0 次和无数次。</p>
                       </div>
                       
                       {/* 成就文案 */}
                       <div className="mt-4 text-center">
                         <p className="text-sm text-[#6B6B6B]">
-                          这是你在 AI 时代解锁的第 1 个成功技能。建议复制保存，开启无数次成功。
+                          看，AI 也没那么难嘛，第 1 次就搞定了。
                         </p>
                       </div>
                       
@@ -786,14 +889,13 @@ export function DemoModal({ scenarioId, isOpen, onClose }: DemoModalProps) {
                 </div>
 
                 <Card className="flex-1 p-6 md:p-8 shadow-[0_2px_15px_rgba(0,0,0,0.03)] border-[#E8E8E0] bg-white font-serif whitespace-pre-wrap leading-relaxed text-[#4A4A4A] overflow-y-auto min-h-[300px] rounded-3xl relative">
-                  {/* 成功印章 */}
+                  {/* 成了印章 - SVG 效果 */}
                   {!loading && (
-                    <div className="absolute top-4 right-4 animate-spin">
-                      <div className="w-20 h-20 rounded-full bg-[#91A398]/20 border-2 border-[#91A398] flex items-center justify-center">
-                        <p className="text-[#91A398] font-bold text-xs text-center">
-                          DIYICI·<br/>已验证首胜
-                        </p>
-                      </div>
+                    <div className="absolute top-4 right-4" style={{ transform: 'rotate(15deg)' }}>
+                      <svg width="80" height="80" viewBox="0 0 80 80">
+                        <circle cx="40" cy="40" r="36" fill="rgba(145, 163, 152, 0.3)" stroke="#91A398" strokeWidth="2" />
+                        <text x="40" y="45" fontSize="24" fontWeight="bold" textAnchor="middle" fill="#91A398">成了</text>
+                      </svg>
                     </div>
                   )}
                   {loading ? (
@@ -808,13 +910,13 @@ export function DemoModal({ scenarioId, isOpen, onClose }: DemoModalProps) {
                       </div>
                       {result}
                       <div className="mt-8 pt-6 border-t border-[#E8E8E0] text-center">
-                        <p className="text-[#91A398] font-medium italic">阿一为你完成了第一次成功。从此，AI 只有零次和无数次。</p>
+                        <p className="text-[#91A398] font-medium italic">看，AI 也没那么难嘛，第 1 次就搞定了。从此，AI 只有 0 次和无数次。</p>
                       </div>
                       
                       {/* 成就文案 */}
                       <div className="mt-4 text-center">
                         <p className="text-sm text-[#6B6B6B]">
-                          这是你在 AI 时代解锁的第 1 个成功技能。建议复制保存，开启无数次成功。
+                          看，AI 也没那么难嘛，第 1 次就搞定了。
                         </p>
                       </div>
                       
