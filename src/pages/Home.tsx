@@ -1,159 +1,82 @@
-import { SampleCard } from "@/components/SampleCard";
+import { SceneCard } from "@/components/SceneCard";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { toast } from "sonner";
 
 // Asset Imports
 import heroBg from "@/assets/hero-bg.jpg";
-import iconWeekly from "@/assets/weekly-report.png";
-import iconPpt from "@/assets/ppt-outline.png";
-import iconReply from "@/assets/business-reply.png";
 import { ArrowDown, CheckCircle2, Mail, MessageSquare, Users } from "lucide-react";
 import { useEffect, useState } from "react";
 import { FeatureModal } from "@/components/FeatureModal";
+import { PreviewModal } from "@/components/PreviewModal";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 
 interface HomeProps {
   targetSection?: string;
 }
 
-// Updated Data Definition for AI Samples
-const samples = [
+// 扩展数据结构，加入 previewInput 和 previewOutput
+const scenarios = [
   {
-    id: "weekly",
+    id: "weekly-report",
     title: "写周报",
     description: "碎碎念秒变精英汇报",
-    icon: iconWeekly,
-    params: [
-      {
-        label: "把麻烦倒进来",
-        placeholder: "把麻烦倒进来...",
-        defaultValue: "本周完成了项目的初步规划，遇到了一些问题，下周继续推进。"
-      }
-    ]
+    icon: "📝",
+    color: "bg-blue-50 text-blue-600",
+    category: "work",
+    previewInput: "这周主要就是跟进那个A项目，没什么大进展，还在等客户反馈。然后B项目那个PPT我改完了发给总监了。下周打算继续跟进A，然后看看有没有新活。",
+    previewOutput: "【本周核心进展】\n1. 项目A推进：已完成阶段性交付，目前处于客户验收反馈期，预计下周二前回收修改意见。\n2. 项目B攻坚：PPT方案经过三轮迭代，已终稿并提交总监审核，等待下一步指示。\n\n【下周重点规划】\n1. 闭环管理：重点追踪A项目反馈，确保零延迟响应。\n2. 增量探索：在保证交付质量的前提下，主动梳理部门待办，挖掘新的业务切入点。"
   },
   {
-    id: "social",
+    id: "social-reply",
     title: "拒请求",
     description: "想说不又怕伤面子？阿一替你开口",
-    icon: iconReply,
-    params: [
-      {
-        label: "把麻烦倒进来",
-        placeholder: "把麻烦倒进来...",
-        defaultValue: "我觉得这个想法不太好，可能会有问题。"
-      }
-    ]
+    icon: "🛡️",
+    color: "bg-purple-50 text-purple-600",
+    category: "social",
+    previewInput: "老同学借钱，不想借，但是不想撕破脸，怎么回？",
+    previewOutput: "【阿一·薄涂版】\n兄弟，最近手头确实有点紧，家里几笔大开销刚好赶在一起了。这阵子实在周转不开，不好意思啊，希望能理解。\n\n【阿一·中厚版】\n真不凑巧，我的钱大部分都放在理财和定期里了，最近取不出来。这次真的帮不上忙，抱歉哈。"
   },
   {
-    id: "logic",
+    id: "idea-structure",
     title: "理方案",
     description: "只有点子没逻辑？阿一帮你通顺",
-    icon: iconPpt,
-    params: [
-      {
-        label: "把麻烦倒进来",
-        placeholder: "把麻烦倒进来...",
-        defaultValue: "我们应该立即执行这个计划，因为它很好。"
-      }
-    ]
+    icon: "💡",
+    color: "bg-amber-50 text-amber-600",
+    category: "creative",
+    previewInput: "要做个短视频账号，卖咖啡的。想拍点搞笑的，或者拍制作过程？名字想叫'觉醒咖啡'。目标是上班族。",
+    previewOutput: "【项目一页纸：觉醒咖啡短视频启动案】\n\n1. 核心定位\n- Slogan：'觉醒咖啡 —— 专治职场不开窍。'\n- 人设：一位看透职场潜规则的'毒舌咖啡师'。\n\n2. 内容策略\n- 系列A（流量型）：'这杯咖啡送给那个甩锅的同事'——结合职场吐槽与咖啡制作，解压爽感。\n- 系列B（干货型）：'早八人续命指南'——30秒极速特调教程。\n\n3. 变现路径\n- 挂车卖挂耳包/浓缩液 -> 职场周边（摸鱼杯） -> 线下快闪店联名。"
   },
   {
-    id: "meeting",
+    id: "meeting-summary",
     title: "整会议",
     description: "废话太多？阿一帮你萃取重点",
-    icon: iconWeekly,
-    params: [
-      {
-        label: "把麻烦倒进来",
-        placeholder: "把麻烦倒进来...",
-        defaultValue: "今天的会议讨论了产品上线计划，大家各抒己见，有很多不同的想法。有人认为应该先做市场调研，有人认为应该尽快上线抢占市场。最后大家决定下周再开会讨论。"
-      }
-    ]
+    icon: "🎯",
+    color: "bg-emerald-50 text-emerald-600",
+    category: "work",
+    previewInput: "那个，咱们下周团建去哪？小王说去爬山，但我看天气预报有雨。小李提议去轰趴馆，但我怕太吵。经费的话，每个人预算300块吧。最后定下来还是去轰趴馆吧，就在公司附近那个。时间定在周五下午。",
+    previewOutput: "【会议决议】\n- 活动形式：室内轰趴（考虑到天气风险及交通便利性）。\n- 地点：公司附近轰趴馆（具体定位待发）。\n- 时间：本周五下午。\n- 预算：300元/人。\n\n【待办事项】\n- @小李：负责预定场地及零食采购（截止：周三下班前）。"
   },
   {
-    id: "negotiation",
+    id: "business-reply",
     title: "回甲方",
     description: "死磕合同？阿一帮你变共赢",
-    icon: iconReply,
-    params: [
-      {
-        label: "把麻烦倒进来",
-        placeholder: "把麻烦倒进来...",
-        defaultValue: "我们要求你方必须在下周之前完成所有工作，否则将追究违约责任。"
-      }
-    ]
+    icon: "🤝",
+    color: "bg-indigo-50 text-indigo-600",
+    category: "work",
+    previewInput: "客户非要让我们把LOGO放大，还要加红，简直丑哭了。能不能让他别改了？",
+    previewOutput: "尊敬的客户您好，\n\n关于调整LOGO大小及颜色的建议，我们进行了多轮视觉测试。从专业设计的角度来看，目前的比例在移动端屏幕上的识别度最高，且更符合高端品牌的极简趋势。\n\n如果强制放大加红，可能会导致画面重心失衡，反而降低了品牌的“高级感”。建议我们可以保留一版当前方案，同时出一版微调方案供您对比决策。您看如何？"
   },
   {
-    id: "thinking",
+    id: "brainstorming",
     title: "找灵感",
     description: "脑子枯竭？阿一帮你撞出火花",
-    icon: iconPpt,
-    params: [
-      {
-        label: "把麻烦倒进来",
-        placeholder: "把麻烦倒进来...",
-        defaultValue: "如何提高团队的工作效率？"
-      }
-    ]
-  }
-];
-
-// 按"第一次成功"阶梯重新组织的场景卡片
-const sceneCards = [
-  {
-    category: "基础级（第一次用 AI 说话）",
-    items: [
-      {
-        id: "weekly",
-        title: "第一次拿捏老板",
-        description: "碎碎念秒变精英周报",
-        icon: iconWeekly
-      },
-      {
-        id: "social",
-        title: "第一次拿捏杠精",
-        description: "得体拒绝所有尴尬请求",
-        icon: iconReply
-      }
-    ],
-    narrative: "迈出 AI 搞定的第一步。"
-  },
-  {
-    category: "进阶级（第一次用 AI 代理/Agent）",
-    items: [
-      {
-        id: "meeting",
-        title: "第一次拿捏开会",
-        description: "废话全消，只留重点",
-        icon: iconWeekly
-      },
-      {
-        id: "negotiation",
-        title: "第一次拿捏甲方",
-        description: "硬要求变成共赢话术",
-        icon: iconReply
-      }
-    ],
-    narrative: "让 AI 成为你的得力助手。"
-  },
-  {
-    category: "专业级（第一次用 AI 技能/Skill）",
-    items: [
-      {
-        id: "logic",
-        title: "第一次拿捏方案",
-        description: "凌乱点子瞬间变专业文档",
-        icon: iconPpt
-      },
-      {
-        id: "thinking",
-        title: "第一次拿捏创意",
-        description: "击碎脑壳，吐出天才解法",
-        icon: iconPpt
-      }
-    ],
-    narrative: "解锁 AI 的专业能力。"
+    icon: "✨",
+    color: "bg-rose-50 text-rose-600",
+    category: "creative",
+    previewInput: "怎么让年轻人喜欢上喝茶？",
+    previewOutput: "【乔布斯视角】\n重新定义茶。不要卖茶叶，要卖“来自东方的禅意冥想时刻”。把茶具做成极致的极简主义工业品，像发布iPhone一样发布一款茶饮。\n\n【苏格拉底视角】\n反问年轻人：你喝的真的是奶茶吗？还是糖分带来的多巴胺？如果是为了清醒与思考，为什么不尝试一种更纯粹的液体？"
   }
 ];
 
@@ -165,6 +88,10 @@ export default function Home({ targetSection }: HomeProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentFeature, setCurrentFeature] = useState<string | null>(null);
   const [isMailboxOpen, setIsMailboxOpen] = useState(false);
+  // 预览模态框状态
+  const [previewScenario, setPreviewScenario] = useState<typeof scenarios[0] | null>(null);
+  // 当前选中的分类
+  const [selectedCategory, setSelectedCategory] = useState<string>("all");
 
   useEffect(() => {
     if (targetSection) {
@@ -173,8 +100,19 @@ export default function Home({ targetSection }: HomeProps) {
   }, [targetSection]);
 
   const handleClaim = async (id: string, data: any) => {
+    // 映射新 ID 到旧 ID，以便 FeatureModal 能够正确识别功能
+    const idMap: Record<string, string> = {
+      'weekly-report': 'weekly',
+      'social-reply': 'social',
+      'idea-structure': 'logic',
+      'meeting-summary': 'meeting',
+      'business-reply': 'negotiation',
+      'brainstorming': 'thinking'
+    };
+    
+    const mappedId = idMap[id] || id;
     // 对于所有功能，都打开模态框
-    setCurrentFeature(id);
+    setCurrentFeature(mappedId);
     setIsModalOpen(true);
   };
 
@@ -207,7 +145,7 @@ export default function Home({ targetSection }: HomeProps) {
           </nav>
         </div>
       </header>
-
+      
       {/* Hero Section */}
       <section className="relative min-h-[90vh] flex items-center justify-center pt-16 overflow-hidden">
         {/* Background Image with Overlay */}
@@ -260,39 +198,92 @@ export default function Home({ targetSection }: HomeProps) {
       {/* Samples Grid */}
       <section id="samples" className="py-16 relative bg-[#F0F0E8]">
         <div className="container mx-auto px-6">
-          {/* 分类标签栏 */}
-          <div className="flex flex-wrap items-center gap-3 mb-8">
-            <Button variant="default" className="bg-[#91A398] hover:bg-[#91A398]/90 text-white rounded-3xl">
-              全部
-            </Button>
-            <Button variant="secondary" className="bg-white hover:bg-[#F0F0E8] text-[#4A4A4A] rounded-3xl">
-              职场
-            </Button>
-            <Button variant="secondary" className="bg-white hover:bg-[#F0F0E8] text-[#4A4A4A] rounded-3xl">
-              社交
-            </Button>
-            <Button variant="secondary" className="bg-white hover:bg-[#F0F0E8] text-[#4A4A4A] rounded-3xl">
-              生活
-            </Button>
-            <Button variant="secondary" className="bg-white hover:bg-[#F0F0E8] text-[#4A4A4A] rounded-3xl">
-              情感
-            </Button>
-          </div>
-
-          {/* Desktop Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {samples.map((sample) => (
-              <div key={sample.id} className="h-full">
-                <SampleCard
-                  id={sample.id}
-                  title={sample.title}
-                  description={sample.description}
-                  icon={sample.icon}
-                  params={sample.params || []}
-                  onClaim={handleClaim}
-                />
+          {/* 货架分类 - Tabs */}
+          <div className="mb-12">
+            <Tabs defaultValue="all" className="w-full">
+              <div className="flex justify-center mb-8">
+                <TabsList className="bg-white/80 rounded-full p-1">
+                  <TabsTrigger 
+                    value="all" 
+                    className="data-[state=active]:bg-[#91A398] data-[state=active]:text-white rounded-full px-6 py-2 transition-all"
+                    onClick={() => setSelectedCategory("all")}
+                  >
+                    全部
+                  </TabsTrigger>
+                  <TabsTrigger 
+                    value="work" 
+                    className="data-[state=active]:bg-[#91A398] data-[state=active]:text-white rounded-full px-6 py-2 transition-all"
+                    onClick={() => setSelectedCategory("work")}
+                  >
+                    职场保命
+                  </TabsTrigger>
+                  <TabsTrigger 
+                    value="social" 
+                    className="data-[state=active]:bg-[#91A398] data-[state=active]:text-white rounded-full px-6 py-2 transition-all"
+                    onClick={() => setSelectedCategory("social")}
+                  >
+                    人情世故
+                  </TabsTrigger>
+                  <TabsTrigger 
+                    value="creative" 
+                    className="data-[state=active]:bg-[#91A398] data-[state=active]:text-white rounded-full px-6 py-2 transition-all"
+                    onClick={() => setSelectedCategory("creative")}
+                  >
+                    脑洞急救
+                  </TabsTrigger>
+                </TabsList>
               </div>
-            ))}
+              
+              {/* 卡片列表 */}
+              <TabsContent value="all" className="animate-in fade-in duration-300">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto mb-20">
+                  {scenarios.map((scenario) => (
+                    <SceneCard 
+                      key={scenario.id} 
+                      scene={scenario} 
+                      onClick={() => handleClaim(scenario.id, {})} 
+                      onPreview={() => setPreviewScenario(scenario)} // 绑定预览点击
+                    />
+                  ))}
+                </div>
+              </TabsContent>
+              <TabsContent value="work" className="animate-in fade-in duration-300">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto mb-20">
+                  {scenarios.filter(scenario => scenario.category === "work").map((scenario) => (
+                    <SceneCard 
+                      key={scenario.id} 
+                      scene={scenario} 
+                      onClick={() => handleClaim(scenario.id, {})} 
+                      onPreview={() => setPreviewScenario(scenario)} // 绑定预览点击
+                    />
+                  ))}
+                </div>
+              </TabsContent>
+              <TabsContent value="social" className="animate-in fade-in duration-300">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto mb-20">
+                  {scenarios.filter(scenario => scenario.category === "social").map((scenario) => (
+                    <SceneCard 
+                      key={scenario.id} 
+                      scene={scenario} 
+                      onClick={() => handleClaim(scenario.id, {})} 
+                      onPreview={() => setPreviewScenario(scenario)} // 绑定预览点击
+                    />
+                  ))}
+                </div>
+              </TabsContent>
+              <TabsContent value="creative" className="animate-in fade-in duration-300">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto mb-20">
+                  {scenarios.filter(scenario => scenario.category === "creative").map((scenario) => (
+                    <SceneCard 
+                      key={scenario.id} 
+                      scene={scenario} 
+                      onClick={() => handleClaim(scenario.id, {})} 
+                      onPreview={() => setPreviewScenario(scenario)} // 绑定预览点击
+                    />
+                  ))}
+                </div>
+              </TabsContent>
+            </Tabs>
           </div>
         </div>
       </section>
@@ -477,6 +468,22 @@ export default function Home({ targetSection }: HomeProps) {
           </div>
         </DialogContent>
       </Dialog>
+      
+      {/* Preview Modal */}
+      <PreviewModal 
+        isOpen={!!previewScenario} 
+        onClose={() => setPreviewScenario(null)} 
+        scenario={previewScenario}
+        onUse={() => {
+          setPreviewScenario(null);
+          // 稍微延迟一下，给 PreviewModal 关闭动画一点时间，体验更好
+          setTimeout(() => {
+            if (previewScenario) {
+              handleClaim(previewScenario.id, {});
+            }
+          }, 200);
+        }} 
+      />
     </div>
   );
 }

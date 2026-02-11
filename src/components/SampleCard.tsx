@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Sparkles, CheckCircle2, Loader2 } from "lucide-react";
+import { Sparkles, CheckCircle2, Loader2, Eye } from "lucide-react";
 
 interface SampleCardProps {
   id: string;
@@ -13,9 +13,10 @@ interface SampleCardProps {
     defaultValue: string;
   }[];
   onClaim: (id: string, data: any) => void;
+  onPreview?: () => void;
 }
 
-export function SampleCard({ id, title, description, icon, params, onClaim }: SampleCardProps) {
+export function SampleCard({ id, title, description, icon, params, onClaim, onPreview }: SampleCardProps) {
   const [isClaiming, setIsClaiming] = useState(false);
   const [isClaimed, setIsClaimed] = useState(false);
   const [inputValues, setInputValues] = useState<Record<string, string>>(
@@ -91,7 +92,7 @@ export function SampleCard({ id, title, description, icon, params, onClaim }: Sa
       </div>
 
       {/* Action Button */}
-      <div className="p-6 pt-2">
+      <div className="p-6 pt-2 space-y-3">
         <Button 
           onClick={handleClaim}
           disabled={isClaiming || isClaimed}
@@ -114,6 +115,16 @@ export function SampleCard({ id, title, description, icon, params, onClaim }: Sa
             </>
           )}
         </Button>
+        {onPreview && (
+          <Button 
+            className="w-full h-12 border border-[#91A398] text-[#91A398] hover:bg-[#91A398]/10 transition-all rounded-2xl"
+            variant="outline"
+            onClick={onPreview}
+          >
+            <Eye className="w-4 h-4 mr-2" />
+            看看效果
+          </Button>
+        )}
       </div>
     </div>
   );

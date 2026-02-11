@@ -1,50 +1,64 @@
-import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
+import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, Eye } from "lucide-react";
 
-interface SceneCardProps {
+interface SceneProps {
+  id: string;
   title: string;
   description: string;
-  iconName: string; // Filename without extension
-  ctaText?: string;
+  icon: string;
+  color: string;
 }
 
-export function SceneCard({ title, description, iconName, ctaText = "立即领取" }: SceneCardProps) {
-  // Dynamic import for assets is tricky in Vite with variable names if not handled carefully.
-  // We'll assume the parent passes the full imported URL or handle it via a mapping in Home.
-  // For now, let's assume we pass the src directly or use a known path if assets are in public (which they aren't, they are in src/assets).
-  // Better approach: Parent component imports images and passes the src.
-  
+interface SceneCardProps {
+  scene: SceneProps;
+  onClick: () => void;
+  onPreview: () => void; // 新增预览回调
+}
+
+export function SceneCard({ scene, onClick, onPreview }: SceneCardProps) {
   return (
-    <Card className="group h-full flex flex-col border border-border shadow-[0_2px_15px_rgba(0,0,0,0.03)] hover:shadow-[0_4px_25px_rgba(0,0,0,0.05)] hover:-translate-y-1 transition-all duration-300 overflow-hidden bg-white/90 backdrop-blur-sm rounded-3xl">
-      <CardHeader className="p-6 pb-2">
-        <div className="w-16 h-16 mb-4 rounded-2xl bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center p-3 group-hover:scale-110 transition-transform duration-300">
-           {/* We will rely on an img tag here. The parent will pass the mapped image. */}
-           <img 
-             src={`/assets/${iconName}.png`} 
-             alt={title} 
-             className="w-full h-full object-contain drop-shadow-sm"
-             onError={(e) => {
-               // Fallback if image fails (though we processed them)
-               (e.target as HTMLImageElement).src = "https://placehold.co/100x100?text=Icon";
-             }}
-           />
-        </div>
-        <h3 className="text-2xl font-bold text-foreground group-hover:text-primary transition-colors leading-tight">
-          {title}
-        </h3>
-      </CardHeader>
-      <CardContent className="px-6 flex-grow">
-        <p className="text-muted-foreground text-sm leading-relaxed">
-          {description}
-        </p>
-      </CardContent>
-      <CardFooter className="p-6 pt-0">
-        <Button className="w-full bg-primary hover:bg-primary/90 text-primary-foreground transition-all shadow-sm hover:shadow-md rounded-2xl" variant="default">
-          {ctaText}
-          <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+    <div
+      className="group relative bg-white rounded-3xl p-6 shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 hover:border-[#91A398]/30 flex flex-col h-full cursor-pointer"
+      onClick={onClick} // 整个卡片点击依然触发主功能
+    >
+      <div className={cn(
+        "w-12 h-12 rounded-2xl flex items-center justify-center text-2xl mb-4 transition-transform group-hover:scale-110 duration-300",
+        scene.color
+      )}>
+        {scene.icon}
+      </div>
+      
+      <h3 className="text-xl font-bold text-gray-800 mb-2 group-hover:text-[#91A398] transition-colors">
+        {scene.title}
+      </h3>
+      
+      <p className="text-gray-500 text-sm leading-relaxed mb-6 flex-1">
+        {scene.description}
+      </p>
+      
+      <div className="flex items-center gap-2 mt-auto">
+        {/* 预览按钮 (阻止冒泡，避免触发主卡片点击) */}
+        <Button
+          variant="outline"
+          className="flex-1 rounded-xl border-gray-200 text-gray-600 hover:text-[#91A398] hover:bg-[#91A398]/5 hover:border-[#91A398]/30 transition-all"
+          onClick={(e) => {
+            e.stopPropagation();
+            onPreview();
+          }}
+        >
+          <Eye size={16} className="mr-2" />
+          看看效果
         </Button>
-      </CardFooter>
-    </Card>
+
+        {/* 主按钮 */}
+        <Button
+          className="flex-1 rounded-xl bg-gray-50 text-gray-900 group-hover:bg-[#91A398] group-hover:text-white transition-all shadow-none group-hover:shadow-md"
+        >
+          搞定
+          <ArrowRight size={16} className="ml-2 opacity-50 group-hover:opacity-100" />
+        </Button>
+      </div>
+    </div>
   );
 }
