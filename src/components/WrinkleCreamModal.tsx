@@ -83,7 +83,7 @@ ${apiResult}
 
 ---
 
-*本诊断结果由 diyici.ai 职场除皱霜生成*`;
+*本诊断结果由 diyici.ai 职场除皱霜焕新*`;
 
       setResult(formattedResult);
 
@@ -168,7 +168,7 @@ ${apiResult}
               </div>
 
               <div className="pt-4 p-4 bg-pink-50 rounded-lg border border-pink-100 text-pink-800 text-sm">
-                💡 提示：只需输入你的原始素材，我们会帮你整理成逻辑清晰、重点突出的专业汇报。
+                💡 提示：只需输入你的原始素材，我们会帮你平复成逻辑清晰、重点突出的专业汇报。
               </div>
             </div>
           ) : (

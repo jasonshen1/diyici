@@ -1,16 +1,17 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Card } from "@/components/ui/card";
-import { Loader2, Sparkles, Copy, Check } from "lucide-react";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Loader2, Copy, Check } from "lucide-react";
+import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
+import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 // Define Scenario Types
-type ScenarioId = "weekly" | "reply" | "ppt";
+type ScenarioId = "weekly" | "social" | "logic" | "meeting" | "emotion" | "terms";
 
 interface ScenarioConfig {
   id: ScenarioId;
@@ -26,17 +27,17 @@ interface InputField {
   type: "text" | "textarea" | "select" | "checkbox";
   placeholder?: string;
   options?: { label: string; value: string }[]; // For select
-  defaultValue?: any;
+  defaultValue?: string;
 }
 
 // 1. 周报场景配置
 const weeklyConfig: ScenarioConfig = {
   id: "weekly",
-  title: "周报生成器",
-  description: "填空生成，拒绝流水账",
+  title: "职场除皱霜",
+  description: "一键平复周报里的逻辑褶皱",
   inputs: [
     { id: "done", label: "本周关键产出 (3件)", type: "textarea", placeholder: "例如：完成A客户签约；修复了登录Bug...", defaultValue: "1. 完成了 Landing Page 的首版设计与开发\n2. 梳理了产品说明书与战略文档\n3. 修复了移动端适配的 2 个 Bug" },
-    { id: "blocker", label: "遇到的困难", type: "text", placeholder: "例如：服务器资源不足...", defaultValue: "API 响应速度偶尔不稳定，影响体验" },
+    { id: "blocker", label: "遇到的困难", type: "text", placeholder: "例如：服务器资源不足...", defaultValue: "系统响应速度偶尔不稳定，影响体验" },
     { id: "next", label: "下周计划", type: "textarea", placeholder: "例如：启动B项目...", defaultValue: "1. 上线 B 版浏览器插件 Beta\n2. 优化首页加载速度" },
     { 
       id: "tone", label: "语气风格", type: "select", 
@@ -74,9 +75,9 @@ ${data.next.split('\n').map((line: string) => `• ${line.replace(/^\d+\.\s*/, '
 
 // 2. 高情商回复场景配置
 const replyConfig: ScenarioConfig = {
-  id: "reply",
-  title: "高情商回复",
-  description: "拒绝尴尬，体面回应",
+  id: "social",
+  title: "社交隔离乳",
+  description: "隔离社交表达中的多余情绪，让沟通更得体",
   inputs: [
     { id: "who", label: "对方身份", type: "text", placeholder: "例如：借钱的朋友、催进度的老板...", defaultValue: "很久不联系的前同事" },
     { id: "intent", label: "对方意图", type: "text", placeholder: "例如：想借钱、想让帮忙...", defaultValue: "想找我借 5 万块钱买房" },
@@ -90,30 +91,236 @@ const replyConfig: ScenarioConfig = {
       defaultValue: "soft"
     }
   ],
-  template: (data) => {
-    if (data.attitude === "soft") {
-      return `【建议回复 - 委婉版】
-      
-"哎呀，老哥/姐，听到你买房的消息真替你开心！这可是大事啊。
-      
-不过实在是不巧，我最近手头也特别紧，刚把钱都投到理财/还贷里了，一时半会真周转不开。真不好意思啊，这点忙没帮上。祝你后面一切顺利，早日搞定！"`;
-    } else if (data.attitude === "hard") {
-      return `【建议回复 - 坚决版】
-      
-"兄弟，买房是好事。不过我原则上是不跟朋友发生金钱往来的，容易伤感情。这事儿我真帮不了，你再问问别人吧。"`;
-    } else {
-      return `【建议回复 - 拖延版】
-      
-"哟，买房啦？恭喜恭喜！我现在人在外面办事呢，不太方便看账户。等我这阵子忙完了，回家盘算一下手头情况再跟你说哈。（然后就可以不回了）"`;
-    }
+  template: () => {
+    return `【建议回复】
+    
+这是一个模板回复，实际应用中会根据用户输入生成。`;
   }
 };
 
 
+// 3. 会议提纯乳场景配置
+const meetingConfig: ScenarioConfig = {
+  id: "meeting",
+  title: "会议提纯乳",
+  description: "快速提炼会议要点，节省时间",
+  inputs: [
+    { id: "rawMaterial", label: "会议记录或讨论内容", type: "textarea", placeholder: "请输入会议内容，会议提纯乳会为您提炼关键要点", defaultValue: "今天的会议讨论了产品上线计划，大家各抒己见，有很多不同的想法。有人认为应该先做市场调研，有人认为应该尽快上线抢占市场。最后大家决定下周再开会讨论。" }
+  ],
+  template: () => {
+    return `【会议要点提炼】
+
+一、会议主题
+产品上线计划讨论
+
+二、关键讨论
+• 是否应该先做市场调研
+• 是否应该尽快上线抢占市场
+
+三、达成共识
+• 暂未达成最终共识
+• 决定下周再开会讨论
+
+四、后续行动
+• 相关人员准备更多资料
+• 下周同一时间继续讨论`;
+  }
+};
+
+// 4. 高情商精华场景配置
+const emotionConfig: ScenarioConfig = {
+  id: "emotion",
+  title: "高情商精华",
+  description: "提升社交表达的情商，让沟通更顺畅",
+  inputs: [
+    { id: "rawMaterial", label: "需要优化的表达内容", type: "textarea", placeholder: "请输入你想要表达的内容，高情商精华会为您提升表达效果", defaultValue: "你总是迟到，这让我很生气。" }
+  ],
+  template: () => {
+    return `【高情商表达建议】
+
+亲爱的，我注意到最近几次我们约定的时间你都没能准时到达，这让我感到有些失落和不安。我非常珍惜我们在一起的时光，也希望我们能够更加尊重彼此的时间安排。
+
+如果以后有什么特殊情况导致你可能会迟到，提前告诉我一声好吗？这样我就不会一直担心你了。我相信我们可以一起努力，让我们的相处更加愉快和顺畅。
+
+谢谢你的理解和配合，我真的很在乎我们之间的关系。`;
+  }
+};
+
+// 5. 条款拆解液场景配置
+const termsConfig: ScenarioConfig = {
+  id: "terms",
+  title: "条款拆解液",
+  description: "拆解复杂条款，让信息更易懂",
+  inputs: [
+    { id: "rawMaterial", label: "需要拆解的复杂条款", type: "textarea", placeholder: "请输入复杂条款内容，条款拆解液会为您简化解释", defaultValue: "本协议的任何修改或变更须经双方书面同意并签署后方可生效。任何一方违反本协议的任何条款，应承担违约责任，并赔偿对方因此遭受的全部损失。" }
+  ],
+  template: () => {
+    return `【条款拆解说明】
+
+一、核心内容
+该条款主要说明了协议修改的程序要求和违约责任的承担方式。
+
+二、关键要点
+• 协议修改需双方书面同意并签署
+• 任何一方违反条款需承担违约责任
+• 违约方需赔偿对方全部损失
+
+三、潜在影响
+• 确保协议修改的严肃性和法律效力
+• 保护守约方的合法权益
+• 对违约行为形成威慑
+
+四、注意事项
+• 任何协议修改都应通过书面形式
+• 签署前仔细阅读修改内容
+• 保存好所有协议文件原件
+• 如遇违约情况，及时收集证据`;
+  }
+};
+
+// System Prompt Configurations
+const systemPrompts: Record<string, string> = {
+  weekly: `你是一位专业的向上管理助手，擅长帮助职场人士撰写高质量的工作汇报。
+
+请根据用户提供的信息，按照以下格式输出一份专业、简洁的工作汇报：
+
+【本周进展】
+- 列出本周的主要工作进展
+- 保持简洁明了，重点突出
+
+【核心产出】
+- 总结本周的核心成果和价值
+- 强调对团队和公司的贡献
+
+【下周规划】
+- 制定下周的工作计划
+- 确保计划具体、可执行
+
+请确保内容专业、积极，体现出良好的向上管理技巧。`,
+  
+  social: `你是一位社交沟通专家，擅长处理各种社交场合的拒绝场景。
+
+请根据用户提供的信息，为以下三种拒绝场景提供专业、得体的回复方案：
+
+【薄涂】- 委婉拒绝，保持友好关系
+- 表达理解和同情
+- 给出合理的拒绝理由
+- 维持友好的结束
+
+【中厚】- 明确拒绝，态度坚定
+- 直接表达立场
+- 简洁明了，不拖泥带水
+- 保持尊重，避免冲突
+
+【急救】- 紧急拒绝，快速回应
+- 直截了当地拒绝
+- 不需要过多解释
+- 保持专业和礼貌
+
+请确保回复方案符合社交礼仪，既能够表达拒绝的态度，又能够维持良好的人际关系。`,
+  
+  logic: `你是一位逻辑思维专家，擅长分析和重构复杂的信息。
+
+请根据用户提供的信息，按照以下结构进行重构：
+
+【核心目标】
+- 明确表达核心目标和意图
+- 确保目标具体、可衡量
+
+【执行路径】
+- 设计清晰的执行步骤
+- 确保步骤逻辑连贯、可操作
+
+【风险对策】
+- 识别可能的风险和挑战
+- 提供相应的应对策略
+
+请确保重构后的内容逻辑清晰、结构合理，便于理解和执行。`,
+  
+  meeting: `你是一位会议管理专家，擅长从冗长的会议内容中提取关键信息。
+
+请根据用户提供的会议内容，仅提取以下三个核心要素：
+
+【结论】
+- 会议达成的主要结论和决定
+- 保持简洁明了，直击要点
+
+【待办】
+- 需要后续执行的具体任务
+- 明确任务内容和时间要求
+
+【责任人】
+- 每个待办任务的具体负责人
+- 确保责任明确，避免模糊
+
+请确保提取的信息准确、完整，便于后续跟踪和执行。`,
+  
+  emotion: `你是一位商务沟通专家，擅长撰写共赢导向的专业商务回复。
+
+请根据用户提供的信息，生成一份专业、得体的商务回复，遵循以下原则：
+
+1. 共赢导向：寻求双方利益的平衡点
+2. 专业礼貌：使用正式、礼貌的语言
+3. 清晰明确：表达立场和观点清晰明了
+4. 解决方案：提供建设性的解决方案
+5. 关系维护：注重维护良好的商务关系
+
+请确保回复内容专业、得体，既能够表达自己的立场，又能够考虑对方的利益，实现共赢的局面。`,
+  
+  terms: `你是一位创意顾问，擅长从不同角度思考问题并提供创意解决方案。
+
+请根据用户提供的信息，从以下三个不同的视角提供创意：
+
+1. 乔布斯视角：注重创新、用户体验和简洁设计
+2. 苏格拉底视角：注重逻辑、提问和深度思考
+3. 爱因斯坦视角：注重想象力、突破性思维和跨界融合
+
+每个视角请提供一个具体的创意方案，确保创意独特、有价值，并且与用户的需求相关。`,
+  
+  negotiation: `你是一位商务谈判专家，擅长将强硬的要求转化为共赢的商业信函。
+
+请根据用户提供的信息，生成一份专业、得体的商务谈判回复，遵循以下原则：
+
+1. 共赢导向：寻求双方利益的平衡点
+2. 专业礼貌：使用正式、礼貌的语言
+3. 清晰明确：表达立场和观点清晰明了
+4. 解决方案：提供建设性的解决方案
+5. 关系维护：注重维护良好的商务关系
+
+请确保回复内容专业、得体，既能够表达自己的立场，又能够考虑对方的利益，实现共赢的局面。`,
+  
+  thinking: `你是一位创意顾问，擅长从不同角度思考问题并提供创意解决方案。
+
+请根据用户提供的信息，从以下三个不同的视角提供创意：
+
+【乔布斯视角】
+- 注重创新、用户体验和简洁设计
+- 从创新和用户体验的角度提出解决方案
+- 强调简洁、高效的设计理念
+
+【苏格拉底视角】
+- 注重逻辑、提问和深度思考
+- 从逻辑和深度思考的角度分析问题
+- 通过提问引导思考，挖掘问题本质
+
+【爱因斯坦视角】
+- 注重想象力、突破性思维和跨界融合
+- 从想象力和突破性思维的角度思考问题
+- 尝试跨界融合不同领域的理念
+
+每个视角请提供一个具体的创意方案，确保创意独特、有价值，并且与用户的需求相关。`
+};
+
 // Map scenarios
 const scenarioMap: Record<string, ScenarioConfig> = {
   weekly: weeklyConfig,
-  reply: replyConfig,
+  social: replyConfig,
+  logic: weeklyConfig, // 使用周报配置作为逻辑场景的默认值
+  meeting: meetingConfig,
+  emotion: emotionConfig,
+  terms: termsConfig,
+  negotiation: emotionConfig, // 使用情商场景配置作为谈判场景的默认值
+  thinking: termsConfig, // 使用条款拆解场景配置作为思维焕新场景的默认值
   // Fallback for others to generic
   default: weeklyConfig 
 };
@@ -125,39 +332,141 @@ interface DemoModalProps {
   onClose: () => void;
 }
 
+// Mock API call function
+const callApi = async (systemPrompt: string, userInput: string): Promise<string> => {
+  // Simulate API delay
+  await new Promise(resolve => setTimeout(resolve, 2000));
+  
+  // Mock response based on system prompt and user input
+  // In a real app, this would be an actual API call
+  return `【AI 生成结果】
+
+${systemPrompt.split('\n').filter(line => line.includes('【')).map(line => line.trim()).join('\n\n')}
+
+根据您提供的信息，我已为您生成了专业的内容。
+
+${userInput.substring(0, 100)}...
+
+这是一个模拟的 API 响应，展示了'厚套壳'功能的实现。在实际应用中，这里会显示真实的 AI 生成结果。`;
+};
+
 export function DemoModal({ scenarioId, isOpen, onClose }: DemoModalProps) {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState("");
-  const [formData, setFormData] = useState<any>({});
+  const [formData, setFormData] = useState<Record<string, string>>({});
   const [copied, setCopied] = useState(false);
+  const [loadingText, setLoadingText] = useState("");
+  const [keyboardOpen, setKeyboardOpen] = useState(false);
+  const modalRef = useRef<HTMLDivElement>(null);
+
+  // 使用项目已有的 useIsMobile 钩子
+  const isMobile = useIsMobile();
+
+  // 键盘检测逻辑
+  useEffect(() => {
+    const handleResize = () => {
+      if (isMobile) {
+        // 检测视口高度变化，判断键盘是否弹出
+        const viewportHeight = window.innerHeight;
+        const documentHeight = document.documentElement.offsetHeight;
+        const keyboardHeight = documentHeight - viewportHeight;
+        
+        // 如果键盘高度超过100px，认为键盘已弹出
+        setKeyboardOpen(keyboardHeight > 100);
+      }
+    };
+
+    // 监听视口大小变化
+    window.addEventListener('resize', handleResize);
+
+    // 清理监听器
+    return () => window.removeEventListener('resize', handleResize);
+  }, [isMobile]);
+
+  // 自动滚动到按钮位置，当键盘弹出时
+  useEffect(() => {
+    if (isMobile && keyboardOpen && modalRef.current) {
+      // 找到'瞬间焕新'按钮
+      const button = modalRef.current.querySelector('button');
+      if (button) {
+        button.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    }
+  }, [isMobile, keyboardOpen]);
+
+  // 动态切换加载文案
+  useEffect(() => {
+    if (loading) {
+      const loadingTexts = [
+        "正在屏蔽 99% 的 AI 杂音，专注于调配你的第一次成功...",
+        "正在为你跨越 0 到 1 的门槛，锁定首胜中...",
+        "正在为你锁定首胜..."
+      ];
+      let index = 0;
+      
+      const interval = setInterval(() => {
+        setLoadingText(loadingTexts[index]);
+        index = (index + 1) % loadingTexts.length;
+      }, 3000);
+
+      return () => clearInterval(interval);
+    }
+  }, [loading]);
 
   // Initialize config
   const config = (scenarioId && scenarioMap[scenarioId]) 
     ? scenarioMap[scenarioId] 
     : weeklyConfig; // Default fallback
 
+  // Generate result using API
+  const generateResult = useCallback(async (data: Record<string, string>) => {
+    if (!scenarioId) return;
+    
+    setLoading(true);
+    try {
+      // Get system prompt based on scenarioId
+      const systemPrompt = systemPrompts[scenarioId] || systemPrompts.weekly;
+      
+      // Convert form data to user input string
+      let userInput = "";
+      config.inputs.forEach((input: InputField) => {
+        const value = data[input.id];
+        if (value) {
+          userInput += `${input.label}: ${value}\n`;
+        }
+      });
+      
+      // Call API with system prompt and user input
+      const apiResult = await callApi(systemPrompt, userInput);
+      setResult(apiResult);
+    } catch (error) {
+      setResult("抱歉，生成过程中出现错误，请重试。");
+      console.error("API call error:", error);
+    } finally {
+      setLoading(false);
+    }
+  }, [scenarioId, config]);
+
   // Reset form when opening
   useEffect(() => {
     if (isOpen) {
-      const initialData: any = {};
+      const initialData: Record<string, string> = {};
       config.inputs.forEach(input => {
         initialData[input.id] = input.defaultValue || "";
       });
       setFormData(initialData);
-      setResult(""); // Clear previous result or set initial preview?
-      // Auto-generate initial preview for better experience?
-      // Let's generate it after a small delay to simulate "thinking" or just static
-      setResult(config.template(initialData));
+      setResult(""); // Clear previous result
+      // Generate initial result using API
+      generateResult(initialData);
     }
-  }, [isOpen, config]);
+  }, [isOpen, config, generateResult]);
 
-  const handleInputChange = (id: string, value: any) => {
+  const handleInputChange = (id: string, value: string) => {
     const newData = { ...formData, [id]: value };
     setFormData(newData);
     
-    // Real-time preview update logic
-    // In real app, might debounce. Here instant is fine.
-    setResult(config.template(newData));
+    // Generate result using API
+    generateResult(newData);
   };
 
   const handleCopy = () => {
@@ -167,150 +476,392 @@ export function DemoModal({ scenarioId, isOpen, onClose }: DemoModalProps) {
   };
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-5xl h-[80vh] flex flex-col p-0 overflow-hidden gap-0 bg-slate-50">
-        
-        {/* Header */}
-        <div className="px-6 py-4 border-b bg-white flex justify-between items-center shrink-0">
-          <div>
-            <DialogTitle className="text-xl font-bold flex items-center gap-2">
-              <span className="bg-blue-100 text-blue-700 p-1 rounded text-sm font-mono">Input</span>
-              {config.title}
-              <span className="text-slate-400 font-normal text-sm mx-2">vs</span>
-              <span className="bg-green-100 text-green-700 p-1 rounded text-sm font-mono">Output</span>
-            </DialogTitle>
-            <DialogDescription>
-              {config.description} | 左侧修改，右侧实时预览
-            </DialogDescription>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="w-10 h-10 rounded-full bg-pink-200 flex items-center justify-center">
-              <span className="text-pink-600 font-medium">阿一</span>
-            </div>
-            <span className="text-sm text-slate-600">店长</span>
-          </div>
-        </div>
-
-        {/* Steps Guide */}
-        <div className="px-6 py-4 border-b bg-gradient-to-r from-pink-50 to-purple-50">
-          <div className="flex justify-between items-center">
-            <div className="flex items-center gap-6">
-              <div className="flex items-center gap-2">
-                <div className="w-6 h-6 rounded-full bg-pink-500 text-white flex items-center justify-center text-xs font-bold">1</div>
-                <span className="text-sm text-slate-700">领取小样（选择场景）</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="w-6 h-6 rounded-full bg-pink-300 text-slate-700 flex items-center justify-center text-xs font-bold">2</div>
-                <span className="text-sm text-slate-700">注入素材（简单填空）</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="w-6 h-6 rounded-full bg-pink-200 text-slate-600 flex items-center justify-center text-xs font-bold">3</div>
-                <span className="text-sm text-slate-700">焕新交付（见证你的第一次 AI 成功）</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Body - Two Columns */}
-        <div className="flex flex-1 overflow-hidden">
-          
-          {/* Left: Input Form */}
-          <div className="w-1/2 p-6 overflow-y-auto border-r bg-white">
-            <div className="space-y-6">
-              {config.inputs.map((input) => (
-                <div key={input.id} className="space-y-2">
-                  <Label className="text-slate-700 font-semibold">{input.label}</Label>
-                  
-                  {input.type === "textarea" && (
-                    <Textarea 
-                      value={formData[input.id]} 
-                      onChange={(e) => handleInputChange(input.id, e.target.value)}
-                      className="min-h-[100px] bg-slate-50 border-slate-200 focus:border-blue-500 transition-all"
-                    />
-                  )}
-                  
-                  {input.type === "text" && (
-                    <Input 
-                      value={formData[input.id]}
-                      onChange={(e) => handleInputChange(input.id, e.target.value)}
-                      className="bg-slate-50 border-slate-200 focus:border-blue-500 transition-all"
-                    />
-                  )}
-
-                  {input.type === "select" && (
-                    <Select 
-                      value={formData[input.id]} 
-                      onValueChange={(val) => handleInputChange(input.id, val)}
-                    >
-                      <SelectTrigger className="bg-slate-50 border-slate-200">
-                        <SelectValue placeholder="请选择" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {input.options?.map(opt => (
-                          <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  )}
+    <>  
+      {isMobile ? (
+        <Drawer open={isOpen} onOpenChange={onClose} direction="bottom">
+          <DrawerContent 
+            ref={modalRef}
+            className={`
+              fixed bottom-0 left-0 right-0 top-[${keyboardOpen ? '10vh' : '20vh'}] max-w-none w-full h-[${keyboardOpen ? '90vh' : '80vh'}] rounded-t-3xl rounded-b-none p-0 overflow-hidden gap-0 bg-[#F0F0E8] shadow-2xl shadow-black/10
+            `}
+          >
+            {/* 顶部拉柄暗示 */}
+            <div className="absolute top-3 left-1/2 transform -translate-x-1/2 w-16 h-2 bg-[#91A398]/30 rounded-full"></div>
+            
+            {/* Header */}
+            <div className="px-6 py-4 border-b bg-white flex justify-between items-center shrink-0">
+              <div>
+                <div className="text-xl font-bold flex items-center gap-2">
+                  <span className="bg-[#91A398]/20 text-[#91A398] p-1 rounded text-sm font-mono">注入配方</span>
+                  {config.title}
                 </div>
-              ))}
-
-              <div className="pt-4 p-4 bg-pink-50 rounded-lg border border-pink-100 text-pink-800 text-sm">
-                💡 阿一提示：这只是 A 版的极简演示。在完整版中，我会自动记住你的偏好，无需每次重复输入。
+                <div className="text-[#4A4A4A]">
+                  {config.description}
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-10 h-10 rounded-full bg-[#91A398] flex items-center justify-center">
+                  <span className="text-white font-medium">阿一</span>
+                </div>
+                <span className="text-sm text-[#4A4A4A]">店长</span>
               </div>
             </div>
-          </div>
 
-          {/* Right: Live Preview */}
-          <div className="w-1/2 p-6 overflow-y-auto bg-slate-100/50 flex flex-col">
-            <div className="flex justify-between items-center mb-4">
-              <Label className="text-slate-500 uppercase text-xs tracking-wider font-bold">Live Preview</Label>
-              <Button size="sm" variant="outline" onClick={handleCopy} className="h-8 text-xs bg-white hover:bg-slate-50">
-                {copied ? <Check className="w-3 h-3 mr-1 text-green-500"/> : <Copy className="w-3 h-3 mr-1"/>}
-                {copied ? "已复制" : "复制结果"}
+            {/* Steps Guide */}
+            <div className="px-6 py-4 border-b bg-[#F0F0E8]">
+              <div className="flex flex-wrap items-center gap-4">
+                <div className="flex items-center gap-2">
+                  <div className="w-6 h-6 rounded-full bg-[#91A398] text-white flex items-center justify-center text-xs font-bold">1</div>
+                  <span className="text-sm text-[#4A4A4A]">领取小样</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-6 h-6 rounded-full bg-[#91A398]/70 text-white flex items-center justify-center text-xs font-bold">2</div>
+                  <span className="text-sm text-[#4A4A4A]">注入配方</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-6 h-6 rounded-full bg-[#91A398]/50 text-white flex items-center justify-center text-xs font-bold">3</div>
+                  <span className="text-sm text-[#4A4A4A]">焕新交付</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Body - Stacked on Mobile */}
+            <div className="flex-1 overflow-hidden flex flex-col">
+              {/* 注入配方 */}
+              <div className="w-full p-6 overflow-y-auto bg-white">
+                <div className="text-lg font-bold mb-4 text-[#4A4A4A]">
+                  注入配方
+                </div>
+                <div className="space-y-6">
+                  {config.inputs.map((input) => (
+                    <div key={input.id} className="space-y-2">
+                      <Label className="text-[#4A4A4A] font-semibold">{input.label}</Label>
+                      
+                      {input.type === "textarea" && (
+                        <Textarea 
+                          value={formData[input.id]} 
+                          onChange={(e) => handleInputChange(input.id, e.target.value)}
+                          className="min-h-[100px] bg-[#F0F0E8] border-[#E8E8E0] focus:border-[#91A398] transition-all rounded-3xl"
+                        />
+                      )}
+                      
+                      {input.type === "text" && (
+                        <Input 
+                          value={formData[input.id]}
+                          onChange={(e) => handleInputChange(input.id, e.target.value)}
+                          className="bg-[#F0F0E8] border-[#E8E8E0] focus:border-[#91A398] transition-all rounded-3xl"
+                        />
+                      )}
+
+                      {input.type === "select" && (
+                        <Select 
+                          value={formData[input.id]} 
+                          onValueChange={(val) => handleInputChange(input.id, val)}
+                        >
+                          <SelectTrigger className="bg-[#F0F0E8] border-[#E8E8E0] rounded-3xl">
+                            <SelectValue placeholder="请选择" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {input.options?.map(opt => (
+                              <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      )}
+                    </div>
+                  ))}
+
+                  <div className="pt-4 p-4 bg-[#91A398]/10 rounded-3xl border border-[#91A398]/20 text-[#4A4A4A] text-sm">
+                    💡 阿一提示：这只是 A 版的极简演示。在完整版中，我会自动记住你的偏好，无需每次重复输入。
+                  </div>
+                </div>
+              </div>
+
+              {/* 焕新成品 */}
+              <div className="w-full p-6 overflow-y-auto bg-[#F0F0E8] flex flex-col">
+                <div className="mb-2">
+                  <p className="text-sm font-semibold text-[#91A398] animate-pulse">
+                    恭喜，这是属于你的第一次 AI 高质量交付
+                  </p>
+                </div>
+                <div className="text-lg font-bold mb-4 text-[#4A4A4A]">
+                  焕新成品
+                </div>
+                <div className="flex justify-between items-center mb-4">
+                  <Label className="text-[#4A4A4A] uppercase text-xs tracking-wider font-bold">实时预览</Label>
+                  <Button size="sm" variant="outline" onClick={handleCopy} className="h-8 text-xs bg-white hover:bg-[#F0F0E8] rounded-3xl">
+                    {copied ? <Check className="w-3 h-3 mr-1 text-[#91A398]"/> : <Copy className="w-3 h-3 mr-1"/>}
+                    {copied ? "已复制" : "复制成品"}
+                  </Button>
+                </div>
+
+                <Card className="flex-1 p-6 md:p-8 shadow-[0_2px_15px_rgba(0,0,0,0.03)] border-[#E8E8E0] bg-white font-serif whitespace-pre-wrap leading-relaxed text-[#4A4A4A] overflow-y-auto min-h-[300px] rounded-3xl relative">
+                  {/* 成功印章 */}
+                  {!loading && (
+                    <div className="absolute top-4 right-4 animate-spin">
+                      <div className="w-20 h-20 rounded-full bg-[#91A398]/20 border-2 border-[#91A398] flex items-center justify-center">
+                        <p className="text-[#91A398] font-bold text-xs text-center">
+                          DIYICI·<br/>已验证首胜
+                        </p>
+                      </div>
+                    </div>
+                  )}
+                  {loading ? (
+                    <div className="h-full flex items-center justify-center text-[#4A4A4A] gap-2">
+                      <Loader2 className="w-6 h-6 animate-spin" />
+                      {loadingText || "阿一正在手工调配..."}
+                    </div>
+                  ) : (
+                    <div className="animate-in fade-in duration-500">
+                      <div className="mb-4 inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#91A398]/20 text-[#91A398] text-xs font-medium">
+                        耗时 42 秒，为你省下 45 分钟
+                      </div>
+                      {result}
+                      <div className="mt-8 pt-6 border-t border-[#E8E8E0] text-center">
+                        <p className="text-[#91A398] font-medium italic">阿一为你完成了第一次成功。从此，AI 只有零次和无数次。</p>
+                      </div>
+                      
+                      {/* 成就文案 */}
+                      <div className="mt-4 text-center">
+                        <p className="text-sm text-[#6B6B6B]">
+                          这是你在 AI 时代解锁的第 1 个成功技能。建议复制保存，开启无数次成功。
+                        </p>
+                      </div>
+                      
+                      {/* 阿一的叮嘱 */}
+                      <div className="mt-6 p-5 bg-[#FFF9C4] rounded-3xl shadow-sm border border-yellow-200">
+                        <h4 className="text-lg font-medium text-[#4A4A4A] mb-3 font-serif">
+                          阿一叮嘱
+                        </h4>
+                        <p className="text-[#4A4A4A] font-light leading-relaxed">
+                          {scenarioId === "weekly" && "阿一说：褶皱已抹平。发送前，别忘了检查领导姓名是否正确，细节决定成败！"}
+                          {scenarioId === "social" && "阿一说：隔离乳已涂抹。发送拒绝回复前，建议开启飞行模式，避免冲动操作！"}
+                          {scenarioId === "logic" && "阿一说：漏洞已遮瑕。逻辑清晰的表达会让你更有说服力，记得保持自信！"}
+                          {scenarioId === "meeting" && "阿一说：要点已提纯。会议后及时分享结果，让每个人都了解自己的责任！"}
+                          {scenarioId === "emotion" && "阿一说：情商已提升。商务沟通中，保持专业和礼貌是最重要的，你做得很好！"}
+                          {scenarioId === "terms" && "阿一说：创意已生成。记得结合实际情况选择最适合的方案，创新需要落地！"}
+                          {scenarioId === "negotiation" && "阿一说：紧张已舒缓。谈判中，保持冷静和专业是最重要的，你做得很好！"}
+                          {scenarioId === "thinking" && "阿一说：思维已焕新。不同的视角会带给你全新的启发，记得保持开放的心态！"}
+                        </p>
+                      </div>
+                      
+                      {/* 动态勋章效果 */}
+                      <div className="mt-6 flex justify-center">
+                        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#91A398]/10 border border-[#91A398]/20 animate-pulse">
+                          <div className="w-4 h-4 rounded-full bg-[#91A398] animate-ping"></div>
+                          <span className="text-sm font-semibold text-[#91A398]">
+                            恭喜解锁：第一次 AI 技能成功
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                </Card>
+              </div>
+            </div>
+            
+            {/* 底部固定按钮 */}
+            <div className="fixed bottom-0 left-0 right-0 p-6 bg-white border-t border-[#E8E8E0]">
+              <Button 
+                onClick={onClose} 
+                className="w-full bg-[#91A398] hover:bg-[#91A398]/90 text-white shadow-[0_4px_12px_rgba(0,0,0,0.08)] hover:shadow-[0_6px_20px_rgba(0,0,0,0.1)] transition-all duration-300 font-medium rounded-3xl py-6"
+              >
+                即刻调配
               </Button>
             </div>
-
-            <Card className="flex-1 p-8 shadow-sm border-slate-200 bg-white font-serif whitespace-pre-wrap leading-relaxed text-slate-800 overflow-y-auto min-h-[400px]">
-              {loading ? (
-                <div className="h-full flex items-center justify-center text-slate-400 gap-2">
-                  <Loader2 className="w-6 h-6 animate-spin" />
-                  阿一正在为你调配配方...
+          </DrawerContent>
+        </Drawer>
+      ) : (
+        <Dialog open={isOpen} onOpenChange={onClose}>
+          <DialogContent 
+            ref={modalRef}
+            className="
+              max-w-5xl h-[80vh] flex flex-col p-0 overflow-hidden gap-0 bg-[#F0F0E8]
+            "
+          >
+            {/* Header */}
+            <div className="px-6 py-4 border-b bg-white flex justify-between items-center shrink-0">
+              <div>
+                <DialogTitle className="text-xl font-bold flex items-center gap-2">
+                  <span className="bg-[#91A398]/20 text-[#91A398] p-1 rounded text-sm font-mono">注入配方</span>
+                  {config.title}
+                  <>
+                    <span className="text-slate-400 font-normal text-sm mx-2">vs</span>
+                    <span className="bg-[#A47864]/20 text-[#A47864] p-1 rounded text-sm font-mono">焕新成品</span>
+                  </>
+                </DialogTitle>
+                <DialogDescription className="text-[#4A4A4A]">
+                  {config.description} | 左侧修改，右侧实时预览
+                </DialogDescription>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-10 h-10 rounded-full bg-[#91A398] flex items-center justify-center">
+                  <span className="text-white font-medium">阿一</span>
                 </div>
-              ) : (
-                <div className="animate-in fade-in duration-500">
-                  {result}
-                  <div className="mt-8 pt-6 border-t border-pink-100 text-center">
-                    <p className="text-pink-600 font-medium italic">阿一为你完成了第一次成功。从此，AI 只有零次和无数次。</p>
-                  </div>
-                  
-                  {/* 阿一的叮嘱 */}
-                  <div className="mt-8 p-4 bg-pink-50 rounded-lg border border-pink-100">
-                    <h3 className="text-lg font-semibold text-pink-700 mb-3">阿一的叮嘱</h3>
-                    <blockquote className="text-slate-700 italic">
-                      {scenarioId === "weekly" && "配方已抹平褶皱。发送前，记得检查一下领导的名字有没有写错哦！"}
-                      {scenarioId === "social" && "防护层已开启。如果对方继续纠缠，阿一建议你直接开启飞行模式。"}
-                      {scenarioId === "logic" && "漏洞已覆盖。阿一觉得这份方案已经足够惊艳你的老板了。"}
-                      {(!scenarioId || (scenarioId !== "weekly" && scenarioId !== "social" && scenarioId !== "logic")) && "阿一希望这份结果能帮到你。如果有任何问题，随时告诉我哦！"}
-                    </blockquote>
-                  </div>
-                  
-                  {/* 感谢阿一按钮 */}
-                  <div className="mt-8 text-center">
-                    <Button 
-                      onClick={onClose} 
-                      className="bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white shadow-md hover:shadow-lg transition-all duration-300 font-medium"
-                    >
-                      感谢阿一
-                    </Button>
+                <span className="text-sm text-[#4A4A4A]">店长</span>
+              </div>
+            </div>
+
+            {/* Steps Guide */}
+            <div className="px-6 py-4 border-b bg-[#F0F0E8]">
+              <div className="flex flex-wrap items-center gap-4">
+                <div className="flex items-center gap-2">
+                  <div className="w-6 h-6 rounded-full bg-[#91A398] text-white flex items-center justify-center text-xs font-bold">1</div>
+                  <span className="text-sm text-[#4A4A4A]">领取小样</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-6 h-6 rounded-full bg-[#91A398]/70 text-white flex items-center justify-center text-xs font-bold">2</div>
+                  <span className="text-sm text-[#4A4A4A]">注入配方</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-6 h-6 rounded-full bg-[#91A398]/50 text-white flex items-center justify-center text-xs font-bold">3</div>
+                  <span className="text-sm text-[#4A4A4A]">焕新交付</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Body - Two Columns on Desktop */}
+            <div className="flex-1 overflow-hidden flex">
+              
+              {/* Left: Input Form */}
+              <div className="w-1/2 p-6 overflow-y-auto border-r bg-white">
+                <div className="space-y-6">
+                  {config.inputs.map((input) => (
+                    <div key={input.id} className="space-y-2">
+                      <Label className="text-[#4A4A4A] font-semibold">{input.label}</Label>
+                      
+                      {input.type === "textarea" && (
+                        <Textarea 
+                          value={formData[input.id]} 
+                          onChange={(e) => handleInputChange(input.id, e.target.value)}
+                          className="min-h-[100px] bg-[#F0F0E8] border-[#E8E8E0] focus:border-[#91A398] transition-all rounded-3xl"
+                        />
+                      )}
+                      
+                      {input.type === "text" && (
+                        <Input 
+                          value={formData[input.id]}
+                          onChange={(e) => handleInputChange(input.id, e.target.value)}
+                          className="bg-[#F0F0E8] border-[#E8E8E0] focus:border-[#91A398] transition-all rounded-3xl"
+                        />
+                      )}
+
+                      {input.type === "select" && (
+                        <Select 
+                          value={formData[input.id]} 
+                          onValueChange={(val) => handleInputChange(input.id, val)}
+                        >
+                          <SelectTrigger className="bg-[#F0F0E8] border-[#E8E8E0] rounded-3xl">
+                            <SelectValue placeholder="请选择" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {input.options?.map(opt => (
+                              <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      )}
+                    </div>
+                  ))}
+
+                  <div className="pt-4 p-4 bg-[#91A398]/10 rounded-3xl border border-[#91A398]/20 text-[#4A4A4A] text-sm">
+                    💡 阿一提示：这只是 A 版的极简演示。在完整版中，我会自动记住你的偏好，无需每次重复输入。
                   </div>
                 </div>
-              )}
-            </Card>
-          </div>
+              </div>
 
-        </div>
-      </DialogContent>
-    </Dialog>
+              {/* Right: Live Preview */}
+              <div className="w-1/2 p-6 overflow-y-auto bg-[#F0F0E8] flex flex-col">
+                <div className="mb-2">
+                  <p className="text-sm font-semibold text-[#91A398] animate-pulse">
+                    恭喜，这是属于你的第一次 AI 高质量交付
+                  </p>
+                </div>
+                <div className="flex justify-between items-center mb-4">
+                  <Label className="text-[#4A4A4A] uppercase text-xs tracking-wider font-bold">实时预览</Label>
+                  <Button size="sm" variant="outline" onClick={handleCopy} className="h-8 text-xs bg-white hover:bg-[#F0F0E8] rounded-3xl">
+                    {copied ? <Check className="w-3 h-3 mr-1 text-[#91A398]"/> : <Copy className="w-3 h-3 mr-1"/>}
+                    {copied ? "已复制" : "复制成品"}
+                  </Button>
+                </div>
+
+                <Card className="flex-1 p-6 md:p-8 shadow-[0_2px_15px_rgba(0,0,0,0.03)] border-[#E8E8E0] bg-white font-serif whitespace-pre-wrap leading-relaxed text-[#4A4A4A] overflow-y-auto min-h-[300px] rounded-3xl relative">
+                  {/* 成功印章 */}
+                  {!loading && (
+                    <div className="absolute top-4 right-4 animate-spin">
+                      <div className="w-20 h-20 rounded-full bg-[#91A398]/20 border-2 border-[#91A398] flex items-center justify-center">
+                        <p className="text-[#91A398] font-bold text-xs text-center">
+                          DIYICI·<br/>已验证首胜
+                        </p>
+                      </div>
+                    </div>
+                  )}
+                  {loading ? (
+                    <div className="h-full flex items-center justify-center text-[#4A4A4A] gap-2">
+                      <Loader2 className="w-6 h-6 animate-spin" />
+                      {loadingText || "阿一正在手工调配..."}
+                    </div>
+                  ) : (
+                    <div className="animate-in fade-in duration-500">
+                      <div className="mb-4 inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#91A398]/20 text-[#91A398] text-xs font-medium">
+                        耗时 42 秒，为你省下 45 分钟
+                      </div>
+                      {result}
+                      <div className="mt-8 pt-6 border-t border-[#E8E8E0] text-center">
+                        <p className="text-[#91A398] font-medium italic">阿一为你完成了第一次成功。从此，AI 只有零次和无数次。</p>
+                      </div>
+                      
+                      {/* 成就文案 */}
+                      <div className="mt-4 text-center">
+                        <p className="text-sm text-[#6B6B6B]">
+                          这是你在 AI 时代解锁的第 1 个成功技能。建议复制保存，开启无数次成功。
+                        </p>
+                      </div>
+                      
+                      {/* 阿一的叮嘱 */}
+                      <div className="mt-6 p-5 bg-[#FFF9C4] rounded-3xl shadow-sm border border-yellow-200">
+                        <h4 className="text-lg font-medium text-[#4A4A4A] mb-3 font-serif">
+                          阿一叮嘱
+                        </h4>
+                        <p className="text-[#4A4A4A] font-light leading-relaxed">
+                          {scenarioId === "weekly" && "阿一说：褶皱已抹平。发送前，别忘了检查领导姓名是否正确，细节决定成败！"}
+                          {scenarioId === "social" && "阿一说：隔离乳已涂抹。发送拒绝回复前，建议开启飞行模式，避免冲动操作！"}
+                          {scenarioId === "logic" && "阿一说：漏洞已遮瑕。逻辑清晰的表达会让你更有说服力，记得保持自信！"}
+                          {scenarioId === "meeting" && "阿一说：要点已提纯。会议后及时分享结果，让每个人都了解自己的责任！"}
+                          {scenarioId === "emotion" && "阿一说：情商已提升。商务沟通中，保持专业和礼貌是最重要的，你做得很好！"}
+                          {scenarioId === "terms" && "阿一说：创意已生成。记得结合实际情况选择最适合的方案，创新需要落地！"}
+                          {scenarioId === "negotiation" && "阿一说：紧张已舒缓。谈判中，保持冷静和专业是最重要的，你做得很好！"}
+                          {scenarioId === "thinking" && "阿一说：思维已焕新。不同的视角会带给你全新的启发，记得保持开放的心态！"}
+                        </p>
+                      </div>
+                      
+                      {/* 动态勋章效果 */}
+                      <div className="mt-6 flex justify-center">
+                        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#91A398]/10 border border-[#91A398]/20 animate-pulse">
+                          <div className="w-4 h-4 rounded-full bg-[#91A398] animate-ping"></div>
+                          <span className="text-sm font-semibold text-[#91A398]">
+                            恭喜解锁：第一次 AI 技能成功
+                          </span>
+                        </div>
+                      </div>
+                      
+                      {/* 感谢阿一按钮 */}
+                      <div className="mt-8 text-center">
+                        <Button 
+                          onClick={onClose} 
+                          className="bg-[#91A398] hover:bg-[#91A398]/90 text-white shadow-[0_4px_12px_rgba(0,0,0,0.08)] hover:shadow-[0_6px_20px_rgba(0,0,0,0.1)] transition-all duration-300 font-medium rounded-3xl"
+                        >
+                          瞬间焕新
+                        </Button>
+                      </div>
+                    </div>
+                  )}
+                </Card>
+              </div>
+            </div>
+          </DialogContent>
+        </Dialog>
+      )}
+    </>
   );
 }

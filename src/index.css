@@ -9,6 +9,8 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 12px);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -27,40 +29,44 @@
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
+  --shadow-soft: 0 8px 32px rgba(0, 0, 0, 0.06);
+  --shadow-soft-lg: 0 16px 48px rgba(0, 0, 0, 0.08);
 }
 
 :root {
-  --radius: 0.75rem;
-  /* Soft Slate Background - Clean and professional */
-  --background: oklch(0.985 0.005 240);
-  /* Dark Slate Text - High contrast */
-  --foreground: oklch(0.15 0.04 250);
+  --radius: 1.5rem;
+  /* 云舞白 - 营造留白美学 */
+  --background: #F0F0E8;
+  /* 深碳灰文字 - 温暖高对比度 */
+  --foreground: #4A4A4A;
   
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.15 0.04 250);
+  --card: rgba(255, 255, 255, 0.9);
+  --card-foreground: #4A4A4A;
   
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.15 0.04 250);
+  --popover: rgba(255, 255, 255, 0.95);
+  --popover-foreground: #4A4A4A;
   
-  /* Warm Beige - Primary Brand Color */
-  --primary: oklch(0.55 0.1 20);
-  --primary-foreground: oklch(1 0 0);
+  /* 鼠尾草绿 - 主品牌色 */
+  --primary: #91A398;
+  --primary-foreground: #FFFFFF;
   
-  /* Soft Green - Secondary Brand Color */
-  --secondary: oklch(0.96 0.02 160);
-  --secondary-foreground: oklch(0.55 0.1 20);
+  /* 浅鼠尾草绿 - 次要品牌色 */
+  --secondary: #E5EBE7;
+  --secondary-foreground: #91A398;
   
-  --muted: oklch(0.96 0.01 160);
-  --muted-foreground: oklch(0.55 0.03 160);
+  --muted: #F0F0E8;
+  --muted-foreground: #666666;
   
-  --accent: oklch(0.95 0.02 20);
-  --accent-foreground: oklch(0.55 0.1 20);
+  /* 摩卡棕 - 点缀色，增强亲和力 */
+  --accent: #A47864;
+  --accent-foreground: #FFFFFF;
   
-  --destructive: oklch(0.577 0.245 27.325);
+  --destructive: #D6A2A2;
   
-  --border: oklch(0.92 0.01 160);
-  --input: oklch(0.92 0.01 160);
-  --ring: oklch(0.55 0.1 20);
+  /* 极细灰边框 */
+  --border: #E8E8E0;
+  --input: #F8F8F0;
+  --ring: #91A398;
 }
 
 .dark {
@@ -90,6 +96,27 @@
   }
   body {
     @apply bg-background text-foreground font-sans antialiased;
+    line-height: 1.6;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-bold leading-tight;
+    line-height: 1.3;
+  }
+  h1 {
+    font-size: clamp(2.5rem, 8vw, 5rem);
+  }
+  h2 {
+    font-size: clamp(2rem, 6vw, 4rem);
+  }
+  h3 {
+    font-size: clamp(1.5rem, 4vw, 3rem);
+  }
+  h4 {
+    font-size: clamp(1.25rem, 3vw, 2rem);
+  }
+  p {
+    @apply leading-relaxed;
+    margin-bottom: 1rem;
   }
 }
 
@@ -105,5 +132,15 @@
     50% {
       box-shadow: 0 0 0 10px rgba(236, 72, 153, 0);
     }
+  }
+  
+  /* Hide scrollbar for mobile carousel */
+  .mobile-carousel {
+    scrollbar-width: none; /* For Firefox */
+    -ms-overflow-style: none; /* For IE and Edge */
+  }
+  
+  .mobile-carousel::-webkit-scrollbar {
+    display: none; /* For Chrome, Safari and Opera */
   }
 }

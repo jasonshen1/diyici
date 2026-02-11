@@ -43,31 +43,31 @@ export function SampleCard({ id, title, description, icon, params, onClaim }: Sa
   };
 
   return (
-    <div className="group h-full flex flex-col rounded-2xl shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden bg-white/60 backdrop-blur-lg border border-white/20 hover:border-pink-200/50 relative">
+    <div className="group h-full flex flex-col rounded-3xl shadow-[0_2px_15px_rgba(0,0,0,0.03)] hover:shadow-[0_4px_25px_rgba(0,0,0,0.05)] hover:-translate-y-1 transition-all duration-300 overflow-hidden bg-white/90 backdrop-blur-sm border border-border relative">
       {/* Floating Badge */}
-      <div className="absolute top-4 right-4 bg-gradient-to-r from-pink-500 to-purple-500 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg">
+      <div className="absolute top-4 right-4 bg-primary text-primary-foreground text-xs font-bold px-3 py-1 rounded-full shadow-sm">
         3分钟见效
       </div>
       {/* Header with Icon */}
       <div className="p-6 pb-2">
-        <div className="w-16 h-16 mb-4 rounded-2xl bg-gradient-to-br from-pink-50/80 to-purple-50/80 flex items-center justify-center p-3 group-hover:scale-110 transition-transform duration-300 shadow-inner">
+        <div className="w-16 h-16 mb-4 rounded-2xl bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center p-3 group-hover:scale-110 transition-transform duration-300">
           <img 
             src={icon} 
             alt={title} 
             className="w-full h-full object-contain drop-shadow-sm"
           />
         </div>
-        <h3 className="text-xl font-bold text-slate-900 group-hover:text-pink-600 transition-colors">
+        <h3 className="text-2xl font-bold text-foreground group-hover:text-primary transition-colors leading-tight">
           {title}
         </h3>
-        <p className="text-sm text-slate-400 mt-1">
-          AI 小样
+        <p className="text-sm text-muted-foreground mt-1">
+          功效小样
         </p>
       </div>
 
       {/* Description */}
       <div className="px-6 flex-grow">
-        <p className="text-slate-500 text-sm leading-relaxed mb-4">
+        <p className="text-muted-foreground text-sm leading-relaxed mb-4">
           {description}
         </p>
 
@@ -75,7 +75,7 @@ export function SampleCard({ id, title, description, icon, params, onClaim }: Sa
         <div className="space-y-3 mb-4">
           {params.map((param, index) => (
             <div key={index} className="space-y-1">
-              <label className="text-xs font-medium text-slate-500 block">
+              <label className="text-xs font-medium text-muted-foreground block">
                 {param.label}
               </label>
               <input
@@ -83,7 +83,7 @@ export function SampleCard({ id, title, description, icon, params, onClaim }: Sa
                 value={inputValues[param.label]}
                 onChange={(e) => handleInputChange(param.label, e.target.value)}
                 placeholder={param.placeholder}
-                className="w-full px-3 py-2 rounded-lg border border-white/50 bg-white/50 focus:outline-none focus:ring-2 focus:ring-pink-200 focus:border-transparent transition-all text-sm"
+                className="w-full px-3 py-2 rounded-xl border border-border bg-white/80 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all text-sm"
               />
             </div>
           ))}
@@ -95,7 +95,7 @@ export function SampleCard({ id, title, description, icon, params, onClaim }: Sa
         <Button 
           onClick={handleClaim}
           disabled={isClaiming || isClaimed}
-          className="w-full h-12 rounded-full bg-gradient-to-r from-pink-500 to-purple-500 hover:from-pink-600 hover:to-purple-600 text-white shadow-md hover:shadow-lg hover:shadow-pink-500/20 transition-all duration-300 font-medium animate-pulse-slow"
+          className="w-full h-12 rounded-2xl bg-primary hover:bg-primary/90 text-primary-foreground shadow-sm hover:shadow-md transition-all duration-300 font-medium"
         >
           {isClaimed ? (
             <>
@@ -105,7 +105,7 @@ export function SampleCard({ id, title, description, icon, params, onClaim }: Sa
           ) : isClaiming ? (
             <>
               <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-              生成中...
+              调配中...
             </>
           ) : (
             <>
