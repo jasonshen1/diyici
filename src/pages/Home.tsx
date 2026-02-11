@@ -1,5 +1,6 @@
 import { SampleCard } from "@/components/SampleCard";
 import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 
 // Asset Imports
@@ -228,12 +229,12 @@ export default function Home({ targetSection }: HomeProps) {
           
           <h1 className="text-5xl md:text-7xl font-extrabold text-white mb-6 leading-tight tracking-tight drop-shadow-sm">
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#91A398]/90 to-[#A47864]/90">
-              找阿一，AI 成了。
+              diyici.ai —— 你的第一次 AI 体验入口
             </span>
           </h1>
           
           <p className="text-xl md:text-2xl text-slate-200 mb-10 max-w-2xl mx-auto leading-relaxed">
-            把麻烦倒进来，剩下交给阿一。
+            简单、好用、好看。从这里开始，和世界一起玩转 AI。
           </p>
           
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -259,6 +260,25 @@ export default function Home({ targetSection }: HomeProps) {
       {/* Samples Grid */}
       <section id="samples" className="py-16 relative bg-[#F0F0E8]">
         <div className="container mx-auto px-6">
+          {/* 分类标签栏 */}
+          <div className="flex flex-wrap items-center gap-3 mb-8">
+            <Button variant="default" className="bg-[#91A398] hover:bg-[#91A398]/90 text-white rounded-3xl">
+              全部
+            </Button>
+            <Button variant="secondary" className="bg-white hover:bg-[#F0F0E8] text-[#4A4A4A] rounded-3xl">
+              职场
+            </Button>
+            <Button variant="secondary" className="bg-white hover:bg-[#F0F0E8] text-[#4A4A4A] rounded-3xl">
+              社交
+            </Button>
+            <Button variant="secondary" className="bg-white hover:bg-[#F0F0E8] text-[#4A4A4A] rounded-3xl">
+              生活
+            </Button>
+            <Button variant="secondary" className="bg-white hover:bg-[#F0F0E8] text-[#4A4A4A] rounded-3xl">
+              情感
+            </Button>
+          </div>
+
           {/* Desktop Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {samples.map((sample) => (
@@ -277,6 +297,72 @@ export default function Home({ targetSection }: HomeProps) {
         </div>
       </section>
 
+      {/* 阿一的配方实验室 */}
+      <section className="py-16 bg-[#F0F0E8] border-y border-[#91A398]/20">
+        <div className="container mx-auto px-6">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-[#4A4A4A]">
+              阿一的配方实验室
+            </h2>
+            <p className="text-lg text-[#4A4A4A]">
+              共创 AI 新时代，和阿一一起调配属于你的专属配方
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            {/* 左侧：求配方 - 许愿池 */}
+            <div className="bg-white rounded-3xl p-8 shadow-[0_2px_15px_rgba(0,0,0,0.03)] border border-[#E8E8E0]">
+              <div className="w-16 h-16 mb-6 rounded-2xl bg-[#91A398]/20 flex items-center justify-center">
+                <span className="text-[#91A398] text-2xl font-bold">许愿</span>
+              </div>
+              <h3 className="text-2xl font-bold mb-4 text-[#4A4A4A]">
+                求配方
+              </h3>
+              <p className="text-lg text-[#4A4A4A] mb-6">
+                你希望 AI 帮你第一次做什么？告诉阿一，我们来调配。
+              </p>
+              <Textarea 
+                placeholder="把你的需求告诉阿一..."
+                className="min-h-[120px] bg-[#F0F0E8] border-[#E8E8E0] focus:border-[#91A398] transition-all rounded-3xl mb-4"
+              />
+              <Button className="w-full bg-[#91A398] hover:bg-[#91A398]/90 text-white rounded-3xl">
+                提交许愿
+              </Button>
+            </div>
+
+            {/* 右侧：投配方 - 配方师招募 */}
+            <div className="bg-white rounded-3xl p-8 shadow-[0_2px_15px_rgba(0,0,0,0.03)] border border-[#E8E8E0]">
+              <div className="w-16 h-16 mb-6 rounded-2xl bg-[#A47864]/20 flex items-center justify-center">
+                <span className="text-[#A47864] text-2xl font-bold">招募</span>
+              </div>
+              <h3 className="text-2xl font-bold mb-4 text-[#4A4A4A]">
+                投配方
+              </h3>
+              <p className="text-lg text-[#4A4A4A] mb-6">
+                你有绝妙的 AI 用法？提交配方，让 10000 人使用你的创意。
+              </p>
+              <div className="bg-[#F0F0E8] rounded-3xl p-6 mb-6">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-10 h-10 rounded-full bg-[#91A398] flex items-center justify-center">
+                    <span className="text-white font-medium">阿一</span>
+                  </div>
+                  <div>
+                    <p className="text-sm text-[#4A4A4A] font-medium">配方师福利</p>
+                    <p className="text-xs text-[#6B6B6B]">曝光机会 + 专属徽章 + 社区荣誉</p>
+                  </div>
+                </div>
+                <p className="text-sm text-[#4A4A4A] leading-relaxed">
+                  成为阿一的配方师，你的创意将被更多人看到和使用。我们会定期评选优秀配方，给予特别奖励。
+                </p>
+              </div>
+              <Button className="w-full bg-[#A47864] hover:bg-[#A47864]/90 text-white rounded-3xl">
+                成为配方师
+              </Button>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Footer */}
       <footer className="bg-[#4A4A4A] text-[#F0F0E8] py-8 border-t border-[#666666]">
         <div className="container mx-auto px-6">
@@ -290,6 +376,23 @@ export default function Home({ targetSection }: HomeProps) {
             <a href="/about" className="hover:text-white transition-colors">关于我们</a>
             <a href="/terms" className="hover:text-white transition-colors">使用条款</a>
             <a href="/privacy" className="hover:text-white transition-colors">隐私政策</a>
+          </div>
+
+          {/* 热门搜索式伪链接 */}
+          <div className="mb-8">
+            <h4 className="text-sm font-semibold text-white mb-4 text-center">
+              热门搜索
+            </h4>
+            <div className="flex flex-wrap justify-center gap-4 text-sm">
+              <a href="#" className="text-[#E8E8E0] hover:text-white transition-colors">第一次写诗</a>
+              <a href="#" className="text-[#E8E8E0] hover:text-white transition-colors">第一次做图</a>
+              <a href="#" className="text-[#E8E8E0] hover:text-white transition-colors">第一次哄娃</a>
+              <a href="#" className="text-[#E8E8E0] hover:text-white transition-colors">第一次写情书</a>
+              <a href="#" className="text-[#E8E8E0] hover:text-white transition-colors">第一次做方案</a>
+              <a href="#" className="text-[#E8E8E0] hover:text-white transition-colors">第一次做简历</a>
+              <a href="#" className="text-[#E8E8E0] hover:text-white transition-colors">第一次写脚本</a>
+              <a href="#" className="text-[#E8E8E0] hover:text-white transition-colors">第一次做PPT</a>
+            </div>
           </div>
           
           <div className="text-center">
