@@ -20,7 +20,7 @@ interface HomeProps {
 const samples = [
   {
     id: "weekly",
-    title: "拿捏周报",
+    title: "写周报",
     description: "碎碎念秒变精英汇报",
     icon: iconWeekly,
     params: [
@@ -33,7 +33,7 @@ const samples = [
   },
   {
     id: "social",
-    title: "拿捏拒绝",
+    title: "拒请求",
     description: "想说不又怕伤面子？阿一替你开口",
     icon: iconReply,
     params: [
@@ -46,7 +46,7 @@ const samples = [
   },
   {
     id: "logic",
-    title: "拿捏方案",
+    title: "理方案",
     description: "只有点子没逻辑？阿一帮你通顺",
     icon: iconPpt,
     params: [
@@ -59,7 +59,7 @@ const samples = [
   },
   {
     id: "meeting",
-    title: "拿捏会议",
+    title: "整会议",
     description: "废话太多？阿一帮你萃取重点",
     icon: iconWeekly,
     params: [
@@ -72,7 +72,7 @@ const samples = [
   },
   {
     id: "negotiation",
-    title: "拿捏甲方",
+    title: "回甲方",
     description: "死磕合同？阿一帮你变共赢",
     icon: iconReply,
     params: [
@@ -85,7 +85,7 @@ const samples = [
   },
   {
     id: "thinking",
-    title: "拿捏创意",
+    title: "找灵感",
     description: "脑子枯竭？阿一帮你撞出火花",
     icon: iconPpt,
     params: [
@@ -226,18 +226,14 @@ export default function Home({ targetSection }: HomeProps) {
             <span className="text-sm font-medium">阿一的小样实验室</span>
           </div>
           
-          <h1 className="text-5xl md:text-7xl font-extrabold text-white mb-4 leading-tight tracking-tight drop-shadow-sm">
+          <h1 className="text-5xl md:text-7xl font-extrabold text-white mb-6 leading-tight tracking-tight drop-shadow-sm">
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#91A398]/90 to-[#A47864]/90">
-              diyici.ai
+              找阿一，AI 成了。
             </span>
           </h1>
           
-          <h2 className="text-3xl md:text-4xl font-bold text-white mb-6 leading-tight tracking-tight drop-shadow-sm">
-            找阿一，AI 搞定。
-          </h2>
-          
           <p className="text-xl md:text-2xl text-slate-200 mb-10 max-w-2xl mx-auto leading-relaxed">
-            别折腾指令了，把麻烦倒进来，剩下交给阿一。成了，就现在。
+            把麻烦倒进来，剩下交给阿一。
           </p>
           
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
