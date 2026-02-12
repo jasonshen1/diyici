@@ -1,0 +1,29 @@
+name: 自动发布到腾讯云
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 下载代码
+        uses: actions/checkout@v4
+      - name: 安装 Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+      - name: 安装依赖
+        run: npm install
+      - name: 构建项目
+        run: npm run build
+      - name: 安装 sshpass
+        run: sudo apt-get install -y sshpass
+      - name: 部署到腾讯云
+        env:
+          DEPLOY_HOST: ${{ secrets.DEPLOY_HOST }}
+          DEPLOY_USER: ${{ secrets.DEPLOY_USER }}
+          DEPLOY_PASSWORD: ${{ secrets.DEPLOY_PASSWORD }}
+          DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
+        run: |
+          sshpass -p "$DEPLOY_PASSWORD" scp -r ./dist/* $DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH
