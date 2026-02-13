@@ -2,6 +2,8 @@ name: 自动发布到腾讯云
 on:
   push:
     branches: [ master ]
+  workflow_dispatch:
+    branches: [ master ]
 
 jobs:
   deploy:
