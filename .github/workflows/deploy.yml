@@ -28,4 +28,40 @@ jobs:
           DEPLOY_PASSWORD: ${{ secrets.DEPLOY_PASSWORD }}
           DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
         run: |
-          sshpass -p "$DEPLOY_PASSWORD" scp -r ./dist/* $DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH
+          echo "开始部署到腾讯云..."
+          echo "服务器地址: $DEPLOY_HOST"
+          echo "用户名: $DEPLOY_USER"
+          echo "部署路径: $DEPLOY_PATH"
+          
+          # 检查 dist 目录是否存在
+          if [ ! -d "./dist" ]; then
+            echo "错误: dist 目录不存在，请检查构建过程"
+            exit 1
+          fi
+          
+          # 检查 dist 目录是否有文件
+          if [ -z "$(ls -A ./dist)" ]; then
+            echo "错误: dist 目录为空，请检查构建过程"
+            exit 1
+          fi
+          
+          # 尝试连接服务器并创建部署目录
+          sshpass -p "$DEPLOY_PASSWORD" ssh -o StrictHostKeyChecking=no $DEPLOY_USER@$DEPLOY_HOST "mkdir -p $DEPLOY_PATH"
+          
+          # 检查目录创建是否成功
+          if [ $? -ne 0 ]; then
+            echo "错误: 无法连接服务器或创建部署目录"
+            exit 1
+          fi
+          
+          # 上传文件
+          echo "开始上传文件..."
+          sshpass -p "$DEPLOY_PASSWORD" scp -r -v ./dist/* $DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH
+          
+          # 检查上传是否成功
+          if [ $? -eq 0 ]; then
+            echo "部署成功！"
+          else
+            echo "错误: 文件上传失败"
+            exit 1
+          fi
