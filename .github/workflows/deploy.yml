@@ -45,23 +45,47 @@ jobs:
             exit 1
           fi
           
+          # 显示 dist 目录内容
+          echo "dist 目录内容:"
+          ls -la ./dist
+          
           # 尝试连接服务器并创建部署目录
-          sshpass -p "$DEPLOY_PASSWORD" ssh -o StrictHostKeyChecking=no $DEPLOY_USER@$DEPLOY_HOST "mkdir -p $DEPLOY_PATH"
+          echo "尝试连接服务器并创建部署目录..."
+          sshpass -p "$DEPLOY_PASSWORD" ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o ConnectTimeout=30 -o ServerAliveInterval=10 -o ServerAliveCountMax=3 $DEPLOY_USER@$DEPLOY_HOST "mkdir -p $DEPLOY_PATH && echo '目录创建成功' && ls -la $(dirname $DEPLOY_PATH)"
           
           # 检查目录创建是否成功
           if [ $? -ne 0 ]; then
             echo "错误: 无法连接服务器或创建部署目录"
-            exit 1
+            echo "尝试使用不同的 SSH 选项..."
+            # 尝试使用更简单的 SSH 命令
+            sshpass -p "$DEPLOY_PASSWORD" ssh -o StrictHostKeyChecking=no $DEPLOY_USER@$DEPLOY_HOST "echo '连接测试'"
+            if [ $? -ne 0 ]; then
+              echo "严重错误: 无法连接到服务器，请检查服务器地址、用户名和密码"
+              exit 1
+            fi
           fi
           
           # 上传文件
           echo "开始上传文件..."
-          sshpass -p "$DEPLOY_PASSWORD" scp -r -v ./dist/* $DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH
+          echo "上传命令: sshpass -p '***' scp -r -v ./dist/* $DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH"
+          
+          # 使用更可靠的 SCP 命令
+          sshpass -p "$DEPLOY_PASSWORD" scp -r -v -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o ConnectTimeout=60 -o ServerAliveInterval=15 -o ServerAliveCountMax=3 ./dist/* $DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH
           
           # 检查上传是否成功
           if [ $? -eq 0 ]; then
             echo "部署成功！"
+            # 验证部署结果
+            sshpass -p "$DEPLOY_PASSWORD" ssh -o StrictHostKeyChecking=no $DEPLOY_USER@$DEPLOY_HOST "ls -la $DEPLOY_PATH"
           else
             echo "错误: 文件上传失败"
-            exit 1
+            echo "尝试使用 rsync 命令..."
+            # 尝试使用 rsync 命令
+            sshpass -p "$DEPLOY_PASSWORD" rsync -avz --progress -e "ssh -o StrictHostKeyChecking=no" ./dist/* $DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH
+            if [ $? -eq 0 ]; then
+              echo "使用 rsync 部署成功！"
+            else
+              echo "严重错误: 部署失败，请检查服务器配置"
+              exit 1
+            fi
           fi
