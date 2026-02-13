@@ -373,6 +373,7 @@ export function DemoModal({ scenarioId, isOpen, onClose }: DemoModalProps) {
   const [copied, setCopied] = useState(false);
   const [loadingText, setLoadingText] = useState("");
   const [keyboardOpen, setKeyboardOpen] = useState(false);
+  const [currentThinkingStep, setCurrentThinkingStep] = useState(0);
   const modalRef = useRef<HTMLDivElement>(null);
 
   // 使用项目已有的 useIsMobile 钩子
@@ -410,12 +411,36 @@ export function DemoModal({ scenarioId, isOpen, onClose }: DemoModalProps) {
     }
   }, [isMobile, keyboardOpen]);
 
-  // 动态切换加载文案
+  // 思考步骤数组
+  const thinkingSteps = [
+    "正在拆解需求本质...",
+    "正在推演底层逻辑...",
+    "正在规避潜在风险...",
+    "正在调用跨学科框架...",
+    "思维链合成中..."
+  ];
+
+  // 动态切换加载文案 - 轮播思考步骤
+  useEffect(() => {
+    let interval: NodeJS.Timeout;
+    if (loading) {
+      // 开始轮播
+      interval = setInterval(() => {
+        setCurrentThinkingStep((prev) => (prev + 1) % thinkingSteps.length);
+      }, 1500); // 每1.5秒切换一次
+    }
+    // 清理定时器
+    return () => {
+      if (interval) clearInterval(interval);
+    };
+  }, [loading, thinkingSteps.length]);
+
+  // 更新 loadingText 为当前思考步骤
   useEffect(() => {
     if (loading) {
-      setLoadingText("正在拿捏逻辑...");
+      setLoadingText(thinkingSteps[currentThinkingStep]);
     }
-  }, [loading]);
+  }, [loading, currentThinkingStep, thinkingSteps]);
 
   // Initialize config
   const config = (scenarioId && scenarioMap[scenarioId]) 

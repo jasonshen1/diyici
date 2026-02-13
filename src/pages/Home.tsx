@@ -195,6 +195,25 @@ export default function Home({ targetSection }: HomeProps) {
         </div>
       </section>
 
+      {/* 阿一的苏格拉底 AI 特色 */}
+      <section className="py-16 bg-white border-y border-[#91A398]/20">
+        <div className="container mx-auto px-6">
+          <div className="max-w-3xl mx-auto text-center">
+            <h2 className="text-3xl md:text-4xl font-bold mb-8 text-[#4A4A4A]">
+              普通 AI vs 阿一的苏格拉底 AI
+            </h2>
+            <div className="bg-[#F0F0E8] rounded-3xl p-8 shadow-[0_2px_15px_rgba(0,0,0,0.03)] border border-[#91A398]/20">
+              <div className="space-y-4 text-lg text-[#4A4A4A]">
+                <p>别人的 AI 给你陈词滥调，因为它们只看字面意思。</p>
+                <p>阿一的 AI 给你深度洞察，因为我们内置了“苏格拉底思维链”。</p>
+                <p>在生成每一个字之前，我们已经替你完成了 5 轮深度逻辑推演。</p>
+                <p className="font-bold text-[#91A398]">你负责提问，阿一负责深度。</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Samples Grid */}
       <section id="samples" className="py-16 relative bg-[#F0F0E8]">
         <div className="container mx-auto px-6">
