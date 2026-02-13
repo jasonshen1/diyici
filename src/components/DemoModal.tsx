@@ -422,16 +422,16 @@ export function DemoModal({ scenarioId, isOpen, onClose }: DemoModalProps) {
 
   // 动态切换加载文案 - 轮播思考步骤
   useEffect(() => {
-    let interval: NodeJS.Timeout;
+    let interval: number;
     if (loading) {
       // 开始轮播
-      interval = setInterval(() => {
+      interval = window.setInterval(() => {
         setCurrentThinkingStep((prev) => (prev + 1) % thinkingSteps.length);
       }, 1500); // 每1.5秒切换一次
     }
     // 清理定时器
     return () => {
-      if (interval) clearInterval(interval);
+      if (interval) window.clearInterval(interval);
     };
   }, [loading, thinkingSteps.length]);
 
