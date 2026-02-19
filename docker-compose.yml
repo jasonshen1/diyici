@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - KIMI_API_KEY=${KIMI_API_KEY}
+      - PORT=3000
+    volumes:
+      - ./server/database.sqlite:/app/database.sqlite
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./diyici-source
+      dockerfile: Dockerfile.frontend
+    ports:
+      - "80:80"
+    restart: unless-stopped
+    depends_on:
+      - backend

@@ -1,0 +1,131 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.cabinetService = exports.CabinetService = void 0;
+const task_1 = require("../models/task");
+const kimi_1 = require("./kimi");
+// 数字内阁服务
+class CabinetService {
+    // 运行数字内阁
+    async runCabinet(userInput) {
+        try {
+            // 创建新任务
+            const task = await task_1.Task.create({
+                user_input: userInput,
+                status: task_1.TaskStatus.PENDING
+            });
+            // 异步执行四步流程
+            this.executeFourStepProcess(task.id).catch(error => {
+                console.error(`任务 ${task.id} 执行失败:`, error);
+                task_1.Task.update({ status: task_1.TaskStatus.FAILED }, { where: { id: task.id } });
+            });
+            return task.id;
+        }
+        catch (error) {
+            console.error('创建任务失败:', error);
+            throw new Error('创建任务失败');
+        }
+    }
+    // 执行四步流程
+    async executeFourStepProcess(taskId) {
+        try {
+            const task = await task_1.Task.findByPk(taskId);
+            if (!task)
+                throw new Error('任务不存在');
+            // 第一步：谋局者（首辅）
+            await task_1.Task.update({ status: task_1.TaskStatus.PLANNING }, { where: { id: taskId } });
+            const planningResult = await (0, kimi_1.callKimiAPI)(kimi_1.ROLES.PLANNER, task.user_input);
+            await task_1.Task.update({ planning_result: planningResult }, { where: { id: taskId } });
+            // 第二步到第三步：执行者和找茬者（最多循环3次）
+            let executionResult;
+            let reviewResult;
+            let retryCount = 0;
+            const maxRetries = 3;
+            do {
+                // 第二步：执行者（干吏）
+                await task_1.Task.update({ status: task_1.TaskStatus.EXECUTING }, { where: { id: taskId } });
+                executionResult = await (0, kimi_1.callKimiAPI)(kimi_1.ROLES.EXECUTOR, planningResult, reviewResult);
+                await task_1.Task.update({ execution_result: executionResult }, { where: { id: taskId } });
+                // 第三步：找茬者（御史）
+                await task_1.Task.update({ status: task_1.TaskStatus.REVIEWING }, { where: { id: taskId } });
+                reviewResult = await (0, kimi_1.callKimiAPI)(kimi_1.ROLES.REVIEWER, executionResult);
+                await task_1.Task.update({ review_result: reviewResult }, { where: { id: taskId } });
+                retryCount++;
+            } while (!(0, kimi_1.checkReviewPass)(reviewResult) && retryCount < maxRetries);
+            // 如果超过最大重试次数仍然失败
+            if (!(0, kimi_1.checkReviewPass)(reviewResult)) {
+                throw new Error('审核未通过，已达到最大重试次数');
+            }
+            // 第四步：沉淀者（史官）
+            await task_1.Task.update({ status: task_1.TaskStatus.FINALIZING }, { where: { id: taskId } });
+            const fullProcess = `用户需求: ${task.user_input}\n\n` +
+                `第一步 - 谋局者结果: ${planningResult}\n\n` +
+                `第二步 - 执行者结果: ${executionResult}\n\n` +
+                `第三步 - 找茬者结果: ${reviewResult}`;
+            const finalResult = await (0, kimi_1.callKimiAPI)(kimi_1.ROLES.FINALIZER, fullProcess);
+            // 提取万能模板（简单处理，实际可能需要更复杂的解析）
+            const template = finalResult;
+            // 更新最终结果
+            await task_1.Task.update({
+                status: task_1.TaskStatus.COMPLETED,
+                final_result: finalResult,
+                template: template
+            }, { where: { id: taskId } });
+        }
+        catch (error) {
+            console.error(`四步流程执行失败 (任务 ${taskId}):`, error);
+            await task_1.Task.update({ status: task_1.TaskStatus.FAILED }, { where: { id: taskId } });
+            throw error;
+        }
+    }
+    // 获取任务状态
+    async getTaskStatus(taskId) {
+        const task = await task_1.Task.findByPk(taskId);
+        if (!task)
+            throw new Error('任务不存在');
+        // 计算进度
+        let progress = 0;
+        switch (task.status) {
+            case task_1.TaskStatus.PENDING:
+                progress = 0;
+                break;
+            case task_1.TaskStatus.PLANNING:
+                progress = 25;
+                break;
+            case task_1.TaskStatus.EXECUTING:
+                progress = 50;
+                break;
+            case task_1.TaskStatus.REVIEWING:
+                progress = 75;
+                break;
+            case task_1.TaskStatus.FINALIZING:
+                progress = 90;
+                break;
+            case task_1.TaskStatus.COMPLETED:
+                progress = 100;
+                break;
+            case task_1.TaskStatus.FAILED:
+                progress = 0;
+                break;
+        }
+        return { status: task.status, progress };
+    }
+    // 获取任务结果
+    async getTaskResult(taskId) {
+        const task = await task_1.Task.findByPk(taskId);
+        if (!task)
+            throw new Error('任务不存在');
+        return {
+            user_input: task.user_input,
+            planning_result: task.planning_result,
+            execution_result: task.execution_result,
+            review_result: task.review_result,
+            final_result: task.final_result,
+            template: task.template,
+            status: task.status
+        };
+    }
+}
+exports.CabinetService = CabinetService;
+// 导出单例实例
+exports.cabinetService = new CabinetService();
+//# sourceMappingURL=cabinet.js.map
