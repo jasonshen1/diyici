@@ -1,0 +1,49 @@
+{
+  "version": "1.0.0",
+  "updated": "2026-02-19",
+  "entries": [
+    {
+      "id": "getting-started-guide",
+      "title": "新用户导读",
+      "subtitle": "欢迎来到开创者的世界",
+      "category": "入门指南",
+      "level": "入门级",
+      "description": "在这个增量时代，把你的才华系统化。从新手到开创者，把脑海中的灵光一现转化为可以复利增长的数字资产。",
+      "file": "getting-started-guide.md",
+      "size": "4KB"
+    },
+    {
+      "id": "5-level-evolution-model",
+      "title": "五级进化模型",
+      "subtitle": "把死经验熬成活资产的五步走",
+      "category": "方法论",
+      "level": "入门级",
+      "description": "从靠直觉的路边摊，到写下一本菜谱，再到开一家大饭店、造一台自动炒菜机。从原始经验到工程化产品的五步进化。",
+      "file": "5-level-evolution-model.md",
+      "size": "7KB",
+      "version": "1.0.0"
+    },
+    {
+      "id": "quad-brain",
+      "title": "数字内阁",
+      "subtitle": "你免费的四人数字内阁",
+      "category": "开发工具",
+      "level": "进阶级",
+      "description": "为了锁死 AI 的不稳定性，diyici.ai 在底层为你植入了一套极其残暴但有效的制衡工具。一个 AI 被劈成四个互相制约、互相骂娘的数字官僚。",
+      "file": "quad-brain.md",
+      "size": "5KB",
+      "version": "1.0.0"
+    },
+    {
+      "id": "xhs-quad-brain",
+      "title": "小红书数字内阁",
+      "subtitle": "用数字内阁批量生产爆款内容",
+      "category": "内容创作",
+      "level": "进阶级",
+      "description": "第一次用智能助手批量写小红书？调用你的数字内阁，让四个赛博官僚自动检查含人量，生成符合平台算法的爆款文案。",
+      "file": "xhs-quad-brain.md",
+      "size": "9KB",
+      "version": "1.0.0"
+    }
+  ]
+}

@@ -1,0 +1,658 @@
+
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>第一次 智能助手 成功入口 - diyici.ai</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(180deg, #0f0f23 0%, #1a1a3e 50%, #0f0f23 100%);
+            min-height: 100vh;
+            color: #e2e8f0;
+            line-height: 1.6;
+        }
+        
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding: 80px 20px 60px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 50%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 50%, rgba(255, 119, 198, 0.3) 0%, transparent 50%);
+            pointer-events: none;
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .brand-name {
+            font-size: 72px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 25%, #f093fb 50%, #f5576c 75%, #667eea 100%);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradient 8s ease infinite;
+            margin-bottom: 8px;
+            letter-spacing: -2px;
+        }
+        
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        .brand-domain {
+            font-size: 18px;
+            color: #64748b;
+            margin-bottom: 24px;
+            font-family: 'Courier New', 'Consolas', monospace;
+        }
+        
+        .hero-slogan {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: #fff;
+        }
+        
+        .hero-desc {
+            font-size: 18px;
+            color: #94a3b8;
+            max-width: 600px;
+            margin: 0 auto 40px;
+            line-height: 1.8;
+        }
+        
+        .hero-desc .highlight {
+            color: #fbbf24;
+            font-weight: 600;
+        }
+        
+        /* CTA Buttons */
+        .hero-cta {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .cta-btn {
+            padding: 16px 32px;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s;
+            cursor: pointer;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .cta-btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        .cta-btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(102, 126, 234, 0.5);
+        }
+        
+        .cta-btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: #e2e8f0;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .cta-btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+        
+        /* First Time Journey */
+        .journey-section {
+            padding: 60px 20px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        .section-header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+        
+        .section-tag {
+            display: inline-block;
+            background: rgba(251, 191, 36, 0.2);
+            color: #fbbf24;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+        
+        .section-title {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: #fff;
+        }
+        
+        .section-subtitle {
+            font-size: 16px;
+            color: #64748b;
+        }
+        
+        /* Steps */
+        .steps-container {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            position: relative;
+        }
+        
+        .step-item {
+            display: flex;
+            gap: 24px;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 20px;
+            transition: all 0.3s;
+            position: relative;
+        }
+        
+        .step-item:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(102, 126, 234, 0.5);
+            transform: translateX(10px);
+        }
+        
+        .step-number {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: 700;
+            color: white;
+            flex-shrink: 0;
+            box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        .step-content {
+            flex: 1;
+        }
+        
+        .step-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: #fff;
+        }
+        
+        .step-desc {
+            color: #94a3b8;
+            margin-bottom: 16px;
+            line-height: 1.7;
+        }
+        
+        .step-action {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: #667eea;
+            font-weight: 600;
+            text-decoration: none;
+            transition: gap 0.2s;
+        }
+        
+        .step-action:hover {
+            gap: 10px;
+        }
+        
+        /* Knowledge Cards */
+        .knowledge-section {
+            padding: 60px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .knowledge-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 24px;
+        }
+        
+        .knowledge-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 28px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s;
+        }
+        
+        .knowledge-card:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(102, 126, 234, 0.5);
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+        
+        .card-icon {
+            font-size: 40px;
+            margin-bottom: 16px;
+        }
+        
+        .card-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: #fff;
+        }
+        
+        .card-subtitle {
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 16px;
+        }
+        
+        .card-desc {
+            color: #94a3b8;
+            font-size: 15px;
+            line-height: 1.7;
+            margin-bottom: 20px;
+        }
+        
+        .card-meta {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .badge {
+            font-size: 12px;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-weight: 500;
+        }
+        
+        .badge-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .badge-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: #94a3b8;
+        }
+        
+        .card-actions {
+            display: flex;
+            gap: 12px;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+            cursor: pointer;
+            border: none;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: #e2e8f0;
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+        
+        /* Stats */
+        .stats-section {
+            padding: 60px 20px;
+            background: rgba(255, 255, 255, 0.03);
+        }
+        
+        .stats-container {
+            max-width: 800px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 40px;
+        }
+        
+        .stat-item {
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 48px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea 0%, #f093fb 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .stat-label {
+            font-size: 14px;
+            color: #64748b;
+            margin-top: 8px;
+        }
+        
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 60px 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .footer-brand {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            color: #fff;
+        }
+        
+        .footer-desc {
+            color: #64748b;
+            font-size: 14px;
+            max-width: 500px;
+            margin: 0 auto 24px;
+        }
+        
+        .footer-links {
+            display: flex;
+            gap: 24px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .footer-link {
+            color: #94a3b8;
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.2s;
+        }
+        
+        .footer-link:hover {
+            color: #667eea;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .brand-name {
+                font-size: 48px;
+            }
+            
+            .hero-slogan {
+                font-size: 22px;
+            }
+            
+            .step-item {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .knowledge-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stat-number {
+                font-size: 36px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <div class="brand-name">第一次</div>
+            <div class="brand-domain">diyici.ai</div>
+            
+            <h1 class="hero-slogan">第一次·diyici.ai</h1>
+            
+            <p class="hero-desc">
+                把才华系统化，成为开创者
+            </p>
+            
+            <div class="hero-cta">
+                <a href="/read.html?doc=getting-started-guide.md" class="cta-btn cta-btn-primary">
+                    阅读新用户导读
+                </a>
+                <a href="#journey" class="cta-btn cta-btn-secondary">
+                    开启你的第一次
+                </a>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Journey Section -->
+    <section class="journey-section" id="journey">
+        <div class="section-header">
+            <div class="section-tag">专为第一次设计</div>
+            <h2 class="section-title">从这里开始</h2>
+            <p class="section-subtitle">在这个增量时代，把你的才华系统化，完成从高级肉联到高效协作的跃迁</p>
+        </div>
+        
+        <div class="steps-container">
+            <div class="step-item">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                    <h3 class="step-title">在新时代的缝隙——你的才华，正在成为阻碍</h3>
+                    <p class="step-desc">
+                        你是那个"一个人顶一个团队"的存在，但你的本事处于极其原始和混沌的状态。
+                        学习如何把脑海中的灵光一现转化为可以复利增长的数字资产。
+                    </p>
+                    <a href="/read.html?doc=getting-started-guide.md" class="step-action">
+                        阅读新用户导读 
+                    </a>
+                </div>
+            </div>
+            
+            <div class="step-item">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                    <h3 class="step-title">炼金术——把死经验熬成活资产的五步走</h3>
+                    <p class="step-desc">
+                        要把冻在脑子里的本事掏出来，第一刀最疼。从靠直觉的路边摊，到写下一本菜谱，
+                        再到开一家大饭店、造一台自动炒菜机，完成从零到一的升维。
+                    </p>
+                    <a href="/read.html?doc=5-level-evolution-model.md" class="step-action">
+                        查看五级进化模型 
+                    </a>
+                </div>
+            </div>
+            
+            <div class="step-item">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                    <h3 class="step-title">驯服硅基怪兽——你免费的四人数字内阁</h3>
+                    <p class="step-desc">
+                        为了锁死 AI 的不稳定性，diyici.ai 为你植入了一套极其残暴但有效的制衡工具。
+                        一个 AI 被劈成四个互相制约、互相骂娘的数字官僚。
+                    </p>
+                    <a href="/read.html?doc=quad-brain.md" class="step-action">
+                        查看数字内阁 
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Knowledge Section -->
+    <section class="knowledge-section" id="knowledge">
+        <div class="section-header">
+            <div class="section-tag">知识库</div>
+            <h2 class="section-title">第一次之后的每一次</h2>
+            <p class="section-subtitle">时代的列车换轨，往往伴随着血肉横飞。去建造你的第一条自动化流水线吧。</p>
+        </div>
+        
+        <div class="knowledge-grid">
+            <!-- 新用户导读 -->
+            <article class="knowledge-card">
+                <div class="card-icon"></div>
+                <h3 class="card-title">新用户导读</h3>
+                <p class="card-subtitle">欢迎来到开创者的世界</p>
+                <p class="card-desc">
+                    在这个增量时代，把你的才华系统化。从新手到开创者，
+                    把脑海中的灵光一现转化为可以复利增长的数字资产。
+                </p>
+                
+                <div class="card-meta">
+                    <span class="badge badge-primary">新手必读</span>
+                    <span class="badge badge-secondary">入门级</span>
+                </div>
+                
+                <div class="card-actions">
+                    <a href="/read.html?doc=getting-started-guide.md" class="btn btn-primary">阅读导读</a>
+                </div>
+            </article>
+            
+            <!-- 五级进化模型 -->
+            <article class="knowledge-card">
+                <div class="card-icon"></div>
+                <h3 class="card-title">五级进化模型</h3>
+                <p class="card-subtitle">把死经验熬成活资产的五步走</p>
+                <p class="card-desc">
+                    从靠直觉的路边摊，到写下一本菜谱，再到开一家大饭店、造一台自动炒菜机。
+                    从原始经验到工程化产品的五步进化，适合第一次接触知识管理的用户。
+                </p>
+                
+                <div class="card-meta">
+                    <span class="badge badge-primary">第一次必看</span>
+                    <span class="badge badge-secondary">入门级</span>
+                </div>
+                
+                <div class="card-actions">
+                    <a href="/read.html?doc=5-level-evolution-model.md" class="btn btn-primary">阅读文档</a>
+                </div>
+            </article>
+            
+            <!-- 数字内阁 -->
+            <article class="knowledge-card">
+                <div class="card-icon"></div>
+                <h3 class="card-title">数字内阁</h3>
+                <p class="card-subtitle">你免费的四人数字内阁</p>
+                <p class="card-desc">
+                    为了锁死 AI 的不稳定性，diyici.ai 在底层为你植入了一套极其残暴但有效的制衡工具。
+                    一个 AI 被劈成四个互相制约、互相骂娘的数字官僚：谋局者、执行者、找茬者、沉淀者。
+                </p>
+                
+                <div class="card-meta">
+                    <span class="badge badge-primary">开发工具</span>
+                    <span class="badge badge-secondary">进阶级</span>
+                </div>
+                
+                <div class="card-actions">
+                    <a href="/read.html?doc=quad-brain.md" class="btn btn-primary">阅读文档</a>
+                    <a href="/skills/quad-brain.skill" class="btn btn-secondary">下载技能包</a>
+                </div>
+            </article>
+            
+            <!-- 小红书四脑 -->
+            <article class="knowledge-card">
+                <div class="card-icon"></div>
+                <h3 class="card-title">小红书四脑协作</h3>
+                <p class="card-subtitle">用数字内阁批量生产爆款内容</p>
+                <p class="card-desc">
+                    第一次用智能助手批量写小红书？调用你的数字内阁，
+                    让四个赛博官僚自动检查"含人量"，生成符合平台算法的爆款文案。
+                </p>
+                
+                <div class="card-meta">
+                    <span class="badge badge-primary">内容创作</span>
+                    <span class="badge badge-secondary">进阶级</span>
+                </div>
+                
+                <div class="card-actions">
+                    <a href="/read.html?doc=xhs-quad-brain.md" class="btn btn-primary">阅读文档</a>
+                    <a href="/skills/xhs-quad-brain.skill" class="btn btn-secondary">下载技能包</a>
+                </div>
+            </article>
+        </div>
+    </section>
+    
+    <!-- Stats Section -->
+    <section class="stats-section">
+        <div class="stats-container">
+            <div class="stat-item">
+                <div class="stat-number">3</div>
+                <div class="stat-label">核心方法</div>
+            </div>
+            
+            <div class="stat-item">
+                <div class="stat-number">3</div>
+                <div class="stat-label">步骤上手</div>
+            </div>
+            
+            <div class="stat-item">
+                <div class="stat-number">∞</div>
+                <div class="stat-label">次复用</div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-brand">第一次</div>
+        
+        <p class="footer-desc">
+            diyici.ai · 让每个人都能完成第一次 智能助手 成功体验
+            <br>
+            知识液化 · 经验复用 · 持续进化
+        </p>
+        
+        <div class="footer-links">
+            <a href="/knowledge" class="footer-link">知识库</a>
+            <a href="#" class="footer-link" onclick="alert('关于页面开发中')">关于我们</a>
+            <a href="#" class="footer-link" onclick="alert('联系功能开发中')">联系我们</a>
+        </div>
+    </footer>
+</body>
+</html>
