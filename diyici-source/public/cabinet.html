@@ -1937,8 +1937,16 @@
           .replace(/^# (.*$)/gm, '<h1>$1</h1>');
         
         // 转换粗体和斜体
-        processedContent = processedContent
-          .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+        // 粗体 - 使用字符串处理代替正则
+        while (processedContent.includes('**')) {
+          const start = processedContent.indexOf('**');
+          const end = processedContent.indexOf('**', start + 2);
+          if (end === -1) break;
+          const boldText = processedContent.substring(start + 2, end);
+          processedContent = processedContent.substring(0, start) + 
+                   '<strong>' + boldText + '</strong>' + 
+                   processedContent.substring(end + 2);
+        }
         // 斜体 - 简单处理
         let parts = processedContent.split('*');
         if (parts.length >= 3) {
@@ -2221,8 +2229,16 @@
           try {
             // 先转义 HTML
             let result = escapeHtml(str);
-            // 粗体
-            result = result.replace(/\*\*(.+?)\*\*/g, '<strong style="color: #fbbf24; font-weight: 600;">$1</strong>');
+            // 粗体 - 使用字符串处理代替正则，避免iOS Safari问题
+            while (result.includes('**')) {
+              const start = result.indexOf('**');
+              const end = result.indexOf('**', start + 2);
+              if (end === -1) break;
+              const boldText = result.substring(start + 2, end);
+              result = result.substring(0, start) + 
+                       '<strong style="color: #fbbf24; font-weight: 600;">' + boldText + '</strong>' + 
+                       result.substring(end + 2);
+            }
             // 斜体 - 使用简单字符串替换，避免正则问题
             let parts = result.split('*');
             if (parts.length >= 3) {
