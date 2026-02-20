@@ -1779,7 +1779,7 @@
       
       // 计算字数
       const charCount = content?.length || 0;
-      const wordCount = charCount > 1000 ? `${(charCount/1000).toFixed(1)}k` : charCount;
+      const wordCount = charCount > 1000 ? (charCount/1000).toFixed(1) + 'k' : charCount;
       
       // 估算阅读时间（按 300字/分钟）
       const readTime = Math.max(1, Math.ceil(charCount / 300));
@@ -1795,13 +1795,19 @@
             <div style="font-size: 18px; font-weight: 700; color: ${borderColor};">${wordCount}</div>            <div style="font-size: 11px; color: #64748b;">字 · ${readTime}分钟阅读</div>
           </div>        </div>
         <div class="result-content" style="margin-top: 16px; line-height: 1.8; color: #e2e8f0;">${renderMarkdown(content)}</div>
-        <div style="margin-top: 12px; text-align: right;">
-          <button onclick="copyToClipboard(this, '${encodeURIComponent(content || '').replace(/'/g, "\\'")}')" 
-            style="padding: 6px 12px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; color: #94a3b8; font-size: 12px; cursor: pointer; transition: all 0.3s; display: inline-flex; align-items: center; gap: 4px;">
-            📋 复制内容
-          </button>
-        </div>
+        <div style="margin-top: 12px; text-align: right;" class="copy-btn-container"></div>
       `;
+      
+      // 创建复制按钮（使用DOM API避免HTML属性注入问题）
+      const copyBtnContainer = card.querySelector('.copy-btn-container');
+      const copyBtn = document.createElement('button');
+      copyBtn.style.cssText = 'padding: 6px 12px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; color: #94a3b8; font-size: 12px; cursor: pointer; transition: all 0.3s; display: inline-flex; align-items: center; gap: 4px;';
+      copyBtn.innerHTML = '📋 复制内容';
+      copyBtn.onclick = function() {
+        copyToClipboard(this, content || '');
+      };
+      copyBtnContainer.appendChild(copyBtn);
+      
       resultContainer.appendChild(card);
     }
     
@@ -1815,86 +1821,83 @@
       // 清空之前的内容重新渲染（保持最新）
       resultContainer.innerHTML = '';
       
-      // 显示谋局者输出
-      if (statusData.planningResult) {
-        const planningCard = document.createElement('div');
-        planningCard.className = 'result-card';
-        planningCard.style.borderLeft = '4px solid #667eea';
-        planningCard.innerHTML = `
+      // 创建卡片辅助函数
+      function createRoleCard(title, icon, color, content, status, statusText) {
+        const card = document.createElement('div');
+        card.className = 'result-card';
+        card.style.borderLeft = '4px solid ' + color;
+        card.innerHTML = `
           <div class="result-header">
-            <div class="result-icon" style="background: linear-gradient(135deg, #667eea, #764ba2);">谋</div>
+            <div class="result-icon" style="background: linear-gradient(135deg, ${color}, ${color}aa);">${icon}</div>
             <div class="result-title">
-              <h3>谋局者（首辅）</h3>
-              <p>${statusData.status === 'planning' ? '正在分析...' : '分析完成'}</p>
+              <h3>${title}</h3>
+              <p>${statusText}</p>
             </div>
           </div>
           <div class="result-content" style="margin-top: 12px; max-height: 300px; overflow-y: auto;">
-            ${renderMarkdown(statusData.planningResult)}
+            ${renderMarkdown(content)}
           </div>
-          <div style="margin-top: 12px; text-align: right;">
-            <button onclick="copyToClipboard(this, '${encodeURIComponent(statusData.planningResult || '').replace(/'/g, "\\'")}')" 
-              style="padding: 6px 12px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; color: #94a3b8; font-size: 12px; cursor: pointer; transition: all 0.3s; display: inline-flex; align-items: center; gap: 4px;">
-              📋 复制内容
-            </button>
-          </div>
+          <div style="margin-top: 12px; text-align: right;" class="copy-btn-container"></div>
         `;
+        
+        // 创建复制按钮
+        const copyBtnContainer = card.querySelector('.copy-btn-container');
+        const copyBtn = document.createElement('button');
+        copyBtn.style.cssText = 'padding: 6px 12px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; color: #94a3b8; font-size: 12px; cursor: pointer; transition: all 0.3s; display: inline-flex; align-items: center; gap: 4px;';
+        copyBtn.innerHTML = '📋 复制内容';
+        copyBtn.onclick = function() {
+          copyToClipboard(this, content || '');
+        };
+        copyBtnContainer.appendChild(copyBtn);
+        
+        return card;
+      }
+      
+      // 显示谋局者输出
+      if (statusData.planningResult) {
+        const planningCard = createRoleCard(
+          '谋局者（首辅）',
+          '谋',
+          '#667eea',
+          statusData.planningResult,
+          statusData.status,
+          statusData.status === 'planning' ? '正在分析...' : '分析完成'
+        );
         resultContainer.appendChild(planningCard);
       }
       
       // 显示执行者输出
       if (statusData.executionResult) {
-        const executionCard = document.createElement('div');
-        executionCard.className = 'result-card';
-        executionCard.style.borderLeft = '4px solid #f093fb';
-        executionCard.innerHTML = `
-          <div class="result-header">
-            <div class="result-icon" style="background: linear-gradient(135deg, #f093fb, #f5576c);">执</div>
-            <div class="result-title">
-              <h3>执行者（干吏）</h3>
-              <p>${statusData.status === 'executing' ? '正在干活...' : '执行完成'}</p>
-            </div>
-          </div>
-          <div class="result-content" style="margin-top: 12px; max-height: 300px; overflow-y: auto;">
-            ${renderMarkdown(statusData.executionResult)}
-          </div>
-          <div style="margin-top: 12px; text-align: right;">
-            <button onclick="copyToClipboard(this, '${encodeURIComponent(statusData.executionResult || '').replace(/'/g, "\\'")}')" 
-              style="padding: 6px 12px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; color: #94a3b8; font-size: 12px; cursor: pointer; transition: all 0.3s; display: inline-flex; align-items: center; gap: 4px;">
-              📋 复制内容
-            </button>
-          </div>
-        `;
+        const executionCard = createRoleCard(
+          '执行者（干吏）',
+          '执',
+          '#f093fb',
+          statusData.executionResult,
+          statusData.status,
+          statusData.status === 'executing' ? '正在干活...' : '执行完成'
+        );
         resultContainer.appendChild(executionCard);
       }
       
       // 显示审查员输出
       if (statusData.reviewResult) {
-        const reviewCard = document.createElement('div');
-        reviewCard.className = 'result-card';
-        reviewCard.style.borderLeft = '4px solid #4facfe';
-        reviewCard.innerHTML = `
-          <div class="result-header">
-            <div class="result-icon" style="background: linear-gradient(135deg, #4facfe, #00f2fe);">查</div>
-            <div class="result-title">
-              <h3>找茬者（御史）</h3>
-              <p>${statusData.status === 'reviewing' ? '正在审核...' : '审核完成'}</p>
-            </div>
-          </div>
-          <div class="result-content" style="margin-top: 12px; max-height: 300px; overflow-y: auto;">
-            ${renderMarkdown(statusData.reviewResult)}
-          </div>
-          <div style="margin-top: 12px; text-align: right;">
-            <button onclick="copyToClipboard(this, '${encodeURIComponent(statusData.reviewResult || '').replace(/'/g, "\\'")}')" 
-              style="padding: 6px 12px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; color: #94a3b8; font-size: 12px; cursor: pointer; transition: all 0.3s; display: inline-flex; align-items: center; gap: 4px;">
-              📋 复制内容
-            </button>
-          </div>
-          ${statusData.retryCount ? `
-          <div style="margin-top: 12px; padding: 8px 12px; background: rgba(99, 102, 241, 0.1); border-radius: 8px; font-size: 12px; color: #818cf8;">
-            第 ${statusData.retryCount} 轮审查
-          </div>
-          ` : ''}
-        `;
+        const reviewCard = createRoleCard(
+          '找茬者（御史）',
+          '查',
+          '#4facfe',
+          statusData.reviewResult,
+          statusData.status,
+          statusData.status === 'reviewing' ? '正在审核...' : '审核完成'
+        );
+        
+        // 添加重试次数显示
+        if (statusData.retryCount) {
+          const retryDiv = document.createElement('div');
+          retryDiv.style.cssText = 'margin-top: 12px; padding: 8px 12px; background: rgba(99, 102, 241, 0.1); border-radius: 8px; font-size: 12px; color: #818cf8;';
+          retryDiv.textContent = '第 ' + statusData.retryCount + ' 轮审查';
+          reviewCard.appendChild(retryDiv);
+        }
+        
         resultContainer.appendChild(reviewCard);
       }
       
