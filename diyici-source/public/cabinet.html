@@ -2219,10 +2219,11 @@
         };
         
         const escapeHtml = (str) => {
+          // 使用 split/join 代替正则，避免 iOS Safari 问题
           return str
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;');
+            .split('&').join('&amp;')
+            .split('<').join('&lt;')
+            .split('>').join('&gt;');
         };
         
         const processInline = (str, lineNum) => {
@@ -2364,9 +2365,12 @@
         
         flushList();
         
-        // 清理多余的 <br>
-        html = html.replace(/<br><br><br>/g, '<br><br>');
-        html = html.replace(/<p style="margin: 8px 0; line-height: 1.8;"><\/p>/g, '');
+        // 清理多余的 <br> - 使用字符串处理代替正则
+        while (html.includes('<br><br><br>')) {
+          html = html.split('<br><br><br>').join('<br><br>');
+        }
+        // 清理空段落 - 使用字符串处理代替正则
+        html = html.split('<p style="margin: 8px 0; line-height: 1.8;"></p>').join('');
         
         return html;
       } catch (error) {
@@ -2374,10 +2378,10 @@
         alert('Markdown渲染错误: ' + error.message + '\n\n将显示纯文本');
         // 失败时返回简单转义文本
         return text
-          .replace(/&/g, '&amp;')
-          .replace(/</g, '&lt;')
-          .replace(/>/g, '&gt;')
-          .replace(/\n/g, '<br>');
+          .split('&').join('&amp;')
+          .split('<').join('&lt;')
+          .split('>').join('&gt;')
+          .split('\n').join('<br>');
       }
     }
     
