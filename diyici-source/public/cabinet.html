@@ -1463,6 +1463,12 @@
           </div>
           
           <div style="margin-bottom: 16px;">
+            <label style="display: block; color: #94a3b8; font-size: 13px; margin-bottom: 6px;">开创者名称 *</label>
+            <input type="text" id="auto-pub-creator" placeholder="给自己起个名字，让大家记住你..." style="width: 100%; padding: 12px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; color: #fff; font-size: 14px; box-sizing: border-box;">
+            <p style="color: #64748b; font-size: 11px; margin-top: 4px;">如不填写，将自动生成匿名开创者标识</p>
+          </div>
+          
+          <div style="margin-bottom: 16px;">
             <label style="display: block; color: #94a3b8; font-size: 13px; margin-bottom: 6px;">分类</label>
             <select id="auto-pub-category" style="width: 100%; padding: 12px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; color: #fff; font-size: 14px; box-sizing: border-box;">
               <option value="营销方案">营销方案</option>
@@ -1497,6 +1503,7 @@
         const title = document.getElementById('auto-pub-title').value.trim();
         const category = document.getElementById('auto-pub-category').value;
         const summary = document.getElementById('auto-pub-summary').value.trim();
+        const customCreator = document.getElementById('auto-pub-creator').value.trim();
         
         if (!title) {
           alert('请输入标题');
@@ -1525,7 +1532,13 @@
           const response = await fetch('/api/knowledge/publish', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ title, category, summary, content: fullContent })
+            body: JSON.stringify({ 
+              title, 
+              category, 
+              summary, 
+              content: fullContent,
+              creator: customCreator || undefined
+            })
           });
           
           if (response.ok) {
@@ -2006,6 +2019,12 @@
           </div>
           
           <div style="margin-bottom: 16px;">
+            <label style="display: block; color: #94a3b8; font-size: 13px; margin-bottom: 6px;">开创者名称 *</label>
+            <input type="text" id="pub-creator" placeholder="给自己起个名字，让大家记住你..." style="width: 100%; padding: 10px 12px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; color: #fff; font-size: 14px; box-sizing: border-box;">
+            <p style="color: #64748b; font-size: 11px; margin-top: 4px;">如不填写，将自动生成匿名开创者标识</p>
+          </div>
+          
+          <div style="margin-bottom: 16px;">
             <label style="display: block; color: #94a3b8; font-size: 13px; margin-bottom: 6px;">分类</label>
             <select id="pub-category" style="width: 100%; padding: 10px 12px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; color: #fff; font-size: 14px; box-sizing: border-box;">
               <option value="营销方案">营销方案</option>
@@ -2038,6 +2057,7 @@
         const title = document.getElementById('pub-title').value.trim();
         const category = document.getElementById('pub-category').value;
         const summary = document.getElementById('pub-summary').value.trim();
+        const customCreator = document.getElementById('pub-creator').value.trim();
         
         if (!title) {
           alert('请输入标题');
@@ -2061,7 +2081,13 @@
           const response = await fetch('/api/knowledge/publish', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ title, category, summary, content: fullContent })
+            body: JSON.stringify({ 
+              title, 
+              category, 
+              summary, 
+              content: fullContent,
+              creator: customCreator || undefined
+            })
           });
           
           if (response.ok) {
