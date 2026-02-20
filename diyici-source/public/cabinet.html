@@ -2210,43 +2210,49 @@
         };
         
         const processInline = (str) => {
-          // 先转义 HTML
-          let result = escapeHtml(str);
-          // 粗体
-          result = result.replace(/\*\*(.+?)\*\*/g, '<strong style="color: #fbbf24; font-weight: 600;">$1</strong>');
-          // 斜体 - 使用简单字符串替换，避免正则问题
-          let parts = result.split('*');
-          if (parts.length >= 3) {
-            let newResult = parts[0];
-            for (let i = 1; i < parts.length; i += 2) {
-              if (i + 1 < parts.length) {
-                newResult += '<em style="color: #a78bfa;">' + parts[i] + '</em>' + parts[i+1];
-              } else {
-                newResult += '*' + parts[i];
+          try {
+            // 先转义 HTML
+            let result = escapeHtml(str);
+            // 粗体
+            result = result.replace(/\*\*(.+?)\*\*/g, '<strong style="color: #fbbf24; font-weight: 600;">$1</strong>');
+            // 斜体 - 使用简单字符串替换，避免正则问题
+            let parts = result.split('*');
+            if (parts.length >= 3) {
+              let newResult = parts[0];
+              for (let i = 1; i < parts.length; i += 2) {
+                if (i + 1 < parts.length) {
+                  newResult += '<em style="color: #a78bfa;">' + parts[i] + '</em>' + parts[i+1];
+                } else {
+                  newResult += '*' + parts[i];
+                }
               }
+              result = newResult;
             }
-            result = newResult;
+            return result;
+          } catch (e) {
+            console.error('processInline错误:', e, '输入:', str);
+            return escapeHtml(str);
           }
-          return result;
         };
         
         for (let i = 0; i < lines.length; i++) {
-          const line = lines[i];
-          const trimmed = line.trim();
-          
-          // 空行
-          if (!trimmed) {
-            flushList();
-            html += '<br>';
-            continue;
-          }
-          
-          // 分割线
-          if (trimmed === '---' || trimmed === '***' || trimmed === '___') {
-            flushList();
-            html += '<hr style="border: none; border-top: 1px solid rgba(255,255,255,0.1); margin: 20px 0;">';
-            continue;
-          }
+          try {
+            const line = lines[i];
+            const trimmed = line.trim();
+            
+            // 空行
+            if (!trimmed) {
+              flushList();
+              html += '<br>';
+              continue;
+            }
+            
+            // 分割线
+            if (trimmed === '---' || trimmed === '***' || trimmed === '___') {
+              flushList();
+              html += '<hr style="border: none; border-top: 1px solid rgba(255,255,255,0.1); margin: 20px 0;">';
+              continue;
+            }
           
           // 标题
           if (trimmed.startsWith('# ')) {
@@ -2304,6 +2310,9 @@
           flushList();
           const content = processInline(trimmed);
           html += '<p style="margin: 8px 0; line-height: 1.8;">' + content + '</p>';
+        } catch (lineError) {
+          console.error('renderMarkdown行错误:', lineError, '行号:', i, '内容:', lines[i]);
+          continue;
         }
         
         flushList();
