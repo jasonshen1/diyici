@@ -960,13 +960,13 @@
     // 提取文件内容
     async function extractFileContent(file) {
       return new Promise(async (resolve) => {
-        // 图片文件 - 调用 OCR 服务
+        // 图片文件 - 调用后端 OCR 服务
         if (file.type.startsWith('image/')) {
           try {
             const formData = new FormData();
             formData.append('file', file);
             
-            const response = await fetch('http://diyici.ai:8000/ocr', {
+            const response = await fetch('https://diyici.ai/api/ocr/tencent', {
               method: 'POST',
               body: formData
             });
@@ -975,7 +975,7 @@
             
             if (result.success) {
               resolve(`[图片文件: ${file.name}]
-识别文字：
+识别文字（腾讯云OCR）：
 ${result.text}`);
             } else {
               resolve(`[图片文件: ${file.name}]
@@ -1045,7 +1045,7 @@ OCR服务连接失败: ${error.message}
         let fileContents = '';
         if (uploadedFiles.length > 0) {
           for (const file of uploadedFiles) {
-            statusText.textContent = `正在读取 ${file.name}...`;
+            statusText.textContent = `正在识别 ${file.name}...`;
             const content = await extractFileContent(file);
             fileContents += `\n\n=== 文件: ${file.name} ===\n${content}`;
           }
