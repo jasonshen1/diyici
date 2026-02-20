@@ -903,6 +903,11 @@
             // 更新可视化步骤
             updateWorkflowSteps(statusData);
             
+            // 实时显示各角色输出
+            if (statusData.planningResult || statusData.executionResult || statusData.reviewResult) {
+              displayRealtimeOutput(statusData);
+            }
+            
             // 检查是否完成
             if (statusData.status === 'completed' || statusData.status === 'failed') {
               clearInterval(pollingInterval);
@@ -919,10 +924,8 @@
                 // 显示结果
                 displayResult(resultData);
               } else {
-                statusText.textContent = '任务执行失败';
-                submitBtn.disabled = false;
-                submitBtn.innerHTML = '<span>开始执行</span>';
-                resetBtn.disabled = false;
+                // 显示失败详情
+                displayFailure(statusData);
               }
               
               // 恢复按钮状态
@@ -990,6 +993,98 @@
       
       // 滚动到结果区域
       resultSection.scrollIntoView({ behavior: 'smooth' });
+    }
+    
+    // 显示失败详情
+    function displayFailure(statusData) {
+      resultSection.style.display = 'block';
+      resultContainer.innerHTML = '';
+      
+      // 失败标题
+      const failHeader = document.createElement('div');
+      failHeader.className = 'result-card';
+      failHeader.style.borderLeft = '4px solid #ef4444';
+      failHeader.innerHTML = `
+        <div class="result-header">
+          <div class="result-icon" style="background: linear-gradient(135deg, #ef4444, #dc2626);">❌</div>
+          <div class="result-title">
+            <h3>任务执行失败</h3>
+            <p>四脑协作未能完成任务</p>
+          </div>
+        </div>
+        <div class="result-content" style="margin-top: 16px;">
+          <div style="background: rgba(239, 68, 68, 0.1); border-radius: 12px; padding: 16px; margin-bottom: 16px;">
+            <h4 style="color: #ef4444; margin-bottom: 8px;">📍 失败环节</h4>
+            <p style="color: #e2e8f0;">${getStepName(statusData.failStep) || '审查环节'}</p>
+          </div>
+          <div style="background: rgba(239, 68, 68, 0.05); border-radius: 12px; padding: 16px; margin-bottom: 16px;">
+            <h4 style="color: #f87171; margin-bottom: 8px;">❗ 失败原因</h4>
+            <p style="color: #e2e8f0; line-height: 1.6;">${statusData.failReason || '审核未通过，已达到最大重试次数'}</p>
+          </div>
+          ${statusData.retryCount ? `
+          <div style="background: rgba(99, 102, 241, 0.1); border-radius: 12px; padding: 16px; margin-bottom: 16px;">
+            <h4 style="color: #818cf8; margin-bottom: 8px;">🔄 重试次数</h4>
+            <p style="color: #e2e8f0;">共尝试 ${statusData.retryCount} 次</p>
+          </div>
+          ` : ''}
+        </div>
+      `;
+      resultContainer.appendChild(failHeader);
+      
+      // 显示已有的成果
+      if (statusData.planningResult) {
+        addResultCard('谋局者（首辅）', '分析需求并制定行动指南', statusData.planningResult);
+      }
+      
+      if (statusData.executionResult) {
+        addResultCard('执行者（干吏）', '根据行动指南执行任务', statusData.executionResult);
+      }
+      
+      if (statusData.reviewResult) {
+        addResultCard('找茬者（御史）', '审核执行成果', statusData.reviewResult);
+      }
+      
+      // 添加建议
+      const suggestionCard = document.createElement('div');
+      suggestionCard.className = 'result-card';
+      suggestionCard.style.borderLeft = '4px solid #10b981';
+      suggestionCard.innerHTML = `
+        <div class="result-header">
+          <div class="result-icon" style="background: linear-gradient(135deg, #10b981, #059669);">💡</div>
+          <div class="result-title">
+            <h3>改进建议</h3>
+            <p>如何让任务更容易通过</p>
+          </div>
+        </div>
+        <div class="result-content" style="margin-top: 16px;">
+          <ul style="color: #e2e8f0; line-height: 1.8; padding-left: 20px;">
+            <li>需求描述更具体，包含背景、目标、约束条件</li>
+            <li>提供具体的例子或参考标准</li>
+            <li>说明期望的输出格式和详细程度</li>
+            <li>如果涉及专业知识，提供相关术语解释</li>
+          </ul>
+        </div>
+      `;
+      resultContainer.appendChild(suggestionCard);
+      
+      // 滚动到结果区域
+      resultSection.scrollIntoView({ behavior: 'smooth' });
+      
+      // 恢复按钮状态
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = '<span>重新执行</span>';
+      resetBtn.disabled = false;
+    }
+    
+    // 获取环节名称
+    function getStepName(step) {
+      const stepNames = {
+        'planning': '谋局阶段（首辅）',
+        'executing': '执行阶段（干吏）',
+        'reviewing': '审查阶段（御史）',
+        'finalizing': '沉淀阶段（史官）'
+      };
+      return stepNames[step] || step;
     }
     
     // 初始化工作流步骤
@@ -1085,6 +1180,85 @@
         <div class="result-content">${content}</div>
       `;
       resultContainer.appendChild(card);
+    }
+    
+    // 实时显示各角色输出
+    function displayRealtimeOutput(statusData) {
+      // 确保结果区域可见
+      if (resultSection.style.display === 'none') {
+        resultSection.style.display = 'block';
+      }
+      
+      // 清空之前的内容重新渲染（保持最新）
+      resultContainer.innerHTML = '';
+      
+      // 显示谋局者输出
+      if (statusData.planningResult) {
+        const planningCard = document.createElement('div');
+        planningCard.className = 'result-card';
+        planningCard.style.borderLeft = '4px solid #667eea';
+        planningCard.innerHTML = `
+          <div class="result-header">
+            <div class="result-icon" style="background: linear-gradient(135deg, #667eea, #764ba2);">谋</div>
+            <div class="result-title">
+              <h3>谋局者（首辅）</h3>
+              <p>${statusData.status === 'planning' ? '正在分析...' : '分析完成'}</p>
+            </div>
+          </div>
+          <div class="result-content" style="margin-top: 12px; max-height: 300px; overflow-y: auto;">
+            <pre style="white-space: pre-wrap; word-wrap: break-word; color: #e2e8f0; font-family: inherit; line-height: 1.6;">${statusData.planningResult}</pre>
+          </div>
+        `;
+        resultContainer.appendChild(planningCard);
+      }
+      
+      // 显示执行者输出
+      if (statusData.executionResult) {
+        const executionCard = document.createElement('div');
+        executionCard.className = 'result-card';
+        executionCard.style.borderLeft = '4px solid #f093fb';
+        executionCard.innerHTML = `
+          <div class="result-header">
+            <div class="result-icon" style="background: linear-gradient(135deg, #f093fb, #f5576c);">执</div>
+            <div class="result-title">
+              <h3>执行者（干吏）</h3>
+              <p>${statusData.status === 'executing' ? '正在干活...' : '执行完成'}</p>
+            </div>
+          </div>
+          <div class="result-content" style="margin-top: 12px; max-height: 300px; overflow-y: auto;">
+            <pre style="white-space: pre-wrap; word-wrap: break-word; color: #e2e8f0; font-family: inherit; line-height: 1.6;">${statusData.executionResult}</pre>
+          </div>
+        `;
+        resultContainer.appendChild(executionCard);
+      }
+      
+      // 显示审查员输出
+      if (statusData.reviewResult) {
+        const reviewCard = document.createElement('div');
+        reviewCard.className = 'result-card';
+        reviewCard.style.borderLeft = '4px solid #4facfe';
+        reviewCard.innerHTML = `
+          <div class="result-header">
+            <div class="result-icon" style="background: linear-gradient(135deg, #4facfe, #00f2fe);">查</div>
+            <div class="result-title">
+              <h3>找茬者（御史）</h3>
+              <p>${statusData.status === 'reviewing' ? '正在审核...' : '审核完成'}</p>
+            </div>
+          </div>
+          <div class="result-content" style="margin-top: 12px; max-height: 300px; overflow-y: auto;">
+            <pre style="white-space: pre-wrap; word-wrap: break-word; color: #e2e8f0; font-family: inherit; line-height: 1.6;">${statusData.reviewResult}</pre>
+          </div>
+          ${statusData.retryCount ? `
+          <div style="margin-top: 12px; padding: 8px 12px; background: rgba(99, 102, 241, 0.1); border-radius: 8px; font-size: 12px; color: #818cf8;">
+            第 ${statusData.retryCount} 轮审查
+          </div>
+          ` : ''}
+        `;
+        resultContainer.appendChild(reviewCard);
+      }
+      
+      // 滚动到最新内容
+      resultContainer.scrollTop = resultContainer.scrollHeight;
     }
   </script>
 </body>

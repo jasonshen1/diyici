@@ -28,6 +28,9 @@ export class Task extends Model {
   public review_result?: string;
   public final_result?: string;
   public template?: string;
+  public fail_reason?: string;
+  public fail_step?: string;
+  public retry_count?: number;
   public created_at!: Date;
   public updated_at!: Date;
 }
@@ -61,6 +64,16 @@ Task.init({
   },
   template: {
     type: DataTypes.TEXT
+  },
+  fail_reason: {
+    type: DataTypes.TEXT
+  },
+  fail_step: {
+    type: DataTypes.STRING
+  },
+  retry_count: {
+    type: DataTypes.INTEGER,
+    defaultValue: 0
   },
   created_at: {
     type: DataTypes.DATE,

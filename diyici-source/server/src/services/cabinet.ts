@@ -54,6 +54,14 @@ export class CabinetService {
       } while (!checkReviewPass(reviewResult) && retryCount < maxRetries);
 
       if (!checkReviewPass(reviewResult)) {
+        await Task.update({ 
+          status: TaskStatus.FAILED,
+          fail_reason: `审核未通过，已达到最大重试次数（${maxRetries}次）`,
+          fail_step: 'reviewing',
+          retry_count: retryCount,
+          review_result: reviewResult,
+          execution_result: executionResult
+        }, { where: { id: taskId } });
         throw new Error('审核未通过，已达到最大重试次数');
       }
 
@@ -73,7 +81,11 @@ export class CabinetService {
 
     } catch (error) {
       console.error(`四步流程执行失败 (任务 ${taskId}):`, error);
-      await Task.update({ status: TaskStatus.FAILED }, { where: { id: taskId } });
+      const errorMessage = error instanceof Error ? error.message : '未知错误';
+      await Task.update({ 
+        status: TaskStatus.FAILED,
+        fail_reason: errorMessage
+      }, { where: { id: taskId } });
       throw error;
     }
   }
@@ -102,7 +114,17 @@ export class CabinetService {
       case TaskStatus.FAILED: progress = 0; break;
     }
 
-    return { taskId: task.id, status: task.status, progress };
+    return { 
+      taskId: task.id, 
+      status: task.status, 
+      progress,
+      planningResult: task.planning_result,
+      executionResult: task.execution_result,
+      reviewResult: task.review_result,
+      failReason: task.fail_reason,
+      failStep: task.fail_step,
+      retryCount: task.retry_count
+    };
   }
 
   async getTaskResult(taskId: number) {
@@ -118,6 +140,9 @@ export class CabinetService {
       reviewResult: task.review_result,
       finalResult: task.final_result,
       template: task.template,
+      failReason: task.fail_reason,
+      failStep: task.fail_step,
+      retryCount: task.retry_count,
       createdAt: task.created_at,
       updatedAt: task.updated_at
     };
