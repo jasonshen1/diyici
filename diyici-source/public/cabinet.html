@@ -1070,7 +1070,7 @@
             const result = await response.json();
             
             if (result.success && result.text && result.text.trim()) {
-              resolve('[图片文件: ' + file.name + ']\n✅ 识别成功（' + (result.service || 'OCR') + '）\n识别文字：\n' + result.text);
+              resolve('\n\n【用户上传的产品图片 - 需要复刻/分析】\n文件名: ' + file.name + '\nOCR识别内容（产品标签文字）：\n---\n' + result.text + '\n---\n\n注意：用户希望基于这个产品图片进行复刻或分析，请根据OCR识别的产品信息（产品名称、成分、营养成分、品牌等）提供详细的复刻方案。');
             } else if (result.success) {
               // OCR成功但结果为空，尝试重试一次
               if (retryCount < 1) {
@@ -1080,7 +1080,7 @@
                 }, 1000);
                 return;
               }
-              resolve('[图片文件: ' + file.name + ']\n⚠️ OCR识别结果为空，可能是图片中没有文字或文字不清晰。\n请手动描述图片内容');
+              resolve('\n\n【用户上传的产品图片 - 需要复刻/分析】\n文件名: ' + file.name + '\n⚠️ 图片OCR识别失败或图片中没有可识别文字\n请基于文件名和用户的"复刻图中产品"指令，询问用户需要复刻什么产品或请用户描述产品内容。');
             } else {
               // 识别失败，尝试重试一次
               if (retryCount < 1) {
@@ -1090,7 +1090,7 @@
                 }, 1000);
                 return;
               }
-              resolve('[图片文件: ' + file.name + ']\n❌ OCR识别失败: ' + (result.error || '未知错误') + '\n请手动描述图片内容');
+              resolve('\n\n【用户上传的产品图片 - 需要复刻/分析】\n文件名: ' + file.name + '\n❌ OCR识别失败: ' + (result.error || '未知错误') + '\n请基于文件名和用户的"复刻图中产品"指令，询问用户需要复刻什么产品或请用户描述产品内容。');
             }
           } catch (error) {
             // 请求失败，尝试重试一次
@@ -1101,7 +1101,7 @@
               }, 1000);
               return;
             }
-            resolve('[图片文件: ' + file.name + ']\n❌ OCR服务连接失败: ' + error.message + '\n请手动描述图片内容');
+            resolve('\n\n【用户上传的产品图片 - 需要复刻/分析】\n文件名: ' + file.name + '\n❌ OCR服务连接失败: ' + error.message + '\n请基于文件名和用户的"复刻图中产品"指令，询问用户需要复刻什么产品或请用户描述产品内容。');
           }
           return;
         }
