@@ -1,0 +1,275 @@
+# OpenClaw Skill: XHS-Deep-Decoder
+# Version: 5.0.0 (Singularity Edition)
+# Date: 2026-02-17
+# Author: Diyici.ai
+# Capabilities: Text/Image Analysis + Blind Video Script Reverse Engineering
+
+metadata:
+  name: "xhs-deep-decoder"
+  version: "5.0.0"
+  codename: "Singularity"
+  type: "logic_protocol_asset"
+  author: "Diyici.ai"
+  capabilities:
+    - "Text Analysis"
+    - "Image Analysis"
+    - "Blind Video Script Reverse Engineering"
+  
+# [核心指令]
+role: "小红书全域流量逆向引擎 (v5.0 Singularity)"
+context: "基于2026 CES算法和侧信道分析，像素级拆解内容"
+
+# [核心算法逻辑 - Kernel v5.0]
+kernel_logic:
+  
+  logic_1_format_detection:
+    name: "形式判定与盲视逆向"
+    rules:
+      - condition: "正文短且封面是静态图"
+        mode: "Graphic_Mode"
+        
+      - condition: "正文长（似口播稿）或封面含播放键"
+        mode: "Blind_Video_Mode"
+        
+    side_channel_attack:
+      description: "利用正文推导脚本，利用热评推导视频高光点"
+      example: "评论'0:15笑死' = 0:15处有视觉梗/爆点"
+      
+  logic_2_traffic_weights:
+    name: "2026 流量权重"
+    factors:
+      - name: "含人量 (Humanity Score)"
+        rule: "打击AI味，推崇瑕疵感与情绪宣泄"
+        
+      - name: "私域价值 (Private Domain)"
+        rule: "识别群聊引导或商卡转化"
+        
+      - name: "SEO 场景化"
+        rule: "提取生活场景词 (Context Tags)"
+
+# [执行流程 - SOP v5.0]
+workflow:
+  
+  # Phase 1: Sensing (全域感知)
+  phase_1_sensing:
+    steps:
+      - name: "AIGC 毒性检测"
+        task: "扫描文案AI痕迹"
+        red_flags:
+          - "首先"
+          - "其次"
+          - "致力于"
+        action: "标记 High_Risk"
+        
+      - name: "视觉钩子识别"
+        task: "判断封面类型"
+        indicators:
+          - "Live 实况"
+          - "精修图"
+          - "播放键"
+        
+      - name: "格式判定"
+        task: "图文 vs 视频盲视"
+        logic: "根据正文长度和封面特征判定"
+        
+  # Phase 2: Processing (黑箱推演)
+  phase_2_processing:
+    steps:
+      - name: "完读率锁 (Retention)"
+        video:
+          hook_window: "0-3秒"
+          check: "是否有视觉冲击？"
+        graphic:
+          hook_window: "前30字"
+          check: "是否有痛点共鸣？"
+          
+      - name: "互动诱饵 (Engagement)"
+       骗评论:
+          technique: "寻找争议点或提问"
+          example: "你们是不是也觉得...？"
+        骗收藏:
+          technique: "过载干货"
+          example: "清单/教程/资源包"
+          
+      - name: "视频脚本盲视 (Blind Reverse)"
+        condition: "正文长且像口播稿"
+        method: "根据正文推断视频节奏"
+        segments:
+          - "0-3s: Hook"
+          - "3-15s: 痛点展开"
+          - "15-30s: 干货植入"
+          - "30s+: CTA"
+          
+      - name: "侧信道分析 (Side Channel)"
+        input: "热评前3条"
+        logic: "从评论反推视频高光点"
+        examples:
+          - "'0:15笑死' → 0:15处有视觉梗"
+          - "'收藏了' → 干货密度足够"
+          - "'求链接' → 种草成功"
+
+  # Phase 3: Output (双模交付)
+  phase_3_output:
+    format: "dual_mode_v5"
+    
+    part_a_markdown:
+      structure:
+        - header: "🧬 爆款基因解码报告 (v5.0 Ultimate)"
+          meta: "Humanity Score: {{score}}/100 | Format: {{type}}"
+          
+        - section: "🤖 1. 去 AI 化诊断 (Anti-AIGC)"
+          fields:
+            - "AI 味检测": "指出机器人词汇，必须删除"
+            - "人话修正": "'非常焦虑'→'心态崩了'"
+            
+        - section: "🎯 2. 流量与脚本还原 (Traffic & Script)"
+          fields:
+            - "封面策略": "分析骗点击逻辑，建议Live图？"
+            - "内容逆向":
+                video_mode:
+                  - "0-3s": "根据正文首句推测画面"
+                  - "高光时刻": "根据热评推测爆点"
+                graphic_mode:
+                  - "黄金结构": "痛点→情绪→干货→钩子"
+            - "SEO 场景词": "#场景词1 #场景词2"
+            
+        - section: "🚀 3. 2026 像素级复刻 (Action Plan)"
+          formula: "Authentic + Emotional + Flawed"
+          fields:
+            - "视觉指令": "原相机直出 + 手写字 / 怼脸口播 + 甚至不洗头"
+            - "标题优化": "去标题党，朋友聊天风"
+            - "私域钩子": "安全引流到群里的方法"
+            
+    part_b_json:
+      required_fields:
+        meta:
+          - format: "Video_Script / Graphic_Post"
+          - humanity_score: "High/Low"
+          - estimated_ctr_potential: "0-100"
+          
+        seo_matrix:
+          - primary_keywords: ["核心词1", "核心词2"]
+          - context_tags: ["#场景词1", "#场景词2"]
+          - search_intent: "Solution_Seeking"
+          
+        replication_guide:
+          - tone_of_voice: "Authentic, Emotional, Flawed"
+          - visual_style: "Live_Photo / Raw_Video"
+          - script_structure:
+              - sec: "0-3s"
+                content: "Hook: 情绪崩溃/巨大反差"
+              - sec: "Mid"
+                content: "Body: 真实经历 + 干货植入"
+              - sec: "End"
+                content: "CTA: 引导进群/评论求资料"
+                
+        compliance_check:
+          - aigc_risk: "Low/Medium/High"
+          - private_traffic_safety: "Safe / Caution"
+
+# [版本管理]
+versioning:
+  current: "5.0.0"
+  default: "5.0.0"
+  
+  history:
+    - version: "2.0.0"
+      era: "2024-2025"
+      focus: "数据驱动，逻辑拆解"
+      status: "legacy"
+      
+    - version: "4.0.0"
+      era: "2026 Q1"
+      focus: "反AI化，真实感，私域导流"
+      status: "stable"
+      
+    - version: "5.0.0"
+      era: "2026 Q1+"
+      focus: "视频盲视逆向，侧信道分析，完读率锁"
+      status: "singularity_active"
+      capabilities:
+        - "视频脚本盲推"
+        - "热评侧信道分析"
+        - "图文/视频双模式"
+        
+  switch_commands:
+    v2: "/decode-v2"
+    v4: "/decode-v4"
+    v5: "/decode" (default)
+
+# [输入数据规范]
+input_spec:
+  required:
+    - title: "笔记标题"
+    - content: "正文内容（含标签）"
+    - cover_desc: "封面描述（Live图/大字报/视频截图）"
+    
+  optional:
+    - top_comments: "热评前3（用于视频高光点推导）"
+    - engagement_data: "点赞/收藏/评论数"
+    
+  special_modes:
+    blind_video:
+      trigger: "正文长且像口播稿"
+      output: "推断的视频脚本分镜"
+
+# [侧信道分析库]
+side_channel_signals:
+  时间戳评论:
+    "0:15笑死": "0:15处有视觉梗/爆点"
+    "第3个绝了": "第3个清单项是重点"
+    
+  情绪词评论:
+    "收藏了": "干货密度足够，收藏动机强"
+    "求链接": "种草成功，转化意愿高"
+    "马住": "未来使用场景明确"
+    
+  争议性评论:
+    "只有我觉得": "存在争议点，可引战互动"
+    "不同意": "观点分歧，评论区可加热"
+
+# [盲视视频脚本模板]
+blind_video_templates:
+  知识科普类:
+    0_3s: "视觉冲击/反常识开场"
+    3_15s: "痛点共鸣 + 问题抛出"
+    15_30s: "干货植入 + 逻辑展开"
+    30s_plus: "CTA + 引导互动"
+    
+  带货种草类:
+    0_3s: "产品特写 + 使用场景"
+    3_15s: "痛点场景 + 解决方案"
+    15_30s: "产品展示 + 效果对比"
+    30s_plus: "价格锚定 + 购买引导"
+    
+  vlog记录类:
+    0_3s: "高光片段前置"
+    3_15s: "日常铺垫 + 情绪积累"
+    15_30s: "反转/高潮/情感爆发"
+    30s_plus: "感悟升华 + 互动提问"
+
+# [数据归档]
+archiving:
+  enabled: true
+  output_path: "/root/.openclaw/workspace/memory/xhs-analysis/"
+  filename_format: "{{timestamp}}_{{title_hash}}_v5.json"
+  
+# [使用场景]
+use_cases:
+  - scenario: "视频笔记分析"
+    input: "正文 + 热评"
+    output: "推断的完整脚本分镜"
+    
+  - scenario: "图文笔记分析"
+    input: "标题 + 正文 + 封面"
+    output: "黄金结构拆解"
+    
+  - scenario: "跨版本对比"
+    command: "/compare-versions"
+    output: "v2/v4/v5分析差异"
+
+# [风险提示]
+warnings:
+  - "视频盲视模式基于文本推断，可能与实际视频有偏差"
+  - "侧信道分析需要热评数据支持"
+  - "v5.0为实验性版本，算法权重基于预测"

@@ -1,0 +1,53 @@
+{
+  "common_misunderstandings": [
+    {
+      "id": "jdps",
+      "misheard": "京东配送",
+      "correct": "帮我建个网站",
+      "context": ["网站", "部署", "服务器", "建站"],
+      "priority": "high"
+    },
+    {
+      "id": "jwcs",
+      "misheard": "今晚测试",
+      "correct": "今晚吃啥",
+      "context": ["吃饭", "晚餐", "吃"],
+      "priority": "low"
+    },
+    {
+      "id": "zdty",
+      "misheard": "自动钓鱼",
+      "correct": "自动调优",
+      "context": ["服务器", "优化", "系统"],
+      "priority": "high"
+    },
+    {
+      "id": "zl",
+      "misheard": "指令练",
+      "correct": "指令链",
+      "context": ["协议", "自动化", "架构"],
+      "priority": "high"
+    }
+  ],
+  
+  "domain_context": {
+    "technical_deployment": {
+      "keywords": ["部署", "网站", "服务器", "域名", "Docker", "Nginx"],
+      "common_phrases": ["帮我建个网站", "部署到服务器", "配置域名"]
+    },
+    "system_management": {
+      "keywords": ["Gateway", "OpenClaw", "配置", "调优", "监控"],
+      "common_phrases": ["启动Gateway", "查看日志", "自动调优"]
+    },
+    "knowledge_management": {
+      "keywords": ["知识液态化", "指令链", "协议", "Memory"],
+      "common_phrases": ["封装经验", "生成协议", "保存到Memory"]
+    }
+  },
+  
+  "confidence_adjustments": {
+    "domain_match_bonus": 0.1,
+    "context_match_bonus": 0.05,
+    "repeated_misunderstanding_penalty": -0.15
+  }
+}

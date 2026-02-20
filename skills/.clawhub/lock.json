@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "skills": {
+    "developer": {
+      "version": "1.0.0",
+      "installedAt": 1770882662796
+    },
+    "anycrawl": {
+      "version": "1.0.1",
+      "installedAt": 1770882890742
+    }
+  }
+}

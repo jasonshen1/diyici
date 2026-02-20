@@ -1,0 +1,292 @@
+[
+  {
+    "rank": 1,
+    "title": "GitHub热门: alibaba/zvec",
+    "platform": "GitHub",
+    "hot_value": 94740,
+    "url": "https://github.com/alibaba/zvec",
+    "category": "科技",
+    "description": "A lightweight, lightning-fast, in-process vector database",
+    "timestamp": "2026-02-15T10:50:50.135520"
+  },
+  {
+    "rank": 2,
+    "title": "GitHub热门: ChromeDevTools/chrome-devtools-mcp",
+    "platform": "GitHub",
+    "hot_value": 86974,
+    "url": "https://github.com/ChromeDevTools/chrome-devtools-mcp",
+    "category": "科技",
+    "description": "Chrome DevTools for coding agents",
+    "timestamp": "2026-02-15T10:50:50.135385"
+  },
+  {
+    "rank": 3,
+    "title": "GitHub热门: tambo-ai/tambo",
+    "platform": "GitHub",
+    "hot_value": 83839,
+    "url": "https://github.com/tambo-ai/tambo",
+    "category": "科技",
+    "description": "Generative UI SDK for React",
+    "timestamp": "2026-02-15T10:50:50.134736"
+  },
+  {
+    "rank": 4,
+    "title": "GitHub热门: Zipstack/unstract",
+    "platform": "GitHub",
+    "hot_value": 82245,
+    "url": "https://github.com/Zipstack/unstract",
+    "category": "科技",
+    "description": "No-code LLM Platform to launch APIs and ETL Pipelines to structure unstructured documents",
+    "timestamp": "2026-02-15T10:50:50.135721"
+  },
+  {
+    "rank": 5,
+    "title": "GitHub热门: minio/minio",
+    "platform": "GitHub",
+    "hot_value": 70244,
+    "url": "https://github.com/minio/minio",
+    "category": "科技",
+    "description": "MinIO is a high-performance, S3 compatible object store, open sourced under GNU AGPLv3 license.",
+    "timestamp": "2026-02-15T10:50:50.135002"
+  },
+  {
+    "rank": 6,
+    "title": "GitHub热门: ruby/ruby",
+    "platform": "GitHub",
+    "hot_value": 58232,
+    "url": "https://github.com/ruby/ruby",
+    "category": "科技",
+    "description": "The Ruby Programming Language",
+    "timestamp": "2026-02-15T10:50:50.135868"
+  },
+  {
+    "rank": 7,
+    "title": "GitHub热门: ruvnet/wifi-densepose",
+    "platform": "GitHub",
+    "hot_value": 48430,
+    "url": "https://github.com/ruvnet/wifi-densepose",
+    "category": "科技",
+    "description": "Production-ready implementation of InvisPose - a revolutionary WiFi-based dense human pose estimatio",
+    "timestamp": "2026-02-15T10:50:50.135604"
+  },
+  {
+    "rank": 8,
+    "title": "GitHub热门: letta-ai/letta-code",
+    "platform": "GitHub",
+    "hot_value": 31106,
+    "url": "https://github.com/letta-ai/letta-code",
+    "category": "科技",
+    "description": "The memory-first coding agent",
+    "timestamp": "2026-02-15T10:50:50.135796"
+  },
+  {
+    "rank": 9,
+    "title": "GitHub热门: SynkraAI/aios-core",
+    "platform": "GitHub",
+    "hot_value": 13059,
+    "url": "https://github.com/SynkraAI/aios-core",
+    "category": "科技",
+    "description": "Synkra AIOS: AI-Orchestrated System for Full Stack Development - Core Framework v4.0",
+    "timestamp": "2026-02-15T10:50:50.134830"
+  },
+  {
+    "rank": 10,
+    "title": "GitHub热门: rowboatlabs/rowboat",
+    "platform": "GitHub",
+    "hot_value": 1085,
+    "url": "https://github.com/rowboatlabs/rowboat",
+    "category": "科技",
+    "description": "Open-source AI coworker, with memory",
+    "timestamp": "2026-02-15T10:50:50.134900"
+  },
+  {
+    "rank": 11,
+    "title": "uBlock filter list to hide all YouTube Shorts",
+    "platform": "HackerNews",
+    "hot_value": 616,
+    "url": "https://github.com/i5heu/ublock-hide-yt-shorts/",
+    "category": "科技",
+    "description": "197条评论",
+    "timestamp": "2026-02-15T10:50:52.787726"
+  },
+  {
+    "rank": 12,
+    "title": "Ooh.directory: a place to find good blogs that interest you",
+    "platform": "HackerNews",
+    "hot_value": 445,
+    "url": "https://ooh.directory/",
+    "category": "科技",
+    "description": "118条评论",
+    "timestamp": "2026-02-15T10:50:54.044173"
+  },
+  {
+    "rank": 13,
+    "title": "News publishers limit Internet Archive access due to AI scraping concerns",
+    "platform": "HackerNews",
+    "hot_value": 409,
+    "url": "https://www.niemanlab.org/2026/01/news-publishers-limit-internet-archive-access-due-to-ai-scraping-concerns/",
+    "category": "科技",
+    "description": "263条评论",
+    "timestamp": "2026-02-15T10:50:52.469161"
+  },
+  {
+    "rank": 14,
+    "title": "My smart sleep mask broadcasts users' brainwaves to an open MQTT broker",
+    "platform": "HackerNews",
+    "hot_value": 343,
+    "url": "https://aimilios.bearblog.dev/reverse-engineering-sleep-mask/",
+    "category": "科技",
+    "description": "174条评论",
+    "timestamp": "2026-02-15T10:50:53.416834"
+  },
+  {
+    "rank": 15,
+    "title": "IBM tripling entry-level jobs after finding the limits of AI adoption",
+    "platform": "HackerNews",
+    "hot_value": 267,
+    "url": "https://fortune.com/2026/02/13/tech-giant-ibm-tripling-gen-z-entry-level-hiring-according-to-chro-rewriting-jobs-ai-era/",
+    "category": "科技",
+    "description": "129条评论",
+    "timestamp": "2026-02-15T10:50:53.730752"
+  },
+  {
+    "rank": 16,
+    "title": "Instagram's URL Blackhole",
+    "platform": "HackerNews",
+    "hot_value": 84,
+    "url": "https://medium.com/@shredlife/instagrams-url-blackhole-c1733e081664",
+    "category": "科技",
+    "description": "12条评论",
+    "timestamp": "2026-02-15T10:50:54.670182"
+  },
+  {
+    "rank": 17,
+    "title": "Zvec: A lightweight, fast, in-process vector database",
+    "platform": "HackerNews",
+    "hot_value": 72,
+    "url": "https://github.com/alibaba/zvec",
+    "category": "科技",
+    "description": "14条评论",
+    "timestamp": "2026-02-15T10:50:54.357743"
+  },
+  {
+    "rank": 18,
+    "title": "NewPipe: YouTube client without vertical videos and algorithmic feed",
+    "platform": "HackerNews",
+    "hot_value": 55,
+    "url": "https://newpipe.net/",
+    "category": "科技",
+    "description": "16条评论",
+    "timestamp": "2026-02-15T10:50:52.029212"
+  },
+  {
+    "rank": 19,
+    "title": "连续注册三次 Linux .do 都失败，理由都是自己手写的，很认真很真诚，好话说尽，均告失败，不知道为啥",
+    "platform": "V2EX",
+    "hot_value": 37,
+    "url": "https://www.v2ex.com/t/1192859",
+    "category": "科技",
+    "description": "彩虹屁足够了",
+    "timestamp": "2026-02-15T10:50:56.847912"
+  },
+  {
+    "rank": 20,
+    "title": "Can my SPARC server host a website?",
+    "platform": "HackerNews",
+    "hot_value": 28,
+    "url": "https://rup12.net/posts/can-my-sparc-server-host-my-website/",
+    "category": "科技",
+    "description": "23条评论",
+    "timestamp": "2026-02-15T10:50:54.982779"
+  },
+  {
+    "rank": 21,
+    "title": "相亲认识的贵重礼物要要回吗？？",
+    "platform": "V2EX",
+    "hot_value": 28,
+    "url": "https://www.v2ex.com/t/1192850",
+    "category": "科技",
+    "description": "金镯子、项链、还有苹果手机大约 5W\r\n\r\n小帅无房无车、但有传统爹，所以齐全（爹已买齐\r\n传统爹给小帅找的女朋友，所以非常看好\r\n小帅无感，但在爹的经济压制下配合\r\n\r\n年底因邀请女朋友来家，不同意",
+    "timestamp": "2026-02-15T10:50:56.847930"
+  },
+  {
+    "rank": 22,
+    "title": "I love the work of the ArchWiki maintainers",
+    "platform": "HackerNews",
+    "hot_value": 25,
+    "url": "https://k7r.eu/i-love-the-work-of-the-archwiki-maintainers/",
+    "category": "科技",
+    "description": "2条评论",
+    "timestamp": "2026-02-15T10:50:53.100643"
+  },
+  {
+    "rank": 23,
+    "title": "发票抽奖这两天已经抽了七十块了，有点爽",
+    "platform": "V2EX",
+    "hot_value": 25,
+    "url": "https://www.v2ex.com/t/1192812",
+    "category": "科技",
+    "description": "如题，两天一共抽了十次，七十块",
+    "timestamp": "2026-02-15T10:50:56.847934"
+  },
+  {
+    "rank": 24,
+    "title": "有没人和我一样，这些年就喜欢看一些搞笑、轻松的电视剧，不再看描写人性黑暗的剧了。",
+    "platform": "V2EX",
+    "hot_value": 25,
+    "url": "https://www.v2ex.com/t/1192860",
+    "category": "科技",
+    "description": "以前大学还喜欢看什么《纸牌屋》这样描写斗争的剧集。\r\n现在根本看不进去了。\r\n就想看一些轻松搞笑的，比如《武林外传》、《炊事班的故事》。尤其是《武林外传》，这可是陪伴了我高中三年的电视剧，我都看了快 ",
+    "timestamp": "2026-02-15T10:50:56.847938"
+  },
+  {
+    "rank": 25,
+    "title": "cat5-e 网线 20m 网线测试仪测试 8 根线都正常，但握手只有 100mbps 是什么原因呢？",
+    "platform": "V2EX",
+    "hot_value": 24,
+    "url": "https://www.v2ex.com/t/1192890",
+    "category": "科技",
+    "description": "cat5-e 网线 20m 网线测试仪测试 8 根线都正常，但握手只有 100mbps 是什么原因呢？\r\n难道是网线质量太差了？网线现在不太好换了  买了俩免压水晶头准备换个水晶头试试看",
+    "timestamp": "2026-02-15T10:50:56.847941"
+  },
+  {
+    "rank": 26,
+    "title": "你愿意用总资产百分之多少买车？",
+    "platform": "V2EX",
+    "hot_value": 21,
+    "url": "https://www.v2ex.com/t/1192815",
+    "category": "科技",
+    "description": "",
+    "timestamp": "2026-02-15T10:50:56.847944"
+  },
+  {
+    "rank": 27,
+    "title": "[求分享]Claude 模型选择和最佳实践",
+    "platform": "V2EX",
+    "hot_value": 20,
+    "url": "https://www.v2ex.com/t/1192819",
+    "category": "科技",
+    "description": "最近在用 Claude 做一些深度学习相关研究和 coding ，之前基本一直全量用 Opus ，体验确实稳，但成本也越来越扛不住……所以想请教下大家 “选模型” 的最佳实践。\r\n我目前的困惑主要是：",
+    "timestamp": "2026-02-15T10:50:56.847948"
+  },
+  {
+    "rank": 28,
+    "title": "V 友对现代诗更感兴趣，本大诗人委屈一下，多更点现代诗",
+    "platform": "V2EX",
+    "hot_value": 18,
+    "url": "https://www.v2ex.com/t/1192858",
+    "category": "科技",
+    "description": "*内容有点长，各位看官，拉拉滚动条，在下方添加评论*\r\n\r\n# 遗憾的事\r\n\r\n我蹲在厕所里\r\n\r\n世界宁静而真实\r\n\r\n擦擦屁股\r\n\r\n盯着手上的厕纸\r\n\r\n忽然想到\r\n\r\n人生一世 没吃过屎\r\n\r",
+    "timestamp": "2026-02-15T10:50:56.847954"
+  },
+  {
+    "rank": 29,
+    "title": "UU 远程真乃 Vibe Coding 神器",
+    "platform": "V2EX",
+    "hot_value": 16,
+    "url": "https://www.v2ex.com/t/1192874",
+    "category": "科技",
+    "description": "远程 Vibe ，随时随地，我已经快沉迷了。效果看图：\r\nhttps://i.imgur.com/toVZSJe.png\r\n\r\n关键设置一：把显示器分辨率调成和手机一致，电脑显示器变成竖屏，文字也能清",
+    "timestamp": "2026-02-15T10:50:56.847957"
+  }
+]

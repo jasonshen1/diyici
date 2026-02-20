@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>热点猎手日报</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', sans-serif;
+            line-height: 1.6;
+            color: #1f2329;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f6f7;
+        }
+        .header {
+            background: linear-gradient(135deg, #3370ff 0%, #165dff 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0 0 10px 0;
+            font-size: 24px;
+        }
+        .header .meta {
+            opacity: 0.9;
+            font-size: 14px;
+        }
+        .hotspot-card {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+        .hotspot-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        .hotspot-number {
+            background: #ff7d00;
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 12px;
+            flex-shrink: 0;
+        }
+        .hotspot-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1f2329;
+        }
+        .hotspot-meta {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 20px;
+            font-size: 13px;
+            color: #646a73;
+        }
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .angle-section {
+            border-left: 3px solid #3370ff;
+            padding-left: 16px;
+            margin-bottom: 20px;
+        }
+        .angle-title {
+            font-weight: 600;
+            color: #3370ff;
+            margin-bottom: 8px;
+            font-size: 15px;
+        }
+        .content-title {
+            font-size: 16px;
+            color: #1f2329;
+            margin-bottom: 12px;
+            font-weight: 500;
+        }
+        .hook {
+            background: #f2f3f5;
+            padding: 12px 16px;
+            border-radius: 8px;
+            color: #646a73;
+            font-style: italic;
+            margin-bottom: 12px;
+        }
+        .outline {
+            margin: 0;
+            padding-left: 20px;
+            color: #4e5969;
+        }
+        .outline li {
+            margin-bottom: 4px;
+        }
+        .tags {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+        }
+        .tag {
+            background: #e5e6eb;
+            color: #646a73;
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+        .tag.platform {
+            background: #e8f3ff;
+            color: #3370ff;
+        }
+        .tag.difficulty {
+            background: #e8ffea;
+            color: #00b42a;
+        }
+        .insights {
+            background: #fff7e6;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 24px;
+        }
+        .insights h3 {
+            margin: 0 0 12px 0;
+            color: #ff7d00;
+            font-size: 16px;
+        }
+        .insights ul {
+            margin: 0;
+            padding-left: 20px;
+            color: #4e5969;
+        }
+        .footer {
+            text-align: center;
+            padding: 30px;
+            color: #8f959e;
+            font-size: 13px;
+        }
+        .cta-button {
+            display: inline-block;
+            background: #3370ff;
+            color: white;
+            padding: 12px 32px;
+            border-radius: 6px;
+            text-decoration: none;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>📊 热点猎手日报</h1>
+        <div class="meta">{{DATE}} | 精选 {{COUNT}} 个热点 | 生成时间 {{TIME}}</div>
+    </div>
+
+    <!-- 热点卡片 1 -->
+    <div class="hotspot-card">
+        <div class="hotspot-header">
+            <div class="hotspot-number">1</div>
+            <div class="hotspot-title">{{HOTSPOT_1_TITLE}}</div>
+        </div>
+        
+        <div class="hotspot-meta">
+            <span class="meta-item">📍 {{PLATFORM}}</span>
+            <span class="meta-item">🏷️ {{CATEGORY}}</span>
+            <span class="meta-item">⏰ {{WINDOW}}</span>
+        </div>
+
+        <!-- 角度A -->
+        <div class="angle-section">
+            <div class="angle-title">角度A: 情绪共鸣 💭</div>
+            <div class="content-title">{{ANGLE_A_TITLE}}</div>
+            <div class="hook">{{ANGLE_A_HOOK}}</div>
+            <ol class="outline">
+                {{ANGLE_A_OUTLINE}}
+            </ol>
+            <div class="tags">
+                <span class="tag platform">{{ANGLE_A_PLATFORM}}</span>
+                <span class="tag difficulty">{{ANGLE_A_DIFFICULTY}}</span>
+                <span class="tag">{{ANGLE_A_TIME}}</span>
+            </div>
+        </div>
+
+        <!-- 角度B -->
+        <div class="angle-section" style="border-color: #00b42a;">
+            <div class="angle-title" style="color: #00b42a;">角度B: 实用干货 📚</div>
+            <div class="content-title">{{ANGLE_B_TITLE}}</div>
+            <div class="hook">{{ANGLE_B_HOOK}}</div>
+            <ol class="outline">
+                {{ANGLE_B_OUTLINE}}
+            </ol>
+            <div class="tags">
+                <span class="tag platform">{{ANGLE_B_PLATFORM}}</span>
+                <span class="tag difficulty">{{ANGLE_B_DIFFICULTY}}</span>
+                <span class="tag">{{ANGLE_B_TIME}}</span>
+            </div>
+        </div>
+
+        <!-- 角度C -->
+        <div class="angle-section" style="border-color: #f53f3f;">
+            <div class="angle-title" style="color: #f53f3f;">角度C: 反常识观点 🤔</div>
+            <div class="content-title">{{ANGLE_C_TITLE}}</div>
+            <div class="hook">{{ANGLE_C_HOOK}}</div>
+            <ol class="outline">
+                {{ANGLE_C_OUTLINE}}
+            </ol>
+            <div class="tags">
+                <span class="tag platform">{{ANGLE_C_PLATFORM}}</span>
+                <span class="tag difficulty">{{ANGLE_C_DIFFICULTY}}</span>
+                <span class="tag">{{ANGLE_C_TIME}}</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 热点卡片 2, 3 类似... -->
+
+    <!-- 洞察 -->
+    <div class="insights">
+        <h3>💡 今日洞察</h3>
+        <ul>
+            {{INSIGHTS_LIST}}
+        </ul>
+    </div>
+
+    <div class="footer">
+        <p>热点猎手 Protocol 自动生成</p>
+        <a href="{{FULL_REPORT_URL}}" class="cta-button">查看完整报告</a>
+        <p>不想收到邮件？<a href="{{UNSUBSCRIBE_URL}}">取消订阅</a></p>
+    </div>
+</body>
+</html>

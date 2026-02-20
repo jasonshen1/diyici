@@ -1,0 +1,146 @@
+protocol:
+  id: "human-ai-system-v1.0.0"
+  name: "五层架构人机系统"
+  version: "1.0.0"
+  description: "基于指令链的AI协作基础设施，让普通人5分钟搭建人机协作系统"
+  
+  # 五环权重向量 (Five-Ring Weights)
+  five_rings:
+    will: 0.70        # 意志定义层 - 价值判断放大
+    structure: 0.85   # 结构抽象层 - Agent协作拓扑
+    instruction: 0.90 # 指令架构层 - Prompt链条
+    action: 0.75      # 执行自动化层 - Skills挂载
+    evolution: 0.60   # 反馈进化层 - 自调阈值
+  
+  # 性能指标 (Metrics)
+  metrics:
+    ldi: 0.28                    # 逻辑密度指数
+    bandwidth:
+      parallel_capacity: 3       # 并行决策数
+      decision_branching: 6      # 逻辑分叉数
+    evolutionary_capacity: 0.65  # 进化能力
+  
+  # SOP-EF 执行模型
+  execution:
+    model: "SOP-EF"
+    
+    # S - Sensing (输入感知)
+    sensing:
+      input_validation: true
+      schema:
+        - name: "user_intent"
+          type: "string"
+          required: true
+        - name: "context"
+          type: "object"
+          required: false
+    
+    # O - Operation (操作定义)
+    operation:
+      agent_matrix:
+        - id: "gateway"
+          role: "entry_point"
+          capacity: 10
+        - id: "processor"
+          role: "logic_executor"
+          capacity: 5
+        - id: "monitor"
+          role: "feedback_collector"
+          capacity: 3
+    
+    # P - Processing (核心处理)
+    processing:
+      primary_logic: "five_layer_orchestration"
+      decision_tree:
+        - condition: "input_type == 'deployment'"
+          action: "execute_deploy_protocol"
+        - condition: "input_type == 'diagnosis'"
+          action: "execute_diagnose_protocol"
+        - condition: "input_type == 'maintenance'"
+          action: "execute_maintenance_protocol"
+    
+    # E - Error Handling (错误处理)
+    error_handling:
+      l1:  # 性能降级
+        trigger: "primary_model_failure"
+        action: "fallback_to_secondary_model"
+        timeout: 30
+      l2:  # 范围缩小
+        trigger: "partial_function_failure"
+        action: "reduce_scope_keep_core"
+        notification: true
+      l3:  # 人工接管
+        trigger: "complete_automation_failure"
+        action: "escalate_to_human"
+        alert_channels: ["qq", "email"]
+    
+    # F - Feedback Injection (反馈注入)
+    feedback:
+      memory_storage: "file_based"
+      auto_optimize: true
+      optimize_triggers:
+        - "success_rate < 0.80"
+        - "execution_time > baseline * 2"
+        - "user_complaint_count > 3"
+  
+  # LPI 标准接口
+  interfaces:
+    lpi_version: "1.0"
+    
+    input:
+      - name: "intent"
+        type: "string"
+        format: "text"
+        required: true
+        description: "用户意图描述"
+      
+      - name: "parameters"
+        type: "object"
+        required: false
+        description: "执行参数"
+    
+    output:
+      - name: "result"
+        type: "object"
+        format: "json"
+        description: "执行结果"
+      
+      - name: "logs"
+        type: "array"
+        description: "执行日志"
+    
+    stateless: true
+  
+  # 依赖声明 (Composability)
+  dependencies:
+    - id: "openclaw-gateway"
+      version: ">=2026.2.0"
+      level: "T3"
+      interface: "gateway_api"
+      optional: false
+    
+    - id: "docker-runtime"
+      version: ">=20.10"
+      level: "T2"
+      interface: "container_api"
+      optional: false
+    
+    - id: "nginx-proxy"
+      version: ">=1.20"
+      level: "T2"
+      interface: "reverse_proxy"
+      optional: true
+  
+  # 协议等级
+  tier: "T4"
+  
+  # 测试覆盖
+  test_coverage: 0.85
+  
+  # 元数据
+  metadata:
+    created_at: "2026-02-14"
+    updated_at: "2026-02-14"
+    author: "OpenClaw"
+    license: "Commercial"
+    tags: ["human-ai", "orchestration", "automation", "five-layer"]

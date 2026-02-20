@@ -1,0 +1,41 @@
+# Test Case 04: Performance Stress
+# 性能压力测试
+
+test_id: "TC-04"
+name: "性能压力测试"
+description: "测试系统在高并发下的性能表现"
+
+test_data:
+  load_pattern:
+    type: "ramp_up"
+    initial_rps: 1
+    max_rps: 10
+    duration: 60
+    steps: 6
+  
+  metrics:
+    - name: "response_time_p95"
+      threshold: "< 2000ms"
+    - name: "error_rate"
+      threshold: "< 1%"
+    - name: "cpu_usage"
+      threshold: "< 80%"
+    - name: "memory_usage"
+      threshold: "< 1.5GB"
+  
+  expected_output:
+    status: "success"
+    performance:
+      response_time_p95: "< 2000ms"
+      throughput: ">= 8 rps"
+      error_rate: "< 1%"
+  
+  validation:
+    - field: "performance.response_time_p95"
+      operator: "less_than"
+      value: 2000
+    - field: "performance.error_rate"
+      operator: "less_than"
+      value: 0.01
+
+timeout: 120

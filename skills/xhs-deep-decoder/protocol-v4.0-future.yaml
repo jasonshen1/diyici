@@ -1,0 +1,218 @@
+# OpenClaw Skill: XHS-Deep-Decoder
+# Version: 4.0.0 (2026 Q1 Future-Proof)
+# Kernel: Multi-Modal & Anti-AIGC
+# Date: 2026-02-17
+# Author: Diyici.ai
+# Description: 2026年小红书流量算法逆向引擎 - 反AI化+真实感时代
+
+metadata:
+  name: "xhs-deep-decoder-v4"
+  version: "4.0.0"
+  type: "logic_protocol_asset"
+  author: "Diyici.ai"
+  era: "2026_Q1"
+  kernel: "Multi-Modal_Anti-AIGC"
+  
+# [核心指令]
+role: "小红书流量算法逆向引擎 (2026版)"
+context: "平台严厉打击AI生成感，推崇真人感+动态视觉"
+
+# [2026 算法权重 - The 2026 Rules]
+algorithm_weights:
+  humanity_score:
+    name: "含人量"
+    description: "检测文案口语、错别字梗、情绪发泄程度"
+    scoring: "0-100"
+    rule: "AI味越重，权重越低"
+    
+  live_visual_weight:
+    name: "动态权重"
+    description: "Live Photo或带播放按钮的视觉"
+    ctr_boost: "+30%"
+    keywords: ["原相机", "无滤镜", "Live实况"]
+    
+  private_domain_value:
+    name: "私域价值"
+    description: "导流群聊或瞬间转化的能力"
+    weight: "最高商业权重"
+    techniques:
+      - "避免'WX'关键词"
+      - "使用emoji 🟢 替代"
+      - "群聊邀请话术"
+
+# [执行协议流程 - SOP-v4]
+workflow:
+  
+  # Phase 1: Sensing (AI味嗅探 & 动态视觉)
+  phase_1_sensing:
+    steps:
+      - name: "AI毒性检测"
+        task: "扫描正文是否存在AI痕迹"
+        red_flags:
+          - "首先、其次、总之"
+          - "精心雕琢的排比句"
+          - "过于完美的结构"
+        action: "标记High_Risk_AIGC，建议修改为人话"
+        
+      - name: "视觉鲜活度"
+        task: "检测封面是否包含动态元素"
+        indicators:
+          - "原相机"
+          - "无滤镜"
+          - "Live实况"
+          - "3秒短视频"
+        scoring: "动态视觉+30% CTR权重"
+        
+  # Phase 2: Processing (黑箱推演)
+  phase_2_processing:
+    steps:
+      - name: "情绪共振 (Vibe Check)"
+        task: "2026用户讨厌说教，检测是否分享体验"
+        keywords:
+          - "碎碎念"
+          - "求助"
+          - "避雷"
+        note: "负面情绪往往比正面更真实"
+        
+      - name: "搜索霸屏 (SEO 2.0)"
+        task: "提取场景词而非关键词"
+        example:
+          traditional: "餐厅推荐"
+          context_tag: "约会去哪"
+        logic: "千人千面搜索需要场景匹配"
+        
+  # Phase 3: Output (双模交付)
+  phase_3_output:
+    format: "dual_mode_2026"
+    
+    part_a_markdown:
+      structure:
+        - header: "🧬 爆款基因解码报告 (v4.0 2026-Q1)"
+          meta: "Humanity Score: {{score}}/100 | AIGC Risk: High/Low"
+          
+        - section: "🤖 1. 去AI化诊断 (De-AI Diagnosis)"
+          fields:
+            - "AI味检测": "指出GPT词汇，必须删除"
+            - "人话修正": "'致力于打造'→'死磕了三天'"
+            - "视觉建议": "Live Photo或3秒短视频"
+            
+        - section: "🎯 2. 2026流量密码 (Traffic 2026)"
+          fields:
+            - "SEO场景词": "#约会去哪 > #餐厅推荐"
+            - "私域钩子": "如何安全引流到群聊"
+            
+        - section: "🚀 3. 像素级复刻 (Replication)"
+          formula: "真实感(Flaws) + 动态视觉(Live) + 情绪价值(Vibe)"
+          fields:
+            - "封面指令": "原相机直出 + 手写字体涂鸦"
+            - "标题优化": "去标题党，朋友对话风"
+            - "正文结构":
+                - "开头": "直接上情绪/结果，无废话"
+                - "中间": "口语化，允许1个语病增真实感"
+                - "结尾": "真诚提问，非机械引导"
+                
+    part_b_json:
+      required_fields:
+        compliance_check:
+          - aigc_probability: "Low"
+          - visual_trend: "Live_Photo_Style"
+          
+        content_strategy:
+          - tone_of_voice: "Authentic, Flawed, Emotional"
+          - suggested_title: ["真的...我哭死...", "听劝！别再买..."]
+          - seo_context_tags: ["#场景词1", "#场景词2"]
+          
+        conversion_path:
+          - hook_type: "Private_Group_Invite"
+          - risk_avoidance: "Avoid 'WX', use 🟢"
+
+# [2026 vs 2024 对比]
+paradigm_shift:
+  from: "数据驱动 + 结构化 + 完美文案"
+  to: "反AI化 + 真实感 + 口语瑕疵"
+  
+  key_changes:
+    - "LDI (逻辑密度) → Humanity (含人量)"
+    - "关键词 → 场景词"
+    - "精修图 → Live Photo"
+    - "直接带货 → 私域导流"
+    - "教育用户 → 分享体验"
+
+# [Anti-AI 词汇表]
+ai_toxic_words:
+  - "首先"
+  - "其次"
+  - "总之"
+  - "综上所述"
+  - "值得注意的是"
+  - "从某种程度上说"
+  - "致力于打造"
+  - "核心竞争力"
+  
+human_replacements:
+  "致力于打造": "死磕了三天"
+  "核心竞争力": "最NB的地方"
+  "综上所述": "说白了"
+  "值得注意的是": "重点来了"
+
+# [私域导流话术库]
+private_domain_hooks:
+  safe_alternatives:
+    - "WX" → "🟢"
+    - "微信" → "小地球"
+    - "群聊" → "小分队"
+    - "加好友" → "戳戳我"
+  
+  invitation_templates:
+    - "感兴趣的姐妹戳戳我，拉你进小分队"
+    - "更多干货在🟢里聊"
+    - "评论区扣1，我丝你"
+
+# [场景词示例库]
+context_tags_examples:
+  美食:
+    keyword: "餐厅推荐"
+    context: "约会去哪"
+  穿搭:
+    keyword: "秋冬穿搭"
+    context: "见家长穿什么"
+  绘本:
+    keyword: "童书推荐"
+    context: "睡前读什么"
+  护肤:
+    keyword: "精华推荐"
+    context: "烂脸怎么救"
+
+# [升级路径]
+versioning:
+  history:
+    - version: "2.0.0"
+      era: "2024-2025"
+      focus: "数据驱动，逻辑拆解"
+      
+    - version: "4.0.0"
+      era: "2026 Q1"
+      focus: "反AI化，真实感，私域导流"
+      trigger: "平台严打AI生成内容"
+      
+  future_roadmap:
+    - version: "5.0.0"
+      era: "2026 Q3"
+      predicted: "AR试穿+AI口播，真人+AI混合"
+
+# [使用场景]
+use_cases:
+  - scenario: "2026年内容创作"
+    action: "先用v4.0检测AI味，再优化"
+    
+  - scenario: "历史内容诊断"
+    action: "用v4.0标准评估旧内容，标记High AIGC Risk"
+    
+  - scenario: "跨版本对比"
+    action: "同一内容用v2.0和v4.0分析，看策略差异"
+
+# [风险提示]
+warnings:
+  - "v4.0标准基于预测，实际平台政策可能变化"
+  - "Humanity Score主观性强，需结合实际数据验证"
+  - "私域导流存在合规风险，需遵守平台规则"

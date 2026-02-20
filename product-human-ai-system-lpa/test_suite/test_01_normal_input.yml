@@ -1,0 +1,31 @@
+# Test Case 01: Normal Input
+# 测试正常输入场景
+
+test_id: "TC-01"
+name: "正常输入测试"
+description: "验证系统在正常输入下的正确执行"
+
+test_data:
+  input:
+    intent: "部署网站"
+    parameters:
+      domain: "example.com"
+      type: "static"
+  
+  expected_output:
+    status: "success"
+    result:
+      deployed_url: "https://example.com"
+      build_time: "< 60s"
+    logs:
+      - contains: "部署成功"
+  
+  validation:
+    - field: "status"
+      operator: "equals"
+      value: "success"
+    - field: "result.deployed_url"
+      operator: "equals"
+      value: "https://example.com"
+
+timeout: 120

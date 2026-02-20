@@ -1,0 +1,42 @@
+# Test Case 03: Error Recovery
+# 测试错误恢复能力
+
+test_id: "TC-03"
+name: "错误恢复测试"
+description: "验证L1/L2/L3降级策略的有效性"
+
+test_data:
+  scenarios:
+    - name: "L1降级 - 模型失败"
+      trigger: "primary_model_failure"
+      expected:
+        status: "success"
+        fallback_used: "secondary_model"
+        degradation: "none"
+    
+    - name: "L2降级 - 部分功能失败"
+      trigger: "partial_function_failure"
+      expected:
+        status: "partial_success"
+        scope_reduced: true
+        core_functional: true
+    
+    - name: "L3降级 - 完全失败"
+      trigger: "complete_failure"
+      expected:
+        status: "failed"
+        human_escalation: true
+        alert_sent: true
+  
+  validation:
+    - scenario: "L1降级"
+      assert:
+        - field: "fallback_used"
+          operator: "exists"
+    - scenario: "L3降级"
+      assert:
+        - field: "human_escalation"
+          operator: "equals"
+          value: true
+
+timeout: 180

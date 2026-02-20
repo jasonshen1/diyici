@@ -1,0 +1,30 @@
+# Test Case 02: Boundary Condition
+# 测试边界条件
+
+test_id: "TC-02"
+name: "边界条件测试"
+description: "测试系统在边界条件下的稳定性"
+
+test_data:
+  input:
+    # 测试超长域名
+    domain: "a-very-long-domain-name-that-exceeds-normal-length.example.com"
+    # 测试特殊字符
+    special_chars: "!@#$%^&*()"
+    # 测试空参数
+    empty_param: ""
+  
+  expected_output:
+    status: "partial_success"
+    warnings:
+      - "域名长度超出推荐范围"
+      - "检测到特殊字符，已自动过滤"
+    
+  validation:
+    - field: "status"
+      operator: "in"
+      value: ["success", "partial_success"]
+    - field: "warnings"
+      operator: "not_empty"
+
+timeout: 60

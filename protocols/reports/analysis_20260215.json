@@ -1,0 +1,76 @@
+{
+  "date": "20260215",
+  "total": 5,
+  "recommendations": [
+    {
+      "rank": 2,
+      "title": "某知名演员被曝出轨，工作室紧急回应",
+      "platform": "综合",
+      "hot_value": 18900000,
+      "url": "https://example.com/2",
+      "category": "娱乐",
+      "description": "某演员被拍到与异性深夜同回酒店，引发热议",
+      "timestamp": "2026-02-15T10:35:21.214053",
+      "scores": {
+        "spread": 9,
+        "timeliness": 10,
+        "controversy": 8,
+        "difficulty": 7,
+        "monetization": 7
+      },
+      "total_score": 41,
+      "window_period": "6-12小时",
+      "recommended": true,
+      "reason": "传播度高+时效性好+有讨论空间",
+      "analysis_rank": 1
+    },
+    {
+      "rank": 1,
+      "title": "微信新功能上线：支持发送4K视频",
+      "platform": "综合",
+      "hot_value": 12500000,
+      "url": "https://example.com/1",
+      "category": "科技",
+      "description": "微信iOS版本更新，支持发送原画4K视频，不再压缩",
+      "timestamp": "2026-02-15T10:35:21.214036",
+      "scores": {
+        "spread": 7,
+        "timeliness": 10,
+        "controversy": 6,
+        "difficulty": 7,
+        "monetization": 8
+      },
+      "total_score": 38,
+      "window_period": "6-12小时",
+      "recommended": true,
+      "reason": "时效性好",
+      "analysis_rank": 2
+    },
+    {
+      "rank": 5,
+      "title": "OpenAI发布GPT-5，能力全面提升",
+      "platform": "综合",
+      "hot_value": 15200000,
+      "url": "https://example.com/5",
+      "category": "科技",
+      "description": "GPT-5支持多模态，推理能力大幅提升",
+      "timestamp": "2026-02-15T10:35:21.214059",
+      "scores": {
+        "spread": 7,
+        "timeliness": 10,
+        "controversy": 6,
+        "difficulty": 7,
+        "monetization": 8
+      },
+      "total_score": 38,
+      "window_period": "6-12小时",
+      "recommended": true,
+      "reason": "时效性好",
+      "analysis_rank": 3
+    }
+  ],
+  "insights": [
+    "今日科技类热点占10%，适合相关领域账号跟进",
+    "有3个热点处于爆发期，建议6小时内跟进"
+  ]
+}

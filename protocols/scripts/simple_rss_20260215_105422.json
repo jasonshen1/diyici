@@ -1,0 +1,202 @@
+[
+  {
+    "rank": 1,
+    "title": "Waymo 付费给 DoorDash 零工给自动驾驶汽车关车门",
+    "platform": "Solidot",
+    "hot_value": 860000,
+    "category": "科技",
+    "url": "https://www.solidot.org/story?sid=83562",
+    "description": "",
+    "timestamp": "2026-02-15T10:54:17.707752"
+  },
+  {
+    "rank": 2,
+    "title": "OpenAI 再次表示 DeepSeek 利用蒸馏训练其模型",
+    "platform": "Solidot",
+    "hot_value": 820000,
+    "category": "科技",
+    "url": "https://www.solidot.org/story?sid=83561",
+    "description": "",
+    "timestamp": "2026-02-15T10:54:17.707769"
+  },
+  {
+    "rank": 3,
+    "title": "Ars 报道的 AI 新闻包含了 AI 生成的虚假引言",
+    "platform": "Solidot",
+    "hot_value": 780000,
+    "category": "科技",
+    "url": "https://www.solidot.org/story?sid=83560",
+    "description": "",
+    "timestamp": "2026-02-15T10:54:17.707772"
+  },
+  {
+    "rank": 4,
+    "title": "我用豆包大模型2.0手搓了macOS，Seedance 2.0后字节再送春节AI大礼",
+    "platform": "爱范儿",
+    "hot_value": 770000,
+    "category": "科技",
+    "url": "https://www.ifanr.com/1655221?utm_source=rss&utm_medium=rss&utm_campaign=",
+    "description": "",
+    "timestamp": "2026-02-15T10:54:19.376743"
+  },
+  {
+    "rank": 5,
+    "title": "NCAR 的天气预报超算被转交给第三方",
+    "platform": "Solidot",
+    "hot_value": 740000,
+    "category": "科技",
+    "url": "https://www.solidot.org/story?sid=83559",
+    "description": "",
+    "timestamp": "2026-02-15T10:54:17.707774"
+  },
+  {
+    "rank": 6,
+    "title": "真我 Neo8 体验：从性能、显示到影像来了一次全面升级，真正全面的性价比旗舰",
+    "platform": "爱范儿",
+    "hot_value": 740000,
+    "category": "科技",
+    "url": "https://www.ifanr.com/1655222?utm_source=rss&utm_medium=rss&utm_campaign=",
+    "description": "",
+    "timestamp": "2026-02-15T10:54:19.376755"
+  },
+  {
+    "rank": 7,
+    "title": "稚晖君最新机器人「凌空飞踢」震撼全网！智元远征 A3：我要一个打十个",
+    "platform": "爱范儿",
+    "hot_value": 710000,
+    "category": "科技",
+    "url": "https://www.ifanr.com/1655204?utm_source=rss&utm_medium=rss&utm_campaign=",
+    "description": "",
+    "timestamp": "2026-02-15T10:54:19.376758"
+  },
+  {
+    "rank": 8,
+    "title": "中国成功测试可重复使用的新型火箭",
+    "platform": "Solidot",
+    "hot_value": 700000,
+    "category": "科技",
+    "url": "https://www.solidot.org/story?sid=83558",
+    "description": "",
+    "timestamp": "2026-02-15T10:54:17.707777"
+  },
+  {
+    "rank": 9,
+    "title": "早报｜影石CEO回应年会送房送车/12306新增「低人一等座」提醒/OpenAI发布新模型，用英伟达对手芯片",
+    "platform": "爱范儿",
+    "hot_value": 680000,
+    "category": "科技",
+    "url": "https://www.ifanr.com/1655183?utm_source=rss&utm_medium=rss&utm_campaign=",
+    "description": "",
+    "timestamp": "2026-02-15T10:54:19.376761"
+  },
+  {
+    "rank": 10,
+    "title": "科学家警告地球接近气候临界点",
+    "platform": "Solidot",
+    "hot_value": 660000,
+    "category": "科技",
+    "url": "https://www.solidot.org/story?sid=83557",
+    "description": "",
+    "timestamp": "2026-02-15T10:54:17.707779"
+  },
+  {
+    "rank": 11,
+    "title": "iQOO 15 Ultra 评测：堆砌参数路数已尽，主动散热将是手机性能的唯一解",
+    "platform": "爱范儿",
+    "hot_value": 650000,
+    "category": "科技",
+    "url": "https://www.ifanr.com/1654816?utm_source=rss&utm_medium=rss&utm_campaign=",
+    "description": "",
+    "timestamp": "2026-02-15T10:54:19.376766"
+  },
+  {
+    "rank": 12,
+    "title": "当超级智能成为信仰，我们需要谈谈节奏",
+    "platform": "Solidot",
+    "hot_value": 620000,
+    "category": "科技",
+    "url": "https://www.solidot.org/story?sid=83556",
+    "description": "",
+    "timestamp": "2026-02-15T10:54:17.707782"
+  },
+  {
+    "rank": 13,
+    "title": "Trump Phone 真机现身，懂王的第 366 赢",
+    "platform": "爱范儿",
+    "hot_value": 620000,
+    "category": "科技",
+    "url": "https://www.ifanr.com/1655035?utm_source=rss&utm_medium=rss&utm_campaign=",
+    "description": "",
+    "timestamp": "2026-02-15T10:54:19.376769"
+  },
+  {
+    "rank": 14,
+    "title": "赛前必「摸福」？阿里云这个 AI 装置成了运动员的「冬奥许愿池」",
+    "platform": "爱范儿",
+    "hot_value": 590000,
+    "category": "科技",
+    "url": "https://www.ifanr.com/1654993?utm_source=rss&utm_medium=rss&utm_campaign=",
+    "description": "",
+    "timestamp": "2026-02-15T10:54:19.376772"
+  },
+  {
+    "rank": 15,
+    "title": "麻疹卷土重来",
+    "platform": "Solidot",
+    "hot_value": 580000,
+    "category": "科技",
+    "url": "https://www.solidot.org/story?sid=83555",
+    "description": "",
+    "timestamp": "2026-02-15T10:54:17.707788"
+  },
+  {
+    "rank": 16,
+    "title": "挥别燃油时代，全新丰田汉兰达彻底电动化！续航仅 500 公里",
+    "platform": "爱范儿",
+    "hot_value": 560000,
+    "category": "科技",
+    "url": "https://www.ifanr.com/1655080?utm_source=rss&utm_medium=rss&utm_campaign=",
+    "description": "",
+    "timestamp": "2026-02-15T10:54:19.376777"
+  },
+  {
+    "rank": 17,
+    "title": "首次观测到恒星直接坍缩成黑洞",
+    "platform": "Solidot",
+    "hot_value": 540000,
+    "category": "科技",
+    "url": "https://www.solidot.org/story?sid=83554",
+    "description": "",
+    "timestamp": "2026-02-15T10:54:17.707791"
+  },
+  {
+    "rank": 18,
+    "title": "体验完智谱刚刚发布的 GLM-5，我终于明白它为什么让硅谷猜破了头",
+    "platform": "爱范儿",
+    "hot_value": 530000,
+    "category": "科技",
+    "url": "https://www.ifanr.com/1655048?utm_source=rss&utm_medium=rss&utm_campaign=",
+    "description": "",
+    "timestamp": "2026-02-15T10:54:19.376780"
+  },
+  {
+    "rank": 19,
+    "title": "长江禁渔令缓解了生态系统恶化",
+    "platform": "Solidot",
+    "hot_value": 500000,
+    "category": "科技",
+    "url": "https://www.solidot.org/story?sid=83553",
+    "description": "",
+    "timestamp": "2026-02-15T10:54:17.707793"
+  },
+  {
+    "rank": 20,
+    "title": "库克退休前，能见到 AI Siri 上线吗？",
+    "platform": "爱范儿",
+    "hot_value": 500000,
+    "category": "科技",
+    "url": "https://www.ifanr.com/1655021?utm_source=rss&utm_medium=rss&utm_campaign=",
+    "description": "",
+    "timestamp": "2026-02-15T10:54:19.376783"
+  }
+]

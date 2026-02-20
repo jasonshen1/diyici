@@ -1,0 +1,218 @@
+# OpenClaw Protocol Asset: XHS-Deep-Decoder-v2.0
+# ID: LPA-XHS-2024-V2
+# Type: Logic_Protocol_Asset (.lpa)
+# Description: 小红书爆款笔记逆向工程协议 - 深度分析版 (QQ Bot 优化排版)
+# Optimized for: 单会话深度分析，紧凑表格输出，JSON 数据后置
+
+metadata:
+  name: "小红书爆款逆向解码器"
+  version: "2.0.0"
+  author: "Diyici.ai"
+  ldi_score: 14.5
+  runtime: "OpenClaw_Executor_v1"
+  optimized_for: "QQ_Bot_Long_Text"
+
+# [1. 意志层 - Will]
+will:
+  core_objective: "Reverse_Engineering"
+  value_bias: "Data_Driven"
+  output_style: "Structured_Deep_Analysis"
+  priority: "Depth_Over_Brevity"
+
+# [2. 结构层 - Structure]
+agents:
+  - id: "visual_decoder"
+    role: "视觉注意力分析师"
+    focus: "CTR驱动因素"
+    output: "封面策略 + 视觉公式"
+    
+  - id: "seo_hunter"
+    role: "搜索流量专家"
+    focus: "关键词布局 + 流量来源"
+    output: "核心词/长尾词/埋词策略"
+    
+  - id: "psych_profiler"
+    role: "用户情绪侧写师"
+    focus: "留存与转化"
+    output: "情绪曲线 + 埋雷点 + 结构映射"
+    
+  - id: "strategy_maker"
+    role: "爆款复制策划人"
+    focus: "可执行方案"
+    output: "1:1复刻公式 + 避坑指南"
+
+# [3. 执行层 - SOP-EF Loop]
+workflow:
+  # Step 1: Sensing (全域感知)
+  - step: "Sensing"
+    agent: "system"
+    action: "input_validation"
+    required_inputs:
+      - "title"
+      - "content"
+      - "cover_desc"
+      - "tags"
+    optional_inputs:
+      - "cover_image"
+      - "engagement_data"
+    error_handling:
+      if_missing_cover: "Continue_with_text_analysis_flag"
+      
+  # Step 2: Processing (并行分析)
+  - step: "Processing_Parallel"
+    sub_steps:
+      - agent: "visual_decoder"
+        tasks:
+          - "封面构图分析"
+          - "色彩心理学判断"
+          - "CTR驱动因素识别"
+          - "视觉公式提取"
+          
+      - agent: "seo_hunter"
+        tasks:
+          - "核心关键词提取"
+          - "长尾词挖掘"
+          - "埋词位置分析"
+          - "流量来源判断(推荐/搜索/混合)"
+          
+      - agent: "psych_profiler"
+        tasks:
+          - "结构映射(开头-中段-结尾)"
+          - "埋雷点(Ploughing)检测"
+          - "情绪曲线绘制"
+          - "互动诱饵识别"
+          
+  # Step 3: Strategy (策略生成)
+  - step: "Strategy_Synthesis"
+    agent: "strategy_maker"
+    logic: "整合三Agent结果"
+    output:
+      - "流量入口分析"
+      - "SEO矩阵"
+      - "转化逻辑"
+      - "1:1复刻公式"
+      
+  # Step 4: Formatting (排版优化)
+  - step: "Output_Formatting"
+    format_rules:
+      - "Agent结果用紧凑表格"
+      - "关键公式高亮标注"
+      - "JSON数据后置"
+      - "总字符控制在QQ安全范围内"
+
+# [4. 输出格式规范 - Output Spec]
+output_template: |
+  ## 🔬 重新分析（v2.0 深度版）
+  
+  ### 📥 Step 1: Sensing - 全域感知
+  [输入数据表格]
+  
+  ### 🔬 Step 2: Processing - 核心逻辑推演
+  
+  #### **Agent 1: Visual Decoder (视觉注意力分析)**
+  [紧凑表格：维度/发现/爆款基因]
+  
+  **关键洞察：** [一句话总结]
+  
+  ---
+  
+  #### **Agent 2: SEO Hunter (搜索流量逆向)**
+  [关键词表格]
+  
+  **埋词策略分析：**
+  - [要点1]
+  - [要点2]
+  
+  **流量判断：** [X]%推荐 + [Y]%搜索
+  
+  ---
+  
+  #### **Agent 3: Psych Profiler (情绪侧写与留存)**
+  **结构映射：**
+  ```
+  [结构流程图]
+  ```
+  
+  **埋雷 (Ploughing) 检测：**
+  | 位置 | 话术 | 预期互动 |
+  
+  **情绪曲线：**
+  ```
+  [情绪流转]
+  ```
+  
+  ---
+  
+  #### **Agent 4: Strategy Maker (仿写策略生成)**
+  
+  ### 🧬 爆款基因解码报告
+  
+  #### 1. 流量入口 (CTR Analysis)
+  - **封面逻辑**: [分析]
+  - **标题套路**: `[公式]`
+  - **视觉钩子**: [洞察]
+  
+  #### 2. 搜索权重 (SEO Matrix)
+  - **核心词**: [列表]
+  - **长尾词**: [列表]
+  - **埋词策略**: [策略]
+  - **流量判断**: [比例]
+  
+  #### 3. 转化逻辑 (Conversion)
+  - **情绪按钮**: [流转]
+  - **互动诱饵**: [话术]
+  - **代际传承**: [闭环]
+  
+  #### 4. 🚀 1:1 复刻公式 (Action Plan)
+  [详细执行步骤]
+  
+  ---
+  
+  ### 📊 Agent 执行摘要
+  [4列表格：Agent/核心发现/可复用公式]
+  
+  ---
+  
+  ## 📦 结构化数据（JSON）
+  ```json
+  [完整JSON数据]
+  ```
+  
+  ✅ **协议 v2.0 深度分析完成**
+
+# [5. 熔断与反馈]
+constraints:
+  - rule: "Anti-Ad-Bias"
+    condition: "If content is >80% hard sales logic"
+    action: "Mark as [ADVERTISEMENT], analyze soft-sell technique"
+    
+  - rule: "Length_Control"
+    condition: "If output > 4000 chars"
+    action: "Compress tables, move JSON to file attachment"
+    
+  - rule: "Missing_Cover"
+    condition: "If no cover_image provided"
+    action: "Flag [COVER_INFERRED], continue with text-based analysis"
+
+# [6. 优化记录]
+changelog:
+  - version: "2.0.0"
+    change: "从4-Agent并行改为单会话CoT模拟，优化QQ长文本排版"
+    
+  - version: "2.0.1"
+    change: "尝试Single-Core压缩版，发现深度不足"
+    
+  - version: "2.0.2 (Current)"
+    change: "回到v2.0深度，优化表格紧凑度，JSON后置"
+    features:
+      - "保留4-Agent逻辑视角"
+      - "表格化呈现减少篇幅"
+      - "关键公式高亮"
+      - "结构化数据可归档"
+
+# [7. 使用说明]
+usage:
+  trigger: "提供小红书笔记链接/截图/文字"
+  output: "深度分析报告 + 可执行公式 + JSON数据"
+  best_for: "深度拆解、团队讨论、数据积累"
+  not_for: "快速浏览、移动端轻量查看"

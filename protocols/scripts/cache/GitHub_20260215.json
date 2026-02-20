@@ -1,0 +1,112 @@
+[
+  {
+    "rank": 1,
+    "title": "GitHub热门: tambo-ai/tambo",
+    "platform": "GitHub",
+    "hot_value": 55961,
+    "url": "https://github.com/tambo-ai/tambo",
+    "category": "科技",
+    "description": "Generative UI SDK for React",
+    "timestamp": "2026-02-15T10:37:36.166950"
+  },
+  {
+    "rank": 2,
+    "title": "GitHub热门: SynkraAI/aios-core",
+    "platform": "GitHub",
+    "hot_value": 34198,
+    "url": "https://github.com/SynkraAI/aios-core",
+    "category": "科技",
+    "description": "Synkra AIOS: AI-Orchestrated System for Full Stack Development - Core Framework v4.0",
+    "timestamp": "2026-02-15T10:37:36.167041"
+  },
+  {
+    "rank": 3,
+    "title": "GitHub热门: rowboatlabs/rowboat",
+    "platform": "GitHub",
+    "hot_value": 8953,
+    "url": "https://github.com/rowboatlabs/rowboat",
+    "category": "科技",
+    "description": "Open-source AI coworker, with memory",
+    "timestamp": "2026-02-15T10:37:36.167112"
+  },
+  {
+    "rank": 4,
+    "title": "GitHub热门: minio/minio",
+    "platform": "GitHub",
+    "hot_value": 67133,
+    "url": "https://github.com/minio/minio",
+    "category": "科技",
+    "description": "MinIO is a high-performance, S3 compatible object store, open sourced under GNU AGPLv3 license.",
+    "timestamp": "2026-02-15T10:37:36.167210"
+  },
+  {
+    "rank": 5,
+    "title": "GitHub热门: ChromeDevTools/chrome-devtools-mcp",
+    "platform": "GitHub",
+    "hot_value": 61784,
+    "url": "https://github.com/ChromeDevTools/chrome-devtools-mcp",
+    "category": "科技",
+    "description": "Chrome DevTools for coding agents",
+    "timestamp": "2026-02-15T10:37:36.167278"
+  },
+  {
+    "rank": 6,
+    "title": "GitHub热门: alibaba/zvec",
+    "platform": "GitHub",
+    "hot_value": 45086,
+    "url": "https://github.com/alibaba/zvec",
+    "category": "科技",
+    "description": "A lightweight, lightning-fast, in-process vector database",
+    "timestamp": "2026-02-15T10:37:36.167352"
+  },
+  {
+    "rank": 7,
+    "title": "GitHub热门: ruvnet/wifi-densepose",
+    "platform": "GitHub",
+    "hot_value": 70304,
+    "url": "https://github.com/ruvnet/wifi-densepose",
+    "category": "科技",
+    "description": "Production-ready implementation of InvisPose - a revolutionary WiFi-based dense human pose estimatio",
+    "timestamp": "2026-02-15T10:37:36.167421"
+  },
+  {
+    "rank": 8,
+    "title": "GitHub热门: Zipstack/unstract",
+    "platform": "GitHub",
+    "hot_value": 82356,
+    "url": "https://github.com/Zipstack/unstract",
+    "category": "科技",
+    "description": "No-code LLM Platform to launch APIs and ETL Pipelines to structure unstructured documents",
+    "timestamp": "2026-02-15T10:37:36.167492"
+  },
+  {
+    "rank": 9,
+    "title": "GitHub热门: letta-ai/letta-code",
+    "platform": "GitHub",
+    "hot_value": 78398,
+    "url": "https://github.com/letta-ai/letta-code",
+    "category": "科技",
+    "description": "The memory-first coding agent",
+    "timestamp": "2026-02-15T10:37:36.167558"
+  },
+  {
+    "rank": 10,
+    "title": "GitHub热门: ruby/ruby",
+    "platform": "GitHub",
+    "hot_value": 40868,
+    "url": "https://github.com/ruby/ruby",
+    "category": "科技",
+    "description": "The Ruby Programming Language",
+    "timestamp": "2026-02-15T10:37:36.167622"
+  },
+  {
+    "rank": 11,
+    "title": "GitHub热门: cinnyapp/cinny",
+    "platform": "GitHub",
+    "hot_value": 79720,
+    "url": "https://github.com/cinnyapp/cinny",
+    "category": "科技",
+    "description": "Yet another matrix client",
+    "timestamp": "2026-02-15T10:37:36.167685"
+  }
+]

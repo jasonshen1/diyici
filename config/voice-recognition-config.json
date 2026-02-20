@@ -1,0 +1,57 @@
+{
+  "voice_recognition": {
+    "enabled": true,
+    "model": "whisper-base",
+    "language": "zh",
+    "prompt_context": "这是关于服务器管理、网站部署、AI系统配置的技术对话",
+    
+    "confidence_thresholds": {
+      "direct_process": 0.85,
+      "confirmation_required": 0.60,
+      "clarification_required": 0.00
+    },
+    
+    "confirmation": {
+      "enabled": true,
+      "show_alternatives": 3,
+      "timeout_seconds": 60,
+      "auto_confirm_high_confidence": false
+    },
+    
+    "context_correction": {
+      "enabled": true,
+      "max_context_messages": 10,
+      "domain_keywords": [
+        "服务器", "部署", "网站", "域名", "配置",
+        "GitHub", "OpenClaw", "Gateway", "Docker",
+        "协议", "指令链", "知识液态化", "五层架构"
+      ]
+    },
+    
+    "correction_map": {
+      "京东配送": ["帮我建个网站", "帮我建网站", "帮我建个网", "帮我见个网友"],
+      "今晚测试": ["今晚吃啥", "今晚设施"],
+      "自动调优": ["自动钓鱼", "自动调取"],
+      "指令链": ["指令练", "质量链"],
+      "知识液态化": ["只是液态化", "知识太简化"],
+      "GitHub": ["github", "给哈布", "吉特哈布"],
+      "OpenClaw": ["openclaw", "欧鹏克劳", "open claw"],
+      "Gateway": ["给特威", "gateway", "gate way"]
+    }
+  },
+  
+  "interaction_templates": {
+    "confirmation": {
+      "template": "🎤 语音转文字：\n\"{recognized_text}\"\n\n置信度：{confidence}%\n\n你是说：\n{alternatives}\n\n请回复数字确认，或重新说一遍",
+      "alternative_format": "[{index}] {text} {indicator}"
+    },
+    
+    "clarification": {
+      "template": "🎤 抱歉，我没听清楚\n\n我听到的是：\"{recognized_text}\"\n但这似乎不太对...\n\n可能你是想说：\n{suggestions}\n\n请用文字输入，或再说一遍，说慢一点~ 😊"
+    },
+    
+    "correction_notice": {
+      "template": "🎤 语音转文字：\"{original_text}\"\n\n⚠️ 自动校正为：\"{corrected_text}\"\n\n是否正确？\n[1] 是 ✅\n[2] 否，原意是..."
+    }
+  }
+}

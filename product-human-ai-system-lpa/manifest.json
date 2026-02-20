@@ -1,0 +1,76 @@
+{
+  "protocol_id": "human-ai-system-v1.0.0",
+  "name": "五层架构人机系统",
+  "version": "1.0.0",
+  "description": "基于指令链的AI协作基础设施，让普通人5分钟搭建人机协作系统",
+  
+  "created_at": "2026-02-14T00:00:00Z",
+  "updated_at": "2026-02-14T00:00:00Z",
+  
+  "author": {
+    "name": "OpenClaw",
+    "contact": "contact@openclaw.ai",
+    "organization": "diyici.ai"
+  },
+  
+  "five_rings": {
+    "will": 0.70,
+    "structure": 0.85,
+    "instruction": 0.90,
+    "action": 0.75,
+    "evolution": 0.60
+  },
+  
+  "metrics": {
+    "ldi": 0.28,
+    "bandwidth": {
+      "parallel_capacity": 3,
+      "decision_branching": 6
+    },
+    "evolutionary_capacity": 0.65
+  },
+  
+  "execution_model": "SOP-EF",
+  
+  "tier": "T4",
+  
+  "interfaces": ["LPI-v1.0"],
+  
+  "test_coverage": 0.85,
+  
+  "pricing": {
+    "base_price_usd": 599,
+    "pricing_model": "one_time",
+    "calculated_value": 612
+  },
+  
+  "compatibility": {
+    "platforms": ["linux", "macos"],
+    "requirements": {
+      "cpu_cores": 2,
+      "memory_gb": 2,
+      "disk_gb": 10,
+      "docker_version": ">=20.10",
+      "docker_compose_version": ">=1.29"
+    }
+  },
+  
+  "tags": [
+    "human-ai",
+    "orchestration",
+    "automation",
+    "five-layer",
+    "openclaw"
+  ],
+  
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/openclaw/human-ai-system"
+  },
+  
+  "documentation": {
+    "readme": "README.md",
+    "logic_map": "logic_flow.svg",
+    "api_reference": "docs/api.md"
+  }
+}

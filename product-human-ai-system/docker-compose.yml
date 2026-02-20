@@ -1,0 +1,73 @@
+# 五层架构人机系统 - 一键部署包
+# Five-Layer Human-AI System - One-Click Deployment
+# 版本: v1.0.0
+# 作者: OpenClaw
+# 发布时间: 2026-02-14
+
+version: '3.8'
+
+services:
+  openclaw-gateway:
+    image: node:22-alpine
+    container_name: openclaw-gateway
+    restart: unless-stopped
+    ports:
+      - "18789:18789"
+    volumes:
+      - ./config:/root/.openclaw:rw
+      - ./workspace:/root/.openclaw/workspace:rw
+      - ./logs:/tmp/openclaw:rw
+    environment:
+      - NODE_ENV=production
+      - OPENCLAW_GATEWAY_PORT=18789
+      - OPENCLAW_GATEWAY_TOKEN=${GATEWAY_TOKEN:-auto-generated}
+    command: >
+      sh -c "npm install -g openclaw && openclaw gateway start"
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:18789/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - human-ai-network
+
+  auto-tune:
+    image: alpine:latest
+    container_name: auto-tune-monitor
+    restart: unless-stopped
+    volumes:
+      - ./scripts/auto-tune.sh:/app/auto-tune.sh:ro
+      - ./logs:/var/log:rw
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    command: >
+      sh -c "chmod +x /app/auto-tune.sh && while true; do /app/auto-tune.sh; sleep 1800; done"
+    networks:
+      - human-ai-network
+    depends_on:
+      - openclaw-gateway
+
+  nginx:
+    image: nginx:alpine
+    container_name: human-ai-nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/sites:/etc/nginx/sites-enabled:ro
+      - ./workspace/websites:/var/www:ro
+      - ./ssl:/etc/nginx/ssl:ro
+    depends_on:
+      - openclaw-gateway
+    networks:
+      - human-ai-network
+
+networks:
+  human-ai-network:
+    driver: bridge
+
+volumes:
+  openclaw-config:
+  openclaw-logs:

@@ -1,0 +1,82 @@
+[
+  {
+    "rank": 1,
+    "title": "《哪吒2》票房突破100亿，成中国影史第一",
+    "platform": "综合",
+    "hot_value": 52100000,
+    "url": "https://example.com/1",
+    "category": "娱乐",
+    "description": "动画电影《哪吒2》上映15天票房破百亿，创造多项纪录",
+    "timestamp": "2026-02-15T10:38:44.875972"
+  },
+  {
+    "rank": 2,
+    "title": "DeepSeek发布V3模型，性能超越GPT-4",
+    "platform": "综合",
+    "hot_value": 48900000,
+    "url": "https://example.com/2",
+    "category": "科技",
+    "description": "国产AI公司DeepSeek发布新一代大模型，推理能力大幅提升",
+    "timestamp": "2026-02-15T10:38:44.875983"
+  },
+  {
+    "rank": 3,
+    "title": "2026考研国家线公布，多个专业分数线上涨",
+    "platform": "综合",
+    "hot_value": 35600000,
+    "url": "https://example.com/3",
+    "category": "社会",
+    "description": "教育部公布2026年考研国家线，计算机、金融等热门专业分数线创新高",
+    "timestamp": "2026-02-15T10:38:44.875985"
+  },
+  {
+    "rank": 4,
+    "title": "微信推出AI助手功能，可自动生成朋友圈文案",
+    "platform": "综合",
+    "hot_value": 29800000,
+    "url": "https://example.com/4",
+    "category": "科技",
+    "description": "微信内测AI助手，支持文案生成、图片优化等功能",
+    "timestamp": "2026-02-15T10:38:44.875987"
+  },
+  {
+    "rank": 5,
+    "title": "某主播直播带货翻车，销售额造假被实锤",
+    "platform": "综合",
+    "hot_value": 26700000,
+    "url": "https://example.com/5",
+    "category": "社会",
+    "description": "头部主播直播间被曝刷单造假，市场监管部门介入调查",
+    "timestamp": "2026-02-15T10:38:44.875989"
+  },
+  {
+    "rank": 6,
+    "title": "OpenClaw发布1.0版本，支持多Agent协作",
+    "platform": "综合",
+    "hot_value": 18900000,
+    "url": "https://example.com/6",
+    "category": "科技",
+    "description": "AI自动化平台OpenClaw正式发布，支持复杂Workflow编排",
+    "timestamp": "2026-02-15T10:38:44.875991"
+  },
+  {
+    "rank": 7,
+    "title": "A股节后大涨，沪指突破3500点",
+    "platform": "综合",
+    "hot_value": 15600000,
+    "url": "https://example.com/7",
+    "category": "财经",
+    "description": "受政策利好刺激，节后首个交易日A股全线大涨",
+    "timestamp": "2026-02-15T10:38:44.875993"
+  },
+  {
+    "rank": 8,
+    "title": "年轻人开始流行'电子年货'，游戏机销量暴涨",
+    "platform": "综合",
+    "hot_value": 12300000,
+    "url": "https://example.com/8",
+    "category": "社会",
+    "description": "Switch、Steam Deck等游戏设备成为春节送礼新选择",
+    "timestamp": "2026-02-15T10:38:44.875994"
+  }
+]

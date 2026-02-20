@@ -1,0 +1,42 @@
+# 每日热点手动补充配置
+# 每天早上更新此文件，添加最新的社会/娱乐热点
+
+manual_hotspots:
+  # 示例格式:
+  # - title: "热点标题"
+  #   platform: "微博/知乎/抖音"
+  #   hot_value: 5000000  # 热度值，可选
+  #   category: "娱乐/社会/财经"
+  #   url: "https://..."  # 链接，可选
+
+  2026-02-15:
+    - title: "《哪吒2》票房突破100亿，创中国影史纪录"
+      platform: "微博"
+      hot_value: 52100000
+      category: "娱乐"
+      
+    - title: "DeepSeek发布V3模型，称性能超越GPT-4"
+      platform: "知乎"
+      hot_value: 48900000
+      category: "科技"
+      
+    - title: "2026考研国家线公布，计算机专业分数线大涨"
+      platform: "微博"
+      hot_value: 35600000
+      category: "社会"
+      
+    - title: "微信内测AI助手功能，可自动生成朋友圈文案"
+      platform: "36氪"
+      hot_value: 29800000
+      category: "科技"
+      
+    - title: "某头部主播直播带货翻车，销售额造假被实锤"
+      platform: "抖音"
+      hot_value: 26700000
+      category: "社会"
+
+# 使用说明:
+# 1. 每天早上8点前，浏览微博热搜/知乎热榜/抖音热榜
+# 2. 复制前5条热点，按上面格式粘贴到此文件
+# 3. 保存文件，运行主程序
+# 4. 程序会自动合并真实抓取的技术热点 + 手动补充的社会热点

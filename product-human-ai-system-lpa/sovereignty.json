@@ -1,0 +1,86 @@
+{
+  "version": "1.0",
+  "author": {
+    "name": "OpenClaw",
+    "contact": "contact@openclaw.ai",
+    "organization": "diyici.ai",
+    "wallet_address": "0x0000000000000000000000000000000000000000"
+  },
+  "ownership": {
+    "content_hash": "76d809ef1db75ed063d453676781043aef3ded9e95664be7c9147b774c7a2a67",
+    "signature": "PLACEHOLDER_FOR_SIGNATURE",
+    "nft": {
+      "contract_address": "0x0000000000000000000000000000000000000000",
+      "token_id": "0",
+      "chain": "ethereum"
+    }
+  },
+  "protection": {
+    "watermark": {
+      "enabled": true,
+      "type": "dynamic_salt",
+      "description": "运行时注入随机因子，可追踪来源"
+    },
+    "logic_trap": {
+      "enabled": true,
+      "trigger": "unauthorized_environment",
+      "action": "degrade_performance"
+    },
+    "fingerprint": {
+      "enabled": true,
+      "invisible_mark": true,
+      "traceability": true
+    }
+  },
+  "economics": {
+    "pricing": {
+      "base_price_usd": 599,
+      "regional_pricing": {
+        "CN": 4300,
+        "US": 599,
+        "EU": 549
+      }
+    },
+    "royalty": {
+      "rate": 0.15,
+      "recipient": "0x0000000000000000000000000000000000000000",
+      "trigger": "every_sale"
+    },
+    "fork": {
+      "allowed": true,
+      "fee_rate": 0.05,
+      "conditions": "必须保留原作者署名，不得移除主权声明"
+    },
+    "resale": {
+      "allowed": false,
+      "reason": "软件产品，不支持转售"
+    }
+  },
+  "license": {
+    "type": "Commercial",
+    "name": "Human-AI System Commercial License",
+    "permissions": [
+      "use",
+      "modify",
+      "fork",
+      "distribute_in_organization"
+    ],
+    "restrictions": [
+      "no_resale",
+      "no_reverse_engineering",
+      "no_removal_of_watermark",
+      "attribution_required"
+    ],
+    "warranty": "as_is",
+    "liability": "limited"
+  },
+  "compliance": {
+    "gdpr": true,
+    "ccpa": false,
+    "data_residency": [
+      "CN",
+      "US",
+      "EU"
+    ]
+  }
+}
