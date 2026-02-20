@@ -1417,11 +1417,16 @@
                      (result.template ? result.template.substring(0, 100) + '...' : '');
       
       modal.innerHTML = `
-        <div style="background: linear-gradient(135deg, #1a1a3e, #2d2d5a); border-radius: 20px; padding: 28px; max-width: 520px; width: 100%; border: 1px solid rgba(102,126,234,0.4); box-shadow: 0 20px 60px rgba(0,0,0,0.5);">
+        <div style="background: linear-gradient(135deg, #1a1a3e, #2d2d5a); border-radius: 20px; padding: 28px; max-width: 520px; width: 100%; border: 1px solid rgba(245,158,11,0.4); box-shadow: 0 20px 60px rgba(0,0,0,0.5);">
           <div style="text-align: center; margin-bottom: 20px;">
             <div style="font-size: 48px; margin-bottom: 12px;">🎉</div>
-            <h3 style="color: #fff; font-size: 20px; margin-bottom: 8px;">方案执行完成！</h3>
-            <p style="color: #94a3b8; font-size: 14px;">你的方案很棒，是否分享到知识库让更多人受益？</p>
+            <h3 style="color: #fff; font-size: 20px; margin-bottom: 8px;">恭喜你完成第一次系统化！</h3>
+            <p style="color: #94a3b8; font-size: 14px;">你的方案已完成，现在可以<span style="color: #f59e0b; font-weight: 600;">成为开创者</span>，让方案被更多人复用。</p>
+          </div>
+          
+          <div style="background: rgba(245,158,11,0.1); border: 1px solid rgba(245,158,11,0.3); border-radius: 12px; padding: 16px; margin-bottom: 20px;">
+            <div style="color: #f59e0b; font-size: 13px; margin-bottom: 8px; font-weight: 600;">👤 开创者身份</div>
+            <p style="color: #e2e8f0; font-size: 13px; line-height: 1.6;">发布到知识库后，你将获得唯一的<span style="color: #f59e0b;">开创者标识</span>，记录你的贡献，让更多人受益于你的智慧。</p>
           </div>
           
           <div style="background: rgba(255,255,255,0.05); border-radius: 12px; padding: 16px; margin-bottom: 20px;">
@@ -1452,8 +1457,8 @@
           </div>
           
           <div style="display: flex; gap: 12px;">
-            <button id="auto-pub-skip" style="flex: 1; padding: 14px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 10px; color: #94a3b8; font-size: 14px; cursor: pointer; transition: all 0.3s;">暂时不发布</button>
-            <button id="auto-pub-submit" style="flex: 1; padding: 14px; background: linear-gradient(135deg, #f59e0b, #d97706); border: none; border-radius: 10px; color: #fff; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.3s;">💾 发布到知识库</button>
+            <button id="auto-pub-skip" style="flex: 1; padding: 14px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 10px; color: #94a3b8; font-size: 14px; cursor: pointer; transition: all 0.3s;">下次再说</button>
+            <button id="auto-pub-submit" style="flex: 1; padding: 14px; background: linear-gradient(135deg, #f59e0b, #d97706); border: none; border-radius: 10px; color: #fff; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.3s;">✨ 成为开创者</button>
           </div>
         </div>
       `;
@@ -1510,8 +1515,8 @@
             modal.innerHTML = `
               <div style="text-align: center; padding: 40px 20px;">
                 <div style="font-size: 64px; margin-bottom: 20px;">✅</div>
-                <h3 style="color: #fff; font-size: 22px; margin-bottom: 12px;">发布成功！</h3>
-                <p style="color: #94a3b8; font-size: 14px; margin-bottom: 20px;">你的方案已进入知识库</p>
+                <h3 style="color: #fff; font-size: 22px; margin-bottom: 12px;">恭喜成为开创者！</h3>
+                <p style="color: #94a3b8; font-size: 14px; margin-bottom: 20px;">你的方案已进入知识库，<span style="color: #f59e0b;">开创者身份已激活</span></p>
                 
                 <div style="background: rgba(255,255,255,0.05); border-radius: 12px; padding: 16px; margin-bottom: 24px; text-align: left;">
                   <div style="display: flex; justify-content: space-between; margin-bottom: 12px;">
@@ -1524,7 +1529,7 @@
                   </div>
                 </div>
                 
-                <button onclick="document.getElementById('auto-publish-modal')?.remove()" style="padding: 12px 32px; background: linear-gradient(135deg, #10b981, #059669); border: none; border-radius: 8px; color: #fff; font-size: 14px; font-weight: 600; cursor: pointer;">好的，我知道了</button>
+                <button onclick="document.getElementById('auto-publish-modal')?.remove()" style="padding: 12px 32px; background: linear-gradient(135deg, #f59e0b, #d97706); border: none; border-radius: 8px; color: #fff; font-size: 14px; font-weight: 600; cursor: pointer;">开启下一次系统化</button>
               </div>
             `;
           } else {
