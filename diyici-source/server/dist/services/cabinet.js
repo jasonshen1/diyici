@@ -35,11 +35,11 @@ class CabinetService {
             let executionResult = '';
             let reviewResult = '';
             let retryCount = 0;
-            const maxRetries = 5;
+            const maxRetries = 3; // 减少重试次数，避免超时
             do {
                 await task_1.Task.update({ status: task_1.TaskStatus.EXECUTING }, { where: { id: taskId } });
                 const executorInput = retryCount > 0 && reviewResult
-                    ? `根据以下修改建议重新执行：\n${reviewResult}\n\n原始计划：${planningResult}`
+                    ? `根据以下修改建议重新执行（第${retryCount + 1}轮，最多${maxRetries}轮）：\n${reviewResult}\n\n原始计划：${planningResult}`
                     : planningResult;
                 executionResult = await this.callAIWithFallback(ai_1.ROLES.EXECUTOR, executorInput);
                 await task_1.Task.update({ execution_result: executionResult }, { where: { id: taskId } });

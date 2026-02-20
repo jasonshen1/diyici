@@ -1132,10 +1132,17 @@ ${result.text}`);
         
         // 开始轮询状态
         let retryCount = 0;
-        const maxRetries = 300; // 最多轮询 5 分钟
+        const maxRetries = 600; // 最多轮询 10 分钟（应对复杂任务）
+        const startTime = Date.now();
         
         pollingInterval = setInterval(async () => {
           try {
+            // 显示已用时
+            const elapsedSeconds = Math.floor((Date.now() - startTime) / 1000);
+            const elapsedText = elapsedSeconds < 60 
+              ? `${elapsedSeconds}秒` 
+              : `${Math.floor(elapsedSeconds / 60)}分${elapsedSeconds % 60}秒`;
+            
             const statusResponse = await fetch(`https://diyici.ai/api/cabinet/status/${taskId}`);
             const statusData = await statusResponse.json();
             
@@ -1148,7 +1155,7 @@ ${result.text}`);
             progressFill.style.width = `${progress}%`;
             progressPercentage.textContent = `${progress}%`;
             
-            // 更新状态文本
+            // 更新状态文本（包含已用时）
             const statusMap = {
               pending: '等待中...',
               planning: '谋局者正在制定行动指南...',
@@ -1159,7 +1166,13 @@ ${result.text}`);
               failed: '任务失败'
             };
             
-            statusText.textContent = statusMap[statusData.status] || statusData.status;
+            const baseStatus = statusMap[statusData.status] || statusData.status;
+            statusText.textContent = `${baseStatus}（已用时 ${elapsedText}）`;
+            
+            // 超时提醒（超过5分钟）
+            if (elapsedSeconds > 300 && statusData.status !== 'completed' && statusData.status !== 'failed') {
+              statusText.innerHTML = `${baseStatus}（已用时 ${elapsedText}）<br><span style="font-size: 12px; color: #f59e0b;">⏳ 任务较复杂，请耐心等待...</span>`;
+            }
             
             // 更新可视化步骤
             updateWorkflowSteps(statusData);
