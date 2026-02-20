@@ -1502,12 +1502,29 @@
           });
           
           if (response.ok) {
+            const data = await response.json();
+            const category = data.data?.category || '已分类';
+            const creator = data.data?.creator || '开创者';
+            const autoCategorized = data.data?.autoCategorized;
+            
             modal.innerHTML = `
               <div style="text-align: center; padding: 40px 20px;">
                 <div style="font-size: 64px; margin-bottom: 20px;">✅</div>
                 <h3 style="color: #fff; font-size: 22px; margin-bottom: 12px;">发布成功！</h3>
-                <p style="color: #94a3b8; font-size: 14px; margin-bottom: 24px;">你的方案已进入知识库，可以被更多人使用和复用。</p>
-                <button onclick="this.closest('#auto-publish-modal').remove()" style="padding: 12px 32px; background: linear-gradient(135deg, #10b981, #059669); border: none; border-radius: 8px; color: #fff; font-size: 14px; font-weight: 600; cursor: pointer;">好的，我知道了</button>
+                <p style="color: #94a3b8; font-size: 14px; margin-bottom: 20px;">你的方案已进入知识库</p>
+                
+                <div style="background: rgba(255,255,255,0.05); border-radius: 12px; padding: 16px; margin-bottom: 24px; text-align: left;">
+                  <div style="display: flex; justify-content: space-between; margin-bottom: 12px;">
+                    <span style="color: #94a3b8; font-size: 13px;">🏷️ 自动分类</span>
+                    <span style="color: #10b981; font-size: 13px; font-weight: 600;">${category} ${autoCategorized ? '(智能识别)' : ''}</span>
+                  </div>
+                  <div style="display: flex; justify-content: space-between;">
+                    <span style="color: #94a3b8; font-size: 13px;">👤 开创者身份</span>
+                    <span style="color: #f59e0b; font-size: 13px; font-weight: 600;">${creator}</span>
+                  </div>
+                </div>
+                
+                <button onclick="document.getElementById('auto-publish-modal')?.remove()" style="padding: 12px 32px; background: linear-gradient(135deg, #10b981, #059669); border: none; border-radius: 8px; color: #fff; font-size: 14px; font-weight: 600; cursor: pointer;">好的，我知道了</button>
               </div>
             `;
           } else {
@@ -1975,8 +1992,32 @@
           });
           
           if (response.ok) {
-            alert('✅ 发布成功！你的方案已进入知识库。');
-            modal.remove();
+            const data = await response.json();
+            const finalCategory = data.data?.category || category;
+            const creator = data.data?.creator || '开创者';
+            const autoCategorized = data.data?.autoCategorized;
+            
+            // 显示成功弹窗替代alert
+            modal.innerHTML = `
+              <div style="background: #1a1a3e; border-radius: 16px; padding: 32px; max-width: 420px; width: 100%; border: 1px solid rgba(16,185,129,0.3); text-align: center;">
+                <div style="font-size: 56px; margin-bottom: 16px;">✅</div>
+                <h3 style="color: #fff; font-size: 20px; margin-bottom: 12px;">发布成功！</h3>
+                <p style="color: #94a3b8; font-size: 13px; margin-bottom: 20px;">你的方案已进入知识库</p>
+                
+                <div style="background: rgba(255,255,255,0.05); border-radius: 12px; padding: 16px; margin-bottom: 24px; text-align: left;">
+                  <div style="display: flex; justify-content: space-between; margin-bottom: 12px;">
+                    <span style="color: #94a3b8; font-size: 13px;">🏷️ 自动分类</span>
+                    <span style="color: #10b981; font-size: 13px; font-weight: 600;">${finalCategory} ${autoCategorized ? '(智能识别)' : ''}</span>
+                  </div>
+                  <div style="display: flex; justify-content: space-between;">
+                    <span style="color: #94a3b8; font-size: 13px;">👤 开创者身份</span>
+                    <span style="color: #f59e0b; font-size: 13px; font-weight: 600;">${creator}</span>
+                  </div>
+                </div>
+                
+                <button onclick="this.closest('div').parentElement.remove()" style="padding: 12px 32px; background: linear-gradient(135deg, #10b981, #059669); border: none; border-radius: 8px; color: #fff; font-size: 14px; font-weight: 600; cursor: pointer;">好的</button>
+              </div>
+            `;
           } else {
             alert('❌ 发布失败，请稍后重试');
           }
