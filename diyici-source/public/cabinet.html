@@ -2198,10 +2198,11 @@
   </script>
 
 <script>
-// 备用实现
+// 备用实现 - 简化版确保基本功能
 (function() {
   console.log('备用实现加载中...');
   
+  // 严格模式
   const strictCheckbox = document.getElementById('strict-mode');
   const strictInfo = document.getElementById('strict-mode-info');
   const strictLabel = document.getElementById('strict-mode-label');
@@ -2213,6 +2214,7 @@
     });
   }
   
+  // 重置功能
   const resetButton = document.getElementById('reset-btn');
   const userInputField = document.getElementById('user-input');
   const fileListEl = document.getElementById('file-list');
@@ -2226,23 +2228,69 @@
       if (strictLabel) strictLabel.style.color = '#94a3b8';
       if (fileItemsEl) fileItemsEl.innerHTML = '';
       if (fileListEl) fileListEl.style.display = 'none';
+      // 清空文件数组
+      if (window.uploadedFiles) window.uploadedFiles.length = 0;
     });
   }
   
+  // 文件上传 - 多文件支持
   const fileUploadAreaEl = document.getElementById('file-upload-area');
   const fileInputEl = document.getElementById('file-input');
   
-  if (fileUploadAreaEl && fileInputEl) {
+  if (fileUploadAreaEl && fileInputEl && fileItemsEl && fileListEl) {
+    // 确保上传文件数组存在
+    if (!window.uploadedFiles) window.uploadedFiles = [];
+    
     fileUploadAreaEl.addEventListener('click', function() {
       fileInputEl.click();
     });
     
-    fileInputEl.addEventListener('change', function(e) {
-      if (fileItemsEl && fileListEl && e.target.files.length > 0) {
-        const file = e.target.files[0];
-        fileItemsEl.innerHTML = '<div style="padding: 8px;">📎 ' + file.name + ' (' + (file.size/1024).toFixed(1) + ' KB)</div>';
-        fileListEl.style.display = 'block';
+    // 渲染文件列表
+    function renderFiles() {
+      if (window.uploadedFiles.length === 0) {
+        fileItemsEl.innerHTML = '';
+        fileListEl.style.display = 'none';
+        return;
       }
+      
+      fileItemsEl.innerHTML = '';
+      window.uploadedFiles.forEach(function(file, index) {
+        const fileDiv = document.createElement('div');
+        fileDiv.style.cssText = 'display: flex; align-items: center; justify-content: space-between; padding: 8px 12px; background: rgba(102,126,234,0.1); border-radius: 8px; margin-bottom: 8px; font-size: 13px;';
+        
+        const fileInfo = document.createElement('span');
+        fileInfo.innerHTML = '📎 ' + file.name + ' <span style="color: #64748b;">(' + (file.size/1024).toFixed(1) + ' KB)</span>';
+        
+        const deleteBtn = document.createElement('button');
+        deleteBtn.textContent = '×';
+        deleteBtn.style.cssText = 'background: none; border: none; color: #ef4444; font-size: 18px; cursor: pointer; padding: 0 4px;';
+        deleteBtn.onclick = function() {
+          window.uploadedFiles.splice(index, 1);
+          renderFiles();
+        };
+        
+        fileDiv.appendChild(fileInfo);
+        fileDiv.appendChild(deleteBtn);
+        fileItemsEl.appendChild(fileDiv);
+      });
+      
+      fileListEl.style.display = 'block';
+    }
+    
+    fileInputEl.addEventListener('change', function(e) {
+      const files = Array.from(e.target.files);
+      files.forEach(function(file) {
+        // 检查是否已存在
+        const exists = window.uploadedFiles.some(function(f) {
+          return f.name === file.name && f.size === file.size;
+        });
+        if (!exists) {
+          window.uploadedFiles.push(file);
+        }
+      });
+      renderFiles();
+      // 重置input以便再次选择
+      e.target.value = '';
     });
   }
   
