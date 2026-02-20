@@ -231,23 +231,33 @@
       submitBtn.textContent = '执行中...';
       
       try {
-        var response = await fetch('/api/cabinet/run', {
+        // 使用绝对路径避免问题
+        var apiUrl = window.location.protocol + '//' + window.location.host + '/api/cabinet/run';
+        
+        var response = await fetch(apiUrl, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
           body: JSON.stringify({ text: text })
         });
+        
+        if (!response.ok) {
+          throw new Error('HTTP ' + response.status);
+        }
         
         var data = await response.json();
         
         if (data.taskId) {
-          alert('任务已创建，ID: ' + data.taskId + '\n请前往完整版查看进度');
-          // 存储taskId供查看
+          alert('任务已创建！ID: ' + data.taskId);
           localStorage.setItem('current_task', data.taskId);
         } else {
           alert('创建失败: ' + (data.error || '未知错误'));
         }
       } catch (e) {
-        alert('网络错误: ' + e.message);
+        console.error(e);
+        alert('请求失败: ' + e.message + '\n请检查网络连接');
       }
       
       submitBtn.disabled = false;
