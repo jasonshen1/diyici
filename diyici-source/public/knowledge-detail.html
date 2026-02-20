@@ -22,7 +22,6 @@
             padding: 40px 20px;
         }
         
-        /* Header */
         .header {
             margin-bottom: 32px;
         }
@@ -84,7 +83,6 @@
             font-weight: 600;
         }
         
-        /* Content */
         .content-card {
             background: rgba(255, 255, 255, 0.05);
             border: 1px solid rgba(255, 255, 255, 0.1);
@@ -164,7 +162,15 @@
             color: #94a3b8;
         }
         
-        /* Actions */
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #667eea;
+            margin: 32px 0 16px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid rgba(102, 126, 234, 0.3);
+        }
+        
         .actions {
             display: flex;
             gap: 12px;
@@ -183,6 +189,7 @@
             display: inline-flex;
             align-items: center;
             gap: 8px;
+            text-decoration: none;
         }
         
         .btn-primary {
@@ -201,8 +208,7 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.3);
         }
         
-        /* Loading */
-        .loading {
+        .loading, .error {
             text-align: center;
             padding: 80px 20px;
         }
@@ -221,34 +227,15 @@
             to { transform: rotate(360deg); }
         }
         
-        /* Error */
-        .error {
-            text-align: center;
-            padding: 80px 20px;
-        }
-        
         .error-icon {
             font-size: 64px;
             margin-bottom: 20px;
         }
         
-        /* Responsive */
         @media (max-width: 768px) {
-            .container {
-                padding: 20px 16px;
-            }
-            
-            .title {
-                font-size: 22px;
-            }
-            
-            .content-card {
-                padding: 20px;
-            }
-            
-            .meta-bar {
-                gap: 16px;
-            }
+            .container { padding: 20px 16px; }
+            .title { font-size: 22px; }
+            .content-card { padding: 20px; }
         }
     </style>
 </head>
@@ -263,6 +250,9 @@
     </div>
     
     <script>
+        // 存储知识内容供后续使用
+        let knowledgeData = null;
+        
         async function loadKnowledgeDetail() {
             const urlParams = new URLSearchParams(window.location.search);
             const id = urlParams.get('id');
@@ -277,6 +267,7 @@
                 const data = await response.json();
                 
                 if (data.success && data.data) {
+                    knowledgeData = data.data;
                     displayKnowledge(data.data);
                 } else {
                     showError('方案不存在或已被删除');
@@ -290,6 +281,9 @@
         function displayKnowledge(knowledge) {
             const container = document.getElementById('content-area');
             const createdAt = new Date(knowledge.created_at).toLocaleString('zh-CN');
+            
+            // 解析content，分割成各个部分
+            const sections = parseContent(knowledge.content);
             
             container.innerHTML = `
                 <div class="header">
@@ -306,58 +300,102 @@
                         </span>
                         <span class="meta-item">📅 ${createdAt}</span>
                         <span class="meta-item">👁 ${knowledge.views || 0} 浏览</span>
-                        <span class="meta-item">❤ ${knowledge.likes || 0} 点赞</span>
                     </div>
                 </div>
                 
                 <div class="content-card">
                     <div class="content-body">
-                        ${renderMarkdown(knowledge.content)}
+                        ${sections.summary ? `
+                            <div class="section-title">📋 方案简介</div>
+                            ${renderMarkdown(sections.summary)}
+                        ` : ''}
+                        
+                        ${sections.planning ? `
+                            <div class="section-title">🧠 谋局者分析</div>
+                            ${renderMarkdown(sections.planning)}
+                        ` : ''}
+                        
+                        ${sections.execution ? `
+                            <div class="section-title">👨‍💻 执行者方案</div>
+                            ${renderMarkdown(sections.execution)}
+                        ` : ''}
+                        
+                        ${sections.review ? `
+                            <div class="section-title">🔍 找茬者审核</div>
+                            ${renderMarkdown(sections.review)}
+                        ` : ''}
+                        
+                        ${sections.final ? `
+                            <div class="section-title">📚 沉淀者总结</div>
+                            ${renderMarkdown(sections.final)}
+                        ` : ''}
+                        
+                        ${sections.template ? `
+                            <div class="section-title">📋 万能模板</div>
+                            ${renderMarkdown(sections.template)}
+                        ` : ''}
+                        
+                        ${!sections.planning && !sections.execution ? renderMarkdown(knowledge.content) : ''}
                     </div>
                     
                     <div class="actions">
-                        <button class="btn btn-primary" onclick="copyContent()">📋 复制全文</button>
-                        <button class="btn btn-secondary" onclick="useThis()">✨ 使用此方案</button>
-                        <a href="/cabinet.html" class="btn btn-secondary">🚀 去数字内阁创建</a>
+                        <button class="btn btn-primary" onclick="copyFullContent()">📋 复制全文</button>
+                        <button class="btn btn-secondary" onclick="useThisTemplate()">✨ 基于此方案优化</button>
+                        <a href="/cabinet.html?use=${encodeURIComponent(knowledge.title)}" class="btn btn-secondary">🚀 去数字内阁创建类似方案</a>
                     </div>
                 </div>
             `;
+        }
+        
+        // 解析content，按标题分割
+        function parseContent(content) {
+            const sections = {};
+            if (!content) return sections;
             
-            // 存储内容用于复制
-            window._knowledgeContent = knowledge.content;
+            // 提取方案简介
+            const summaryMatch = content.match(/## 方案简介\n([\s\S]*?)(?=\n## |$)/);
+            if (summaryMatch) sections.summary = summaryMatch[1].trim();
+            
+            // 提取各角色输出
+            const planningMatch = content.match(/### 谋局者分析\n([\s\S]*?)(?=### |## |$)/);
+            if (planningMatch) sections.planning = planningMatch[1].trim();
+            
+            const executionMatch = content.match(/### 执行者方案\n([\s\S]*?)(?=### |## |$)/);
+            if (executionMatch) sections.execution = executionMatch[1].trim();
+            
+            const reviewMatch = content.match(/### 找茬者审核\n([\s\S]*?)(?=### |## |$)/);
+            if (reviewMatch) sections.review = reviewMatch[1].trim();
+            
+            const finalMatch = content.match(/### 沉淀者总结\n([\s\S]*?)(?=### |## |$)/);
+            if (finalMatch) sections.final = finalMatch[1].trim();
+            
+            const templateMatch = content.match(/### 万能模板\n([\s\S]*?)(?=### |## |$)/);
+            if (templateMatch) sections.template = templateMatch[1].trim();
+            
+            return sections;
         }
         
         function renderMarkdown(text) {
             if (!text) return '<p>暂无内容</p>';
             
             let html = text
-                // 转义HTML
                 .replace(/&/g, '&amp;')
                 .replace(/</g, '&lt;')
                 .replace(/>/g, '&gt;')
-                // 标题
                 .replace(/^###### (.*$)/gim, '<h6>$1</h6>')
                 .replace(/^##### (.*$)/gim, '<h5>$1</h5>')
                 .replace(/^#### (.*$)/gim, '<h4>$1</h4>')
                 .replace(/^### (.*$)/gim, '<h3>$1</h3>')
                 .replace(/^## (.*$)/gim, '<h2>$1</h2>')
                 .replace(/^# (.*$)/gim, '<h1>$1</h1>')
-                // 粗体和斜体
                 .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
                 .replace(/\*(.*?)\*/g, '<em>$1</em>')
-                // 代码块
                 .replace(/```([\s\S]*?)```/g, '<pre><code>$1</code></pre>')
-                // 行内代码
                 .replace(/`([^`]+)`/g, '<code>$1</code>')
-                // 引用
                 .replace(/^\> (.*$)/gim, '<blockquote>$1</blockquote>')
-                // 无序列表
                 .replace(/^\- (.*$)/gim, '<li>$1</li>')
-                // 有序列表
                 .replace(/^\d+\. (.*$)/gim, '<li>$1</li>')
-                // 段落
                 .replace(/\n\n/g, '</p><p>')
-                // 换行
                 .replace(/\n/g, '<br>');
             
             return '<p>' + html + '</p>';
@@ -379,24 +417,37 @@
             `;
         }
         
-        async function copyContent() {
+        async function copyFullContent() {
+            if (!knowledgeData) return;
             try {
-                await navigator.clipboard.writeText(window._knowledgeContent || '');
+                await navigator.clipboard.writeText(knowledgeData.content || '');
                 alert('✅ 已复制到剪贴板');
             } catch (error) {
                 alert('❌ 复制失败');
             }
         }
         
-        function useThis() {
-            const content = window._knowledgeContent || '';
-            // 提取核心内容作为提示
-            const lines = content.split('\n');
-            const title = lines[0].replace('# ', '');
+        function useThisTemplate() {
+            if (!knowledgeData) return;
             
-            // 跳转到数字内阁，预填充
-            localStorage.setItem('prefill_input', `基于这个方案进行优化：${title}\n\n请帮我基于以下方案进行改进和优化...`);
-            window.location.href = '/cabinet.html';
+            // 构建使用提示
+            const prompt = `我想基于这个方案进行优化和改进：
+
+方案名称：${knowledgeData.title}
+分类：${knowledgeData.category || '未分类'}
+
+请帮我：
+1. 分析原方案的优点和不足
+2. 针对我的具体场景进行优化调整
+3. 提供更详细的执行步骤
+
+我的具体需求是：`;
+            
+            // 存储到localStorage
+            localStorage.setItem('diyici_prefill', prompt);
+            
+            // 跳转到数字内阁
+            window.location.href = '/cabinet.html?mode=optimize';
         }
         
         // 加载详情

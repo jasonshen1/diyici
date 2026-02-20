@@ -894,6 +894,26 @@
     const submitBtn = document.getElementById('submit-btn');
     const resetBtn = document.getElementById('reset-btn');
     const userInput = document.getElementById('user-input');
+    
+    // 检查是否有预填充内容（从知识库详情页跳转过来）
+    const prefillContent = localStorage.getItem('diyici_prefill');
+    if (prefillContent) {
+      userInput.value = prefillContent;
+      localStorage.removeItem('diyici_prefill'); // 清除，避免重复填充
+      // 显示提示
+      statusText.textContent = '已加载知识库方案，请补充您的具体需求后点击开始执行';
+      statusText.style.color = '#10b981';
+    }
+    
+    // 检查URL参数是否有使用某个方案的请求
+    const urlParams = new URLSearchParams(window.location.search);
+    const useTitle = urlParams.get('use');
+    if (useTitle) {
+      const prompt = `我想创建一个类似「${decodeURIComponent(useTitle)}」的方案，但针对我的具体需求进行调整：\n\n我的具体需求是：`;
+      userInput.value = prompt;
+      // 清除URL参数
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
     const progressSection = document.querySelector('.progress-section');
     const progressFill = document.querySelector('.progress-fill');
     const progressPercentage = document.getElementById('progress-percentage');
