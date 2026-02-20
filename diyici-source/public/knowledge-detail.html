@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>方案详情 | 第一次 - 把才华系统化</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>📋</text></svg>">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(180deg, #0f0f23 0%, #1a1a3e 50%, #0f0f23 100%);
+            min-height: 100vh;
+            color: #e2e8f0;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        
+        /* Header */
+        .header {
+            margin-bottom: 32px;
+        }
+        
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 20px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px;
+            color: #94a3b8;
+            text-decoration: none;
+            font-size: 14px;
+            margin-bottom: 24px;
+            transition: all 0.3s;
+        }
+        
+        .back-link:hover {
+            background: rgba(102, 126, 234, 0.2);
+            color: #fff;
+        }
+        
+        .category-tag {
+            display: inline-block;
+            padding: 6px 16px;
+            background: rgba(102, 126, 234, 0.2);
+            border-radius: 20px;
+            font-size: 13px;
+            color: #667eea;
+            margin-bottom: 16px;
+        }
+        
+        .title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 16px;
+            line-height: 1.4;
+        }
+        
+        .meta-bar {
+            display: flex;
+            gap: 24px;
+            flex-wrap: wrap;
+            font-size: 14px;
+            color: #64748b;
+        }
+        
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .creator {
+            color: #f59e0b;
+            font-weight: 600;
+        }
+        
+        /* Content */
+        .content-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 32px;
+            margin-bottom: 24px;
+        }
+        
+        .content-body {
+            font-size: 15px;
+            line-height: 1.8;
+            color: #e2e8f0;
+        }
+        
+        .content-body h1,
+        .content-body h2,
+        .content-body h3 {
+            color: #fff;
+            margin: 24px 0 16px;
+            font-weight: 600;
+        }
+        
+        .content-body h1 {
+            font-size: 24px;
+            border-bottom: 2px solid rgba(102, 126, 234, 0.3);
+            padding-bottom: 12px;
+        }
+        
+        .content-body h2 {
+            font-size: 20px;
+            color: #764ba2;
+        }
+        
+        .content-body h3 {
+            font-size: 18px;
+            color: #667eea;
+        }
+        
+        .content-body p {
+            margin-bottom: 16px;
+        }
+        
+        .content-body ul,
+        .content-body ol {
+            margin: 16px 0;
+            padding-left: 24px;
+        }
+        
+        .content-body li {
+            margin-bottom: 8px;
+        }
+        
+        .content-body strong {
+            color: #f59e0b;
+        }
+        
+        .content-body code {
+            background: rgba(0,0,0,0.3);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 13px;
+            color: #10b981;
+        }
+        
+        .content-body pre {
+            background: rgba(0,0,0,0.3);
+            padding: 16px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 16px 0;
+        }
+        
+        .content-body blockquote {
+            border-left: 4px solid #667eea;
+            padding-left: 16px;
+            margin: 16px 0;
+            color: #94a3b8;
+        }
+        
+        /* Actions */
+        .actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            margin-top: 32px;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: #fff;
+        }
+        
+        .btn-secondary {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
+            color: #94a3b8;
+        }
+        
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        }
+        
+        /* Loading */
+        .loading {
+            text-align: center;
+            padding: 80px 20px;
+        }
+        
+        .loading-spinner {
+            width: 48px;
+            height: 48px;
+            border: 3px solid rgba(102, 126, 234, 0.2);
+            border-top-color: #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Error */
+        .error {
+            text-align: center;
+            padding: 80px 20px;
+        }
+        
+        .error-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px 16px;
+            }
+            
+            .title {
+                font-size: 22px;
+            }
+            
+            .content-card {
+                padding: 20px;
+            }
+            
+            .meta-bar {
+                gap: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div id="content-area">
+            <div class="loading">
+                <div class="loading-spinner"></div>
+                <p>正在加载方案详情...</p>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        async function loadKnowledgeDetail() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const id = urlParams.get('id');
+            
+            if (!id) {
+                showError('缺少方案ID');
+                return;
+            }
+            
+            try {
+                const response = await fetch(`/api/knowledge/${id}`);
+                const data = await response.json();
+                
+                if (data.success && data.data) {
+                    displayKnowledge(data.data);
+                } else {
+                    showError('方案不存在或已被删除');
+                }
+            } catch (error) {
+                console.error('加载详情失败:', error);
+                showError('网络错误，请稍后重试');
+            }
+        }
+        
+        function displayKnowledge(knowledge) {
+            const container = document.getElementById('content-area');
+            const createdAt = new Date(knowledge.created_at).toLocaleString('zh-CN');
+            
+            container.innerHTML = `
+                <div class="header">
+                    <a href="/knowledge.html" class="back-link">← 返回知识库</a>
+                    
+                    <span class="category-tag">${knowledge.category || '未分类'}</span>
+                    
+                    <h1 class="title">${escapeHtml(knowledge.title)}</h1>
+                    
+                    <div class="meta-bar">
+                        <span class="meta-item">
+                            <span>👤 开创者：</span>
+                            <span class="creator">${knowledge.creator_id || '未知'}</span>
+                        </span>
+                        <span class="meta-item">📅 ${createdAt}</span>
+                        <span class="meta-item">👁 ${knowledge.views || 0} 浏览</span>
+                        <span class="meta-item">❤ ${knowledge.likes || 0} 点赞</span>
+                    </div>
+                </div>
+                
+                <div class="content-card">
+                    <div class="content-body">
+                        ${renderMarkdown(knowledge.content)}
+                    </div>
+                    
+                    <div class="actions">
+                        <button class="btn btn-primary" onclick="copyContent()">📋 复制全文</button>
+                        <button class="btn btn-secondary" onclick="useThis()">✨ 使用此方案</button>
+                        <a href="/cabinet.html" class="btn btn-secondary">🚀 去数字内阁创建</a>
+                    </div>
+                </div>
+            `;
+            
+            // 存储内容用于复制
+            window._knowledgeContent = knowledge.content;
+        }
+        
+        function renderMarkdown(text) {
+            if (!text) return '<p>暂无内容</p>';
+            
+            let html = text
+                // 转义HTML
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                // 标题
+                .replace(/^###### (.*$)/gim, '<h6>$1</h6>')
+                .replace(/^##### (.*$)/gim, '<h5>$1</h5>')
+                .replace(/^#### (.*$)/gim, '<h4>$1</h4>')
+                .replace(/^### (.*$)/gim, '<h3>$1</h3>')
+                .replace(/^## (.*$)/gim, '<h2>$1</h2>')
+                .replace(/^# (.*$)/gim, '<h1>$1</h1>')
+                // 粗体和斜体
+                .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                .replace(/\*(.*?)\*/g, '<em>$1</em>')
+                // 代码块
+                .replace(/```([\s\S]*?)```/g, '<pre><code>$1</code></pre>')
+                // 行内代码
+                .replace(/`([^`]+)`/g, '<code>$1</code>')
+                // 引用
+                .replace(/^\> (.*$)/gim, '<blockquote>$1</blockquote>')
+                // 无序列表
+                .replace(/^\- (.*$)/gim, '<li>$1</li>')
+                // 有序列表
+                .replace(/^\d+\. (.*$)/gim, '<li>$1</li>')
+                // 段落
+                .replace(/\n\n/g, '</p><p>')
+                // 换行
+                .replace(/\n/g, '<br>');
+            
+            return '<p>' + html + '</p>';
+        }
+        
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+        
+        function showError(message) {
+            document.getElementById('content-area').innerHTML = `
+                <div class="error">
+                    <div class="error-icon">⚠️</div>
+                    <h2>${message}</h2>
+                    <a href="/knowledge.html" class="btn btn-primary" style="margin-top: 20px; display: inline-block;">返回知识库</a>
+                </div>
+            `;
+        }
+        
+        async function copyContent() {
+            try {
+                await navigator.clipboard.writeText(window._knowledgeContent || '');
+                alert('✅ 已复制到剪贴板');
+            } catch (error) {
+                alert('❌ 复制失败');
+            }
+        }
+        
+        function useThis() {
+            const content = window._knowledgeContent || '';
+            // 提取核心内容作为提示
+            const lines = content.split('\n');
+            const title = lines[0].replace('# ', '');
+            
+            // 跳转到数字内阁，预填充
+            localStorage.setItem('prefill_input', `基于这个方案进行优化：${title}\n\n请帮我基于以下方案进行改进和优化...`);
+            window.location.href = '/cabinet.html';
+        }
+        
+        // 加载详情
+        loadKnowledgeDetail();
+    </script>
+</body>
+</html>

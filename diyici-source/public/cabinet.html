@@ -1666,10 +1666,17 @@
       if (reviewChars > 0) roleCount++;
       if (finalChars > 0) roleCount++;
       
+      // 计算各角色运算次数（有内容=1次，如果有retry_count则累加）
+      const planningOps = planningChars > 0 ? 1 : 0;
+      const executionOps = executionChars > 0 ? 1 : 0;
+      const reviewOps = reviewChars > 0 ? 1 : 0;
+      const finalOps = finalChars > 0 ? 1 : 0;
+      const totalOps = planningOps + executionOps + reviewOps + finalOps;
+      
       const reviewCount = result.retry_count || result.retryCount || 1;
       const qualityScore = Math.min(95, 70 + reviewCount * 5);
       
-      // 格式化数字，防止换行
+      // 格式化数字
       const formatNumber = (num) => {
         return num.toLocaleString().replace(/,/g, '');
       };
@@ -1691,52 +1698,65 @@
       content.className = 'result-content';
       content.style.marginTop = '16px';
       
-      // 核心指标
+      // 核心指标 - 改为4列，增加运算次数
       const coreMetrics = document.createElement('div');
-      coreMetrics.style.cssText = 'display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 20px;';
+      coreMetrics.style.cssText = 'display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 20px;';
       
       const metrics = [
         { value: roleCount, label: '参与角色', color: '#667eea' },
+        { value: totalOps, label: '总运算次数', color: '#f59e0b' },
         { value: formatNumber(totalChars), label: '总字数', color: '#10b981' },
-        { value: reviewCount, label: '审核轮次', color: '#f59e0b' }
+        { value: reviewCount, label: '审核轮次', color: '#ec4899' }
       ];
       
       metrics.forEach(metric => {
         const metricDiv = document.createElement('div');
         metricDiv.style.cssText = 'text-align: center; padding: 16px 8px; background: rgba(255,255,255,0.05); border-radius: 12px; min-width: 0;';
         metricDiv.innerHTML = `
-          <div style="font-size: 32px; font-weight: 700; color: ${metric.color}; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${metric.value}</div>
-          <div style="font-size: 12px; color: #94a3b8; margin-top: 4px;">${metric.label}</div>
+          <div style="font-size: 28px; font-weight: 700; color: ${metric.color}; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${metric.value}</div>
+          <div style="font-size: 11px; color: #94a3b8; margin-top: 4px;">${metric.label}</div>
         `;
         coreMetrics.appendChild(metricDiv);
       });
       content.appendChild(coreMetrics);
       
-      // 详细工作量
+      // 各角色详细统计（包含运算次数）
       const details = document.createElement('div');
       details.style.cssText = 'background: rgba(0,0,0,0.2); border-radius: 12px; padding: 16px; margin-bottom: 16px;';
       
       const detailsTitle = document.createElement('h4');
       detailsTitle.style.cssText = 'color: #e2e8f0; margin-bottom: 12px; font-size: 14px;';
-      detailsTitle.textContent = '📈 各角色工作量';
+      detailsTitle.textContent = '🤖 各角色运算统计';
       details.appendChild(detailsTitle);
       
       const workloads = [
-        { chars: planningChars, icon: '🧠', label: '谋局者分析', color: '#667eea' },
-        { chars: executionChars, icon: '👨‍💻', label: '执行者产出', color: '#f093fb' },
-        { chars: reviewChars, icon: '🔍', label: '找茬者审核', color: '#4facfe' },
-        { chars: finalChars, icon: '📚', label: '沉淀者总结', color: '#f5576c' },
-        { chars: templateChars, icon: '📋', label: '万能模板', color: '#10b981' }
+        { chars: planningChars, ops: planningOps, icon: '🧠', label: '谋局者（首辅）', color: '#667eea' },
+        { chars: executionChars, ops: executionOps, icon: '👨‍💻', label: '执行者（干吏）', color: '#f093fb' },
+        { chars: reviewChars, ops: reviewOps, icon: '🔍', label: '找茬者（御史）', color: '#4facfe' },
+        { chars: finalChars, ops: finalOps, icon: '📚', label: '沉淀者（史官）', color: '#f5576c' }
       ];
       
       workloads.forEach((work, index) => {
         if (work.chars > 0) {
           const workDiv = document.createElement('div');
-          workDiv.style.cssText = 'display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.1);';
+          workDiv.style.cssText = 'display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.1);';
           if (index === workloads.filter(w => w.chars > 0).length - 1) {
             workDiv.style.borderBottom = 'none';
           }
           workDiv.innerHTML = `
+            <div style="display: flex; align-items: center; gap: 12px;">
+              <span style="font-size: 18px;">${work.icon}</span>
+              <span style="color: ${work.color}; font-size: 14px;">${work.label}</span>
+            </div>
+            <div style="text-align: right;">
+              <div style="color: #f59e0b; font-weight: 700; font-size: 16px;">运算 ${work.ops} 次</div>
+              <div style="color: #94a3b8; font-size: 12px;">${formatNumber(work.chars)} 字</div>
+            </div>
+          `;
+          details.appendChild(workDiv);
+        }
+      });
+      content.appendChild(details);
             <span style="color: #94a3b8;">${work.icon} ${work.label}</span>
             <span style="color: ${work.color}; font-weight: 600;">${formatNumber(work.chars)} 字</span>
           `;
