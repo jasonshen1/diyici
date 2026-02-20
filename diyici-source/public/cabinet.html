@@ -937,12 +937,28 @@
       fileItem.style.cssText = 'display: flex; align-items: center; gap: 8px; padding: 8px 12px; background: rgba(102, 126, 234, 0.1); border-radius: 8px; font-size: 12px;';
       
       const icon = getFileIcon(file.type);
-      fileItem.innerHTML = `
-        <span>${icon}</span>
-        <span style="color: #e2e8f0; max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${file.name}</span>
-        <span style="color: #64748b;">(${(file.size / 1024).toFixed(1)} KB)</span>
-        <button onclick="removeFile('${file.name}')" style="background: none; border: none; color: #ef4444; cursor: pointer; font-size: 14px;">×</button>
-      `;
+      
+      // 创建文件信息元素
+      const iconSpan = document.createElement('span');
+      iconSpan.textContent = icon;
+      
+      const nameSpan = document.createElement('span');
+      nameSpan.style.cssText = 'color: #e2e8f0; max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;';
+      nameSpan.textContent = file.name;
+      
+      const sizeSpan = document.createElement('span');
+      sizeSpan.style.cssText = 'color: #64748b;';
+      sizeSpan.textContent = `(${(file.size / 1024).toFixed(1)} KB)`;
+      
+      const removeBtn = document.createElement('button');
+      removeBtn.style.cssText = 'background: none; border: none; color: #ef4444; cursor: pointer; font-size: 14px;';
+      removeBtn.textContent = '×';
+      removeBtn.onclick = () => removeFile(file.name);
+      
+      fileItem.appendChild(iconSpan);
+      fileItem.appendChild(nameSpan);
+      fileItem.appendChild(sizeSpan);
+      fileItem.appendChild(removeBtn);
       
       fileItems.appendChild(fileItem);
     }
@@ -994,66 +1010,51 @@
             const result = await response.json();
             
             if (result.success && result.text && result.text.trim()) {
-              resolve(`[图片文件: ${file.name}]
-✅ 识别成功（${result.service || 'OCR'}）
-识别文字：
-${result.text}`);
+              resolve('[图片文件: ' + file.name + ']\n✅ 识别成功（' + (result.service || 'OCR') + '）\n识别文字：\n' + result.text);
             } else if (result.success) {
               // OCR成功但结果为空，尝试重试一次
               if (retryCount < 1) {
-                console.log(`OCR结果为空，重试中... (${retryCount + 1}/2)`);
+                console.log('OCR结果为空，重试中... (' + (retryCount + 1) + '/2)');
                 setTimeout(() => {
                   extractFileContent(file, retryCount + 1).then(resolve);
                 }, 1000);
                 return;
               }
-              resolve(`[图片文件: ${file.name}]
-⚠️ OCR识别结果为空，可能是图片中没有文字或文字不清晰。
-请手动描述图片内容`);
+              resolve('[图片文件: ' + file.name + ']\n⚠️ OCR识别结果为空，可能是图片中没有文字或文字不清晰。\n请手动描述图片内容');
             } else {
               // 识别失败，尝试重试一次
               if (retryCount < 1) {
-                console.log(`OCR失败，重试中... (${retryCount + 1}/2)`);
+                console.log('OCR失败，重试中... (' + (retryCount + 1) + '/2)');
                 setTimeout(() => {
                   extractFileContent(file, retryCount + 1).then(resolve);
                 }, 1000);
                 return;
               }
-              resolve(`[图片文件: ${file.name}]
-❌ OCR识别失败: ${result.error || '未知错误'}
-请手动描述图片内容`);
+              resolve('[图片文件: ' + file.name + ']\n❌ OCR识别失败: ' + (result.error || '未知错误') + '\n请手动描述图片内容');
             }
           } catch (error) {
             // 请求失败，尝试重试一次
             if (retryCount < 1) {
-              console.log(`OCR请求失败，重试中... (${retryCount + 1}/2)`);
+              console.log('OCR请求失败，重试中... (' + (retryCount + 1) + '/2)');
               setTimeout(() => {
                 extractFileContent(file, retryCount + 1).then(resolve);
               }, 1000);
               return;
             }
-            resolve(`[图片文件: ${file.name}]
-❌ OCR服务连接失败: ${error.message}
-请手动描述图片内容`);
+            resolve('[图片文件: ' + file.name + ']\n❌ OCR服务连接失败: ' + error.message + '\n请手动描述图片内容');
           }
           return;
         }
         
         // PDF 文件
         if (file.type === 'application/pdf') {
-          resolve(`[PDF文件: ${file.name}]
-文件大小: ${(file.size / 1024).toFixed(1)} KB
-
-注：PDF 内容提取需要后端支持。当前您可以手动粘贴 PDF 中的关键内容。`);
+          resolve('[PDF文件: ' + file.name + ']\n文件大小: ' + (file.size / 1024).toFixed(1) + ' KB\n\n注：PDF 内容提取需要后端支持。当前您可以手动粘贴 PDF 中的关键内容。');
           return;
         }
         
         // Word 文件
         if (file.type.includes('word') || file.name.endsWith('.doc') || file.name.endsWith('.docx')) {
-          resolve(`[Word文档: ${file.name}]
-文件大小: ${(file.size / 1024).toFixed(1)} KB
-
-注：Word 内容提取需要后端支持。当前您可以手动粘贴文档中的关键内容。`);
+          resolve('[Word文档: ' + file.name + ']\n文件大小: ' + (file.size / 1024).toFixed(1) + ' KB\n\n注：Word 内容提取需要后端支持。当前您可以手动粘贴文档中的关键内容。');
           return;
         }
         
@@ -1068,7 +1069,7 @@ ${result.text}`);
         reader.readAsText(file);
         } catch (error) {
           console.error('提取文件内容时出错:', error);
-          resolve(`[文件处理失败: ${file.name} - ${error.message}]`);
+          resolve('[文件处理失败: ' + file.name + ' - ' + error.message + ']');
         }
       });
     }
@@ -1099,12 +1100,12 @@ ${result.text}`);
         if (uploadedFiles.length > 0) {
           for (const file of uploadedFiles) {
             try {
-              statusText.textContent = `正在识别 ${file.name}...`;
+              statusText.textContent = '正在识别 ' + file.name + '...';
               const content = await extractFileContent(file);
-              fileContents += `\n\n=== 文件: ${file.name} ===\n${content}`;
+              fileContents += '\n\n=== 文件: ' + file.name + ' ===\n' + content;
             } catch (fileError) {
-              console.error(`处理文件 ${file.name} 时出错:`, fileError);
-              fileContents += `\n\n=== 文件: ${file.name} ===\n[文件处理失败: ${fileError.message}]`;
+              console.error('处理文件 ' + file.name + ' 时出错:', fileError);
+              fileContents += '\n\n=== 文件: ' + file.name + ' ===\n[文件处理失败: ' + fileError.message + ']';
             }
           }
         }
