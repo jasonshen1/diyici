@@ -1254,23 +1254,28 @@ ${result.text}`);
       statsCard.className = 'result-card';
       statsCard.style.cssText = 'background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1)); border: 1px solid rgba(102, 126, 234, 0.3);';
       
-      // 计算统计数据
-      const planningChars = result.planning_result?.length || 0;
-      const executionChars = result.execution_result?.length || 0;
-      const reviewChars = result.review_result?.length || 0;
-      const finalChars = result.final_result?.length || 0;
-      const templateChars = result.template?.length || 0;
+      // 计算统计数据（兼容两种字段命名）
+      const planningChars = (result.planning_result || result.planningResult || '').length;
+      const executionChars = (result.execution_result || result.executionResult || '').length;
+      const reviewChars = (result.review_result || result.reviewResult || '').length;
+      const finalChars = (result.final_result || result.finalResult || '').length;
+      const templateChars = (result.template || '').length;
       const totalChars = planningChars + executionChars + reviewChars + finalChars + templateChars;
       
-      const activeRoles = [
-        result.planning_result && '🧠 谋局者',
-        result.execution_result && '👨‍💻 执行者',
-        result.review_result && '🔍 找茬者',
-        result.final_result && '📚 沉淀者'
-      ].filter(Boolean);
+      // 计算参与角色数
+      let roleCount = 0;
+      if (planningChars > 0) roleCount++;
+      if (executionChars > 0) roleCount++;
+      if (reviewChars > 0) roleCount++;
+      if (finalChars > 0) roleCount++;
       
-      const reviewCount = result.retry_count || 1;
+      const reviewCount = result.retry_count || result.retryCount || 1;
       const qualityScore = Math.min(95, 70 + reviewCount * 5);
+      
+      // 格式化数字，防止换行
+      const formatNumber = (num) => {
+        return num.toLocaleString().replace(/,/g, '');
+      };
       
       statsCard.innerHTML = `
         <div class="result-header">
@@ -1283,17 +1288,17 @@ ${result.text}`);
         
         <div class="result-content" style="margin-top: 16px;">
           <!-- 核心指标 -->
-          <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 20px;">
-            <div style="text-align: center; padding: 16px; background: rgba(255,255,255,0.05); border-radius: 12px;">
-              <div style="font-size: 28px; font-weight: 700; color: #667eea;">${activeRoles.length}</div>
+          <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 20px;">
+            <div style="text-align: center; padding: 16px 8px; background: rgba(255,255,255,0.05); border-radius: 12px; min-width: 0;">
+              <div style="font-size: 32px; font-weight: 700; color: #667eea; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${roleCount}</div>
               <div style="font-size: 12px; color: #94a3b8; margin-top: 4px;">参与角色</div>
             </div>
-            <div style="text-align: center; padding: 16px; background: rgba(255,255,255,0.05); border-radius: 12px;">
-              <div style="font-size: 28px; font-weight: 700; color: #10b981;">${totalChars.toLocaleString()}</div>
+            <div style="text-align: center; padding: 16px 8px; background: rgba(255,255,255,0.05); border-radius: 12px; min-width: 0;">
+              <div style="font-size: 32px; font-weight: 700; color: #10b981; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${formatNumber(totalChars)}</div>
               <div style="font-size: 12px; color: #94a3b8; margin-top: 4px;">总字数</div>
             </div>
-            <div style="text-align: center; padding: 16px; background: rgba(255,255,255,0.05); border-radius: 12px;">
-              <div style="font-size: 28px; font-weight: 700; color: #f59e0b;">${reviewCount}</div>
+            <div style="text-align: center; padding: 16px 8px; background: rgba(255,255,255,0.05); border-radius: 12px; min-width: 0;">
+              <div style="font-size: 32px; font-weight: 700; color: #f59e0b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${reviewCount}</div>
               <div style="font-size: 12px; color: #94a3b8; margin-top: 4px;">审核轮次</div>
             </div>
           </div>
@@ -1301,30 +1306,30 @@ ${result.text}`);
           <!-- 详细工作量 -->
           <div style="background: rgba(0,0,0,0.2); border-radius: 12px; padding: 16px; margin-bottom: 16px;">
             <h4 style="color: #e2e8f0; margin-bottom: 12px; font-size: 14px;">📈 各角色工作量</h4>
-            ${result.planning_result ? `
+            ${planningChars > 0 ? `
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.1);">
               <span style="color: #94a3b8;">🧠 谋局者分析</span>
-              <span style="color: #667eea; font-weight: 600;">${planningChars.toLocaleString()} 字</span>
+              <span style="color: #667eea; font-weight: 600;">${formatNumber(planningChars)} 字</span>
             </div>` : ''}
-            ${result.execution_result ? `
+            ${executionChars > 0 ? `
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.1);">
               <span style="color: #94a3b8;">👨‍💻 执行者产出</span>
-              <span style="color: #f093fb; font-weight: 600;">${executionChars.toLocaleString()} 字</span>
+              <span style="color: #f093fb; font-weight: 600;">${formatNumber(executionChars)} 字</span>
             </div>` : ''}
-            ${result.review_result ? `
+            ${reviewChars > 0 ? `
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.1);">
               <span style="color: #94a3b8;">🔍 找茬者审核</span>
-              <span style="color: #4facfe; font-weight: 600;">${reviewChars.toLocaleString()} 字</span>
+              <span style="color: #4facfe; font-weight: 600;">${formatNumber(reviewChars)} 字</span>
             </div>` : ''}
-            ${result.final_result ? `
+            ${finalChars > 0 ? `
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.1);">
               <span style="color: #94a3b8;">📚 沉淀者总结</span>
-              <span style="color: #f5576c; font-weight: 600;">${finalChars.toLocaleString()} 字</span>
+              <span style="color: #f5576c; font-weight: 600;">${formatNumber(finalChars)} 字</span>
             </div>` : ''}
-            ${result.template ? `
+            ${templateChars > 0 ? `
             <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 0;">
               <span style="color: #94a3b8;">📋 万能模板</span>
-              <span style="color: #10b981; font-weight: 600;">${templateChars.toLocaleString()} 字</span>
+              <span style="color: #10b981; font-weight: 600;">${formatNumber(templateChars)} 字</span>
             </div>` : ''}
           </div>
           
