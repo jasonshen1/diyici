@@ -642,6 +642,7 @@
       <div class="brand-name">数字内阁</div>
       <h1 class="page-title">你的专属四人AI团队</h1>
       <p class="page-subtitle">第一次把才华系统化成为开创者，你的专属四人AI内阁</p>
+      <a href="/knowledge.html" style="display: inline-block; margin-top: 12px; padding: 8px 16px; background: rgba(245,158,11,0.2); border: 1px solid rgba(245,158,11,0.3); border-radius: 20px; color: #f59e0b; font-size: 13px; text-decoration: none; transition: all 0.3s;">📚 浏览开创者知识库 →</a>
     </div>
     
     <!-- 数字内阁介绍 -->
@@ -1550,8 +1551,9 @@
                   </div>
                 </div>
                 
-                <div style="display: flex; gap: 12px; justify-content: center;">
+                <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
                   <button id="close-modal-btn" style="padding: 12px 24px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; color: #94a3b8; font-size: 14px; font-weight: 600; cursor: pointer;">关闭并下载成果</button>
+                  <button id="view-kb-btn" style="padding: 12px 24px; background: linear-gradient(135deg, #667eea, #764ba2); border: none; border-radius: 8px; color: #fff; font-size: 14px; font-weight: 600; cursor: pointer;">📚 查看知识库</button>
                   <button id="next-task-btn" style="padding: 12px 24px; background: linear-gradient(135deg, #f59e0b, #d97706); border: none; border-radius: 8px; color: #fff; font-size: 14px; font-weight: 600; cursor: pointer;">开启下一次系统化</button>
                 </div>
               </div>
@@ -1562,6 +1564,10 @@
               modal.remove();
               // 滚动到结果区域，方便用户下载
               resultSection.scrollIntoView({ behavior: 'smooth' });
+            };
+            
+            document.getElementById('view-kb-btn').onclick = () => {
+              window.open('/knowledge.html', '_blank');
             };
             
             document.getElementById('next-task-btn').onclick = () => {
@@ -2062,8 +2068,9 @@
                   </div>
                 </div>
                 
-                <div style="display: flex; gap: 12px; justify-content: center;">
+                <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
                   <button id="pub-close-download" style="padding: 12px 24px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; color: #94a3b8; font-size: 14px; font-weight: 600; cursor: pointer;">关闭并下载成果</button>
+                  <button id="pub-view-kb" style="padding: 12px 24px; background: linear-gradient(135deg, #667eea, #764ba2); border: none; border-radius: 8px; color: #fff; font-size: 14px; font-weight: 600; cursor: pointer;">📚 查看知识库</button>
                   <button id="pub-next-task" style="padding: 12px 24px; background: linear-gradient(135deg, #10b981, #059669); border: none; border-radius: 8px; color: #fff; font-size: 14px; font-weight: 600; cursor: pointer;">开启下一次系统化</button>
                 </div>
               </div>
@@ -2073,6 +2080,10 @@
             document.getElementById('pub-close-download').onclick = () => {
               modal.remove();
               resultSection.scrollIntoView({ behavior: 'smooth' });
+            };
+            
+            document.getElementById('pub-view-kb').onclick = () => {
+              window.open('/knowledge.html', '_blank');
             };
             
             document.getElementById('pub-next-task').onclick = () => {
