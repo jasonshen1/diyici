@@ -1353,8 +1353,7 @@
       // 重置工作流步骤显示
       initializeWorkflowSteps();
       
-      // 滚动到页面顶部
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      // 注意：不再自动滚动，因为重置按钮就在输入框附近，滚动反而会让输入框离开视野
     });
     
     function displayResult(result) {
