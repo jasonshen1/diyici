@@ -1919,25 +1919,34 @@
         // 处理 Markdown 格式
         let processedContent = (window._downloadContent || '');
         
-        // 简单的HTML转义
+        // 转换标题 # ## ### 为 HTML
         processedContent = processedContent
-          .replace(/&/g, '&amp;')
-          .replace(/</g, '&lt;')
-          .replace(/>/g, '&gt;');
+          .replace(/^###### (.*$)/gm, '<h6>$1</h6>')
+          .replace(/^##### (.*$)/gm, '<h5>$1</h5>')
+          .replace(/^#### (.*$)/gm, '<h4>$1</h4>')
+          .replace(/^### (.*$)/gm, '<h3>$1</h3>')
+          .replace(/^## (.*$)/gm, '<h2>$1</h2>')
+          .replace(/^# (.*$)/gm, '<h1>$1</h1>');
         
-        // 将换行转换为<br>
-        processedContent = processedContent.replace(/\n/g, '<br>');
-        
-        // 简单的粗体转换 **text**
-        while (processedContent.includes('**')) {
-          const start = processedContent.indexOf('**');
-          const end = processedContent.indexOf('**', start + 2);
-          if (end === -1) break;
-          const boldText = processedContent.substring(start + 2, end);
-          processedContent = processedContent.substring(0, start) + 
-                   '<strong>' + boldText + '</strong>' + 
-                   processedContent.substring(end + 2);
+        // 转换粗体和斜体
+        processedContent = processedContent
+          .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+        // 斜体 - 简单处理
+        let parts = processedContent.split('*');
+        if (parts.length >= 3) {
+          let newResult = parts[0];
+          for (let i = 1; i < parts.length; i += 2) {
+            if (i + 1 < parts.length) {
+              newResult += '<em>' + parts[i] + '</em>' + parts[i+1];
+            } else {
+              newResult += '*' + parts[i];
+            }
+          }
+          processedContent = newResult;
         }
+        
+        // 转换换行
+        processedContent = processedContent.replace(/\n/g, '<br>');
         
         const htmlContent = '<!DOCTYPE html>\n' +
           '<html>\n' +
@@ -2175,30 +2184,130 @@
       };
     };
 
-    // 将 Markdown 渲染为美观的 HTML - 极简版本，避免iOS Safari正则问题
+    // 将 Markdown 渲染为美观的 HTML
     function renderMarkdown(text) {
       if (!text) return '';
       
       try {
-        // 简单的HTML转义
-        let html = text
-          .replace(/&/g, '&amp;')
-          .replace(/</g, '&lt;')
-          .replace(/>/g, '&gt;');
+        let html = '';
+        const lines = text.split('\n');
+        let inList = false;
+        let listItems = [];
         
-        // 将换行转换为<br>
-        html = html.replace(/\n/g, '<br>');
+        const flushList = () => {
+          if (listItems.length > 0) {
+            html += '<div style="margin: 12px 0;">' + listItems.join('') + '</div>';
+            listItems = [];
+            inList = false;
+          }
+        };
         
-        // 简单的粗体转换 **text**
-        while (html.includes('**')) {
-          const start = html.indexOf('**');
-          const end = html.indexOf('**', start + 2);
-          if (end === -1) break;
-          const boldText = html.substring(start + 2, end);
-          html = html.substring(0, start) + 
-                 '<strong style="color: #fbbf24;">' + boldText + '</strong>' + 
-                 html.substring(end + 2);
+        const escapeHtml = (str) => {
+          return str
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;');
+        };
+        
+        const processInline = (str) => {
+          // 先转义 HTML
+          let result = escapeHtml(str);
+          // 粗体
+          result = result.replace(/\*\*(.+?)\*\*/g, '<strong style="color: #fbbf24; font-weight: 600;">$1</strong>');
+          // 斜体 - 使用简单字符串替换，避免正则问题
+          let parts = result.split('*');
+          if (parts.length >= 3) {
+            let newResult = parts[0];
+            for (let i = 1; i < parts.length; i += 2) {
+              if (i + 1 < parts.length) {
+                newResult += '<em style="color: #a78bfa;">' + parts[i] + '</em>' + parts[i+1];
+              } else {
+                newResult += '*' + parts[i];
+              }
+            }
+            result = newResult;
+          }
+          return result;
+        };
+        
+        for (let i = 0; i < lines.length; i++) {
+          const line = lines[i];
+          const trimmed = line.trim();
+          
+          // 空行
+          if (!trimmed) {
+            flushList();
+            html += '<br>';
+            continue;
+          }
+          
+          // 分割线
+          if (trimmed === '---' || trimmed === '***' || trimmed === '___') {
+            flushList();
+            html += '<hr style="border: none; border-top: 1px solid rgba(255,255,255,0.1); margin: 20px 0;">';
+            continue;
+          }
+          
+          // 标题
+          if (trimmed.startsWith('# ')) {
+            flushList();
+            const content = processInline(trimmed.slice(2));
+            html += '<h1 style="color: #667eea; font-size: 22px; margin: 28px 0 16px; font-weight: 700; border-bottom: 2px solid #667eea; padding-bottom: 8px;">' + content + '</h1>';
+            continue;
+          }
+          if (trimmed.startsWith('## ')) {
+            flushList();
+            const content = processInline(trimmed.slice(3));
+            html += '<h2 style="color: #f093fb; font-size: 19px; margin: 24px 0 14px; font-weight: 600;">' + content + '</h2>';
+            continue;
+          }
+          if (trimmed.startsWith('### ')) {
+            flushList();
+            const content = processInline(trimmed.slice(4));
+            html += '<h3 style="color: #667eea; font-size: 17px; margin: 20px 0 12px; font-weight: 600; border-bottom: 1px solid rgba(102,126,234,0.3); padding-bottom: 8px;">' + content + '</h3>';
+            continue;
+          }
+          if (trimmed.startsWith('#### ')) {
+            flushList();
+            const content = processInline(trimmed.slice(5));
+            html += '<h4 style="color: #e2e8f0; font-size: 15px; margin: 18px 0 10px; font-weight: 600;">' + content + '</h4>';
+            continue;
+          }
+          if (trimmed.startsWith('##### ')) {
+            flushList();
+            const content = processInline(trimmed.slice(6));
+            html += '<h5 style="color: #94a3b8; font-size: 14px; margin: 16px 0 8px; font-weight: 600;">' + content + '</h5>';
+            continue;
+          }
+          
+          // 无序列表
+          if (trimmed.match(/^[-\*]\s/)) {
+            const content = processInline(trimmed.slice(2));
+            listItems.push('<div style="margin: 4px 0; padding-left: 16px; position: relative;"><span style="position: absolute; left: 0; color: #667eea; font-weight: bold;">•</span>' + content + '</div>');
+            inList = true;
+            continue;
+          }
+          
+          // 有序列表
+          const orderedMatch = trimmed.match(/^(\d+)\.\s(.+)$/);
+          if (orderedMatch) {
+            const content = processInline(orderedMatch[2]);
+            listItems.push('<div style="margin: 4px 0; padding-left: 24px; position: relative;"><span style="position: absolute; left: 0; color: #10b981; font-weight: 600;">' + orderedMatch[1] + '.</span>' + content + '</div>');
+            inList = true;
+            continue;
+          }
+          
+          // 普通段落
+          flushList();
+          const content = processInline(trimmed);
+          html += '<p style="margin: 8px 0; line-height: 1.8;">' + content + '</p>';
         }
+        
+        flushList();
+        
+        // 清理多余的 <br>
+        html = html.replace(/<br><br><br>/g, '<br><br>');
+        html = html.replace(/<p style="margin: 8px 0; line-height: 1.8;"><\/p>/g, '');
         
         return html;
       } catch (error) {
