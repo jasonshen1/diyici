@@ -1393,6 +1393,132 @@
       
       // 添加整体优化按钮
       addOptimizeButton(result);
+      
+      // 自动显示发布弹窗（延迟1秒，让用户先看到结果）
+      setTimeout(() => {
+        showAutoPublishModal(result);
+      }, 1000);
+    }
+    
+    // 自动发布弹窗
+    function showAutoPublishModal(result) {
+      // 检查是否已经显示过（避免重复）
+      if (document.getElementById('auto-publish-modal')) return;
+      
+      const modal = document.createElement('div');
+      modal.id = 'auto-publish-modal';
+      modal.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); display: flex; align-items: center; justify-content: center; z-index: 1000; padding: 20px; box-sizing: border-box;';
+      
+      // 提取标题
+      const defaultTitle = result.user_input ? result.user_input.substring(0, 30) + (result.user_input.length > 30 ? '...' : '') : '未命名方案';
+      
+      // 提取内容摘要
+      const summary = result.final_result ? result.final_result.substring(0, 100) + '...' : 
+                     (result.template ? result.template.substring(0, 100) + '...' : '');
+      
+      modal.innerHTML = `
+        <div style="background: linear-gradient(135deg, #1a1a3e, #2d2d5a); border-radius: 20px; padding: 28px; max-width: 520px; width: 100%; border: 1px solid rgba(102,126,234,0.4); box-shadow: 0 20px 60px rgba(0,0,0,0.5);">
+          <div style="text-align: center; margin-bottom: 20px;">
+            <div style="font-size: 48px; margin-bottom: 12px;">🎉</div>
+            <h3 style="color: #fff; font-size: 20px; margin-bottom: 8px;">方案执行完成！</h3>
+            <p style="color: #94a3b8; font-size: 14px;">你的方案很棒，是否分享到知识库让更多人受益？</p>
+          </div>
+          
+          <div style="background: rgba(255,255,255,0.05); border-radius: 12px; padding: 16px; margin-bottom: 20px;">
+            <div style="color: #667eea; font-size: 13px; margin-bottom: 8px; font-weight: 600;">📋 方案预览</div>
+            <div style="color: #e2e8f0; font-size: 14px; font-weight: 600; margin-bottom: 8px;">${defaultTitle}</div>
+            <div style="color: #94a3b8; font-size: 12px; line-height: 1.6;">${summary}</div>
+          </div>
+          
+          <div style="margin-bottom: 16px;">
+            <label style="display: block; color: #94a3b8; font-size: 13px; margin-bottom: 6px;">标题 *</label>
+            <input type="text" id="auto-pub-title" value="${defaultTitle}" style="width: 100%; padding: 12px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; color: #fff; font-size: 14px; box-sizing: border-box;">
+          </div>
+          
+          <div style="margin-bottom: 16px;">
+            <label style="display: block; color: #94a3b8; font-size: 13px; margin-bottom: 6px;">分类</label>
+            <select id="auto-pub-category" style="width: 100%; padding: 12px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; color: #fff; font-size: 14px; box-sizing: border-box;">
+              <option value="营销方案">营销方案</option>
+              <option value="产品规划">产品规划</option>
+              <option value="运营策略">运营策略</option>
+              <option value="内容创作">内容创作</option>
+              <option value="其他">其他</option>
+            </select>
+          </div>
+          
+          <div style="margin-bottom: 24px;">
+            <label style="display: block; color: #94a3b8; font-size: 13px; margin-bottom: 6px;">一句话简介</label>
+            <textarea id="auto-pub-summary" rows="2" placeholder="简要描述这个方案能解决什么问题..." style="width: 100%; padding: 12px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; color: #fff; font-size: 14px; box-sizing: border-box; resize: vertical;"></textarea>
+          </div>
+          
+          <div style="display: flex; gap: 12px;">
+            <button id="auto-pub-skip" style="flex: 1; padding: 14px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 10px; color: #94a3b8; font-size: 14px; cursor: pointer; transition: all 0.3s;">暂时不发布</button>
+            <button id="auto-pub-submit" style="flex: 1; padding: 14px; background: linear-gradient(135deg, #f59e0b, #d97706); border: none; border-radius: 10px; color: #fff; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.3s;">💾 发布到知识库</button>
+          </div>
+        </div>
+      `;
+      
+      document.body.appendChild(modal);
+      
+      // 跳过按钮
+      document.getElementById('auto-pub-skip').onclick = () => {
+        modal.remove();
+      };
+      
+      // 发布按钮
+      document.getElementById('auto-pub-submit').onclick = async () => {
+        const title = document.getElementById('auto-pub-title').value.trim();
+        const category = document.getElementById('auto-pub-category').value;
+        const summary = document.getElementById('auto-pub-summary').value.trim();
+        
+        if (!title) {
+          alert('请输入标题');
+          return;
+        }
+        
+        // 构建完整内容
+        const fullContent = `# ${title}\n\n` +
+          `**分类**: ${category}\n` +
+          `**发布时间**: ${new Date().toLocaleString('zh-CN')}\n\n` +
+          `## 方案简介\n${summary || '暂无简介'}\n\n` +
+          `---\n\n` +
+          `## 详细内容\n\n` +
+          (result.planning_result ? `### 谋局者分析\n${result.planning_result}\n\n` : '') +
+          (result.execution_result ? `### 执行者方案\n${result.execution_result}\n\n` : '') +
+          (result.review_result ? `### 找茬者审核\n${result.review_result}\n\n` : '') +
+          (result.final_result ? `### 沉淀者总结\n${result.final_result}\n\n` : '') +
+          (result.template ? `### 万能模板\n${result.template}\n\n` : '');
+        
+        // 显示发布中状态
+        const submitBtn = document.getElementById('auto-pub-submit');
+        submitBtn.innerHTML = '⏳ 发布中...';
+        submitBtn.disabled = true;
+        
+        try {
+          const response = await fetch('/api/knowledge/publish', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ title, category, summary, content: fullContent })
+          });
+          
+          if (response.ok) {
+            modal.innerHTML = `
+              <div style="text-align: center; padding: 40px 20px;">
+                <div style="font-size: 64px; margin-bottom: 20px;">✅</div>
+                <h3 style="color: #fff; font-size: 22px; margin-bottom: 12px;">发布成功！</h3>
+                <p style="color: #94a3b8; font-size: 14px; margin-bottom: 24px;">你的方案已进入知识库，可以被更多人使用和复用。</p>
+                <button onclick="this.closest('#auto-publish-modal').remove()" style="padding: 12px 32px; background: linear-gradient(135deg, #10b981, #059669); border: none; border-radius: 8px; color: #fff; font-size: 14px; font-weight: 600; cursor: pointer;">好的，我知道了</button>
+              </div>
+            `;
+          } else {
+            throw new Error('发布失败');
+          }
+        } catch (error) {
+          alert('❌ 发布失败: ' + error.message);
+          submitBtn.innerHTML = '💾 发布到知识库';
+          submitBtn.disabled = false;
+        }
+      };
     }
     
     // 添加整体优化按钮
