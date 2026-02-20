@@ -2183,3 +2183,16 @@
   </script>
 </body>
 </html>
+  <script>
+    // 页面加载完成后检查DOM元素
+    document.addEventListener('DOMContentLoaded', () => {
+      console.log('=== 数字内阁页面加载完成 ===');
+      console.log('严格模式复选框:', document.getElementById('strict-mode') ? '✅ 存在' : '❌ 不存在');
+      console.log('严格模式说明框:', document.getElementById('strict-mode-info') ? '✅ 存在' : '❌ 不存在');
+      console.log('严格模式标签:', document.getElementById('strict-mode-label') ? '✅ 存在' : '❌ 不存在');
+      console.log('文件上传区域:', document.getElementById('file-upload-area') ? '✅ 存在' : '❌ 不存在');
+      console.log('文件输入:', document.getElementById('file-input') ? '✅ 存在' : '❌ 不存在');
+      console.log('重置按钮:', document.getElementById('reset-btn') ? '✅ 存在' : '❌ 不存在');
+      console.log('========================');
+    });
+  </script>
