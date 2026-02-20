@@ -1471,6 +1471,31 @@ ${result.text}`);
       URL.revokeObjectURL(url);
     };
     
+    // 复制内容到剪贴板
+    window.copyToClipboard = async function(button, encodedText) {
+      try {
+        const text = decodeURIComponent(encodedText);
+        await navigator.clipboard.writeText(text);
+        
+        // 显示复制成功
+        const originalText = button.innerHTML;
+        button.innerHTML = '✅ 已复制';
+        button.style.background = 'rgba(16, 185, 129, 0.2)';
+        button.style.borderColor = '#10b981';
+        button.style.color = '#10b981';
+        
+        setTimeout(() => {
+          button.innerHTML = originalText;
+          button.style.background = 'rgba(255,255,255,0.1)';
+          button.style.borderColor = 'rgba(255,255,255,0.2)';
+          button.style.color = '#94a3b8';
+        }, 2000);
+      } catch (err) {
+        console.error('复制失败:', err);
+        alert('复制失败，请手动复制');
+      }
+    };
+    
     // 将 Markdown 渲染为美观的 HTML
     function renderMarkdown(text) {
       if (!text) return '';
@@ -1730,6 +1755,12 @@ ${result.text}`);
             <div style="font-size: 18px; font-weight: 700; color: ${borderColor};">${wordCount}</div>            <div style="font-size: 11px; color: #64748b;">字 · ${readTime}分钟阅读</div>
           </div>        </div>
         <div class="result-content" style="margin-top: 16px; line-height: 1.8; color: #e2e8f0;">${renderMarkdown(content)}</div>
+        <div style="margin-top: 12px; text-align: right;">
+          <button onclick="copyToClipboard(this, '${encodeURIComponent(content || '').replace(/'/g, "\\'")}')" 
+            style="padding: 6px 12px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; color: #94a3b8; font-size: 12px; cursor: pointer; transition: all 0.3s; display: inline-flex; align-items: center; gap: 4px;">
+            📋 复制内容
+          </button>
+        </div>
       `;
       resultContainer.appendChild(card);
     }
