@@ -1604,47 +1604,119 @@
       if (!text) return '';
       
       try {
-        // 转义 HTML 特殊字符
-        let html = text
-          .replace(/&/g, '&amp;')
-          .replace(/</g, '&lt;')
-          .replace(/>/g, '&gt;');
+        let html = '';
+        const lines = text.split('\n');
+        let inList = false;
+        let listItems = [];
         
-        // 标题 (# ## ###)
-        html = html.replace(/^##### (.*$)/gim, '<h5 style="color: #94a3b8; font-size: 14px; margin: 16px 0 8px; font-weight: 600;">$1</h5>');
-        html = html.replace(/^#### (.*$)/gim, '<h4 style="color: #e2e8f0; font-size: 15px; margin: 18px 0 10px; font-weight: 600;">$1</h4>');
-        html = html.replace(/^### (.*$)/gim, '<h3 style="color: #667eea; font-size: 17px; margin: 20px 0 12px; font-weight: 600; border-bottom: 1px solid rgba(102,126,234,0.3); padding-bottom: 8px;">$1</h3>');
-        html = html.replace(/^## (.*$)/gim, '<h2 style="color: #f093fb; font-size: 19px; margin: 24px 0 14px; font-weight: 600;">$1</h2>');
-        html = html.replace(/^# (.*$)/gim, '<h1 style="color: #667eea; font-size: 22px; margin: 28px 0 16px; font-weight: 700;">$1</h1>');
+        const flushList = () => {
+          if (listItems.length > 0) {
+            html += '<div style="margin: 12px 0;">' + listItems.join('') + '</div>';
+            listItems = [];
+            inList = false;
+          }
+        };
         
-        // 粗体 (**text**)
-        html = html.replace(/\*\*(.*?)\*\*/g, '<strong style="color: #fbbf24; font-weight: 600;">$1</strong>');
+        const escapeHtml = (str) => {
+          return str
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;');
+        };
         
-        // 斜体 (*text*) - 避免匹配 ** 中的 *
-        html = html.replace(/(?<!\*)\*(?!\*)(.*?)\*(?!\*)/g, '<em style="color: #a78bfa;">$1</em>');
+        const processInline = (str) => {
+          // 先转义 HTML
+          let result = escapeHtml(str);
+          // 粗体
+          result = result.replace(/\*\*(.+?)\*\*/g, '<strong style="color: #fbbf24; font-weight: 600;">$1</strong>');
+          // 斜体（不匹配 ** 中的 *）
+          result = result.replace(/(?<!\*)\*(?!\*)(.+?)\*(?!\*)/g, '<em style="color: #a78bfa;">$1</em>');
+          return result;
+        };
         
-        // 分割线 (---)
-        html = html.replace(/^---$/gim, '<hr style="border: none; border-top: 1px solid rgba(255,255,255,0.1); margin: 20px 0;">');
+        for (let i = 0; i < lines.length; i++) {
+          const line = lines[i];
+          const trimmed = line.trim();
+          
+          // 空行
+          if (!trimmed) {
+            flushList();
+            html += '<br>';
+            continue;
+          }
+          
+          // 分割线
+          if (trimmed === '---' || trimmed === '***' || trimmed === '___') {
+            flushList();
+            html += '<hr style="border: none; border-top: 1px solid rgba(255,255,255,0.1); margin: 20px 0;">';
+            continue;
+          }
+          
+          // 标题
+          if (trimmed.startsWith('# ')) {
+            flushList();
+            const content = processInline(trimmed.slice(2));
+            html += '<h1 style="color: #667eea; font-size: 22px; margin: 28px 0 16px; font-weight: 700; border-bottom: 2px solid #667eea; padding-bottom: 8px;">' + content + '</h1>';
+            continue;
+          }
+          if (trimmed.startsWith('## ')) {
+            flushList();
+            const content = processInline(trimmed.slice(3));
+            html += '<h2 style="color: #f093fb; font-size: 19px; margin: 24px 0 14px; font-weight: 600;">' + content + '</h2>';
+            continue;
+          }
+          if (trimmed.startsWith('### ')) {
+            flushList();
+            const content = processInline(trimmed.slice(4));
+            html += '<h3 style="color: #667eea; font-size: 17px; margin: 20px 0 12px; font-weight: 600; border-bottom: 1px solid rgba(102,126,234,0.3); padding-bottom: 8px;">' + content + '</h3>';
+            continue;
+          }
+          if (trimmed.startsWith('#### ')) {
+            flushList();
+            const content = processInline(trimmed.slice(5));
+            html += '<h4 style="color: #e2e8f0; font-size: 15px; margin: 18px 0 10px; font-weight: 600;">' + content + '</h4>';
+            continue;
+          }
+          if (trimmed.startsWith('##### ')) {
+            flushList();
+            const content = processInline(trimmed.slice(6));
+            html += '<h5 style="color: #94a3b8; font-size: 14px; margin: 16px 0 8px; font-weight: 600;">' + content + '</h5>';
+            continue;
+          }
+          
+          // 无序列表
+          if (trimmed.match(/^[-\*]\s/)) {
+            const content = processInline(trimmed.slice(2));
+            listItems.push('<div style="margin: 4px 0; padding-left: 16px; position: relative;"><span style="position: absolute; left: 0; color: #667eea; font-weight: bold;">•</span>' + content + '</div>');
+            inList = true;
+            continue;
+          }
+          
+          // 有序列表
+          const orderedMatch = trimmed.match(/^(\d+)\.\s(.+)$/);
+          if (orderedMatch) {
+            const content = processInline(orderedMatch[2]);
+            listItems.push('<div style="margin: 4px 0; padding-left: 24px; position: relative;"><span style="position: absolute; left: 0; color: #10b981; font-weight: 600;">' + orderedMatch[1] + '.</span>' + content + '</div>');
+            inList = true;
+            continue;
+          }
+          
+          // 普通段落
+          flushList();
+          const content = processInline(trimmed);
+          html += '<p style="margin: 8px 0; line-height: 1.8;">' + content + '</p>';
+        }
         
-        // 列表项 (- 或 * 开头)
-        html = html.replace(/^- (.*$)/gim, '<div style="margin: 6px 0; padding-left: 16px; position: relative;"><span style="position: absolute; left: 0; color: #667eea;">•</span>$1</div>');
-        html = html.replace(/^\* (.*$)/gim, '<div style="margin: 6px 0; padding-left: 16px; position: relative;"><span style="position: absolute; left: 0; color: #667eea;">•</span>$1</div>');
-        
-        // 有序列表 (1. 2. 3.)
-        html = html.replace(/^\d+\. (.*$)/gim, function(match, p1) {
-          return '<div style="margin: 6px 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #10b981;">' + match.split(' ')[0] + '</span>' + p1 + '</div>';
-        });
-        
-        // 换行处理
-        html = html.replace(/\n/g, '<br>');
+        flushList();
         
         // 清理多余的 <br>
         html = html.replace(/<br><br><br>/g, '<br><br>');
+        html = html.replace(/<p style="margin: 8px 0; line-height: 1.8;"><\/p>/g, '');
         
         return html;
       } catch (error) {
         console.error('renderMarkdown 错误:', error);
-        // 如果正则处理失败，返回简单的转义文本
+        // 失败时返回简单转义文本
         return text
           .replace(/&/g, '&amp;')
           .replace(/</g, '&lt;')
