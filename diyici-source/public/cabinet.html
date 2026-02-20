@@ -1204,7 +1204,128 @@ OCR服务连接失败: ${error.message}
       
       // 滚动到结果区域
       resultSection.scrollIntoView({ behavior: 'smooth' });
+      
+      // 添加下载按钮
+      addDownloadButtons(result);
     }
+    
+    // 添加下载按钮
+    function addDownloadButtons(result) {
+      const downloadCard = document.createElement('div');
+      downloadCard.className = 'result-card';
+      downloadCard.style.borderLeft = '4px solid #10b981';
+      downloadCard.style.marginTop = '24px';
+      
+      // 收集所有可下载内容
+      let fullContent = `# 数字内阁执行结果\n\n`;
+      fullContent += `生成时间: ${new Date().toLocaleString('zh-CN')}\n\n`;
+      fullContent += `---\n\n`;
+      
+      if (result.planning_result) {
+        fullContent += `## 一、谋局者（首辅）- 行动指南\n\n${result.planning_result}\n\n---\n\n`;
+      }
+      if (result.execution_result) {
+        fullContent += `## 二、执行者（干吏）- 执行成果\n\n${result.execution_result}\n\n---\n\n`;
+      }
+      if (result.review_result) {
+        fullContent += `## 三、找茬者（御史）- 审核意见\n\n${result.review_result}\n\n---\n\n`;
+      }
+      if (result.final_result) {
+        fullContent += `## 四、沉淀者（史官）- 完整总结\n\n${result.final_result}\n\n---\n\n`;
+      }
+      if (result.template) {
+        fullContent += `## 五、万能模板\n\n${result.template}\n\n`;
+      }
+      
+      downloadCard.innerHTML = `
+        <div class="result-header">
+          <div class="result-icon" style="background: linear-gradient(135deg, #10b981, #059669);">💾</div>
+          <div class="result-title">
+            <h3>下载成果</h3>
+            <p>保存执行结果到本地</p>
+          </div>
+        </div>
+        <div class="result-content" style="margin-top: 16px;">
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px;">
+            <button onclick="downloadMarkdown()" class="download-btn" style="padding: 12px 20px; background: linear-gradient(135deg, #667eea, #764ba2); border: none; border-radius: 8px; color: #fff; cursor: pointer; font-size: 14px; font-weight: 600; transition: all 0.3s ease;">
+              📄 下载 Markdown
+            </button>
+            <button onclick="downloadWord()" class="download-btn" style="padding: 12px 20px; background: linear-gradient(135deg, #f093fb, #f5576c); border: none; border-radius: 8px; color: #fff; cursor: pointer; font-size: 14px; font-weight: 600; transition: all 0.3s ease;">
+              📝 下载 Word
+            </button>
+            <button onclick="downloadText()" class="download-btn" style="padding: 12px 20px; background: linear-gradient(135deg, #4facfe, #00f2fe); border: none; border-radius: 8px; color: #fff; cursor: pointer; font-size: 14px; font-weight: 600; transition: all 0.3s ease;">
+              📃 下载纯文本
+            </button>
+          </div>
+        </div>
+      `;
+      
+      resultContainer.appendChild(downloadCard);
+      
+      // 存储内容供下载使用
+      window._downloadContent = fullContent;
+    }
+    
+    // 下载 Markdown
+    window.downloadMarkdown = function() {
+      const blob = new Blob([window._downloadContent], { type: 'text/markdown;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `数字内阁成果_${new Date().toISOString().slice(0, 10)}.md`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    };
+    
+    // 下载 Word（使用 HTML 格式）
+    window.downloadWord = function() {
+      const htmlContent = `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <meta charset="UTF-8">
+          <title>数字内阁执行结果</title>
+          <style>
+            body { font-family: 'Microsoft YaHei', Arial, sans-serif; line-height: 1.8; padding: 40px; max-width: 800px; margin: 0 auto; }
+            h1 { color: #667eea; border-bottom: 2px solid #667eea; padding-bottom: 10px; }
+            h2 { color: #764ba2; margin-top: 30px; }
+            pre { background: #f5f5f5; padding: 15px; border-radius: 5px; white-space: pre-wrap; }
+          </style>
+        </head>
+        <body>
+          ${window._downloadContent.replace(/\n/g, '<br>').replace(/#{1,6} (.*?)<br>/g, (match, p1) => `<h2>${p1}</h2>`)}
+        </body>
+        </html>
+      `;
+      const blob = new Blob([htmlContent], { type: 'application/msword;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `数字内阁成果_${new Date().toISOString().slice(0, 10)}.doc`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    };
+    
+    // 下载纯文本
+    window.downloadText = function() {
+      const textContent = window._downloadContent
+        .replace(/#{1,6} /g, '')
+        .replace(/---/g, '-------------------')
+        .replace(/\*\*/g, '');
+      const blob = new Blob([textContent], { type: 'text/plain;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `数字内阁成果_${new Date().toISOString().slice(0, 10)}.txt`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    };
     
     // 显示失败详情
     function displayFailure(statusData) {
@@ -1277,6 +1398,16 @@ OCR服务连接失败: ${error.message}
         </div>
       `;
       resultContainer.appendChild(suggestionCard);
+      
+      // 如果有部分成果，添加下载按钮
+      if (statusData.planningResult || statusData.executionResult || statusData.reviewResult) {
+        const partialResult = {
+          planning_result: statusData.planningResult,
+          execution_result: statusData.executionResult,
+          review_result: statusData.reviewResult
+        };
+        addDownloadButtons(partialResult);
+      }
       
       // 滚动到结果区域
       resultSection.scrollIntoView({ behavior: 'smooth' });
