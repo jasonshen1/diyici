@@ -1928,8 +1928,20 @@
         
         // 转换粗体和斜体
         processedContent = processedContent
-          .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-          .replace(/\*(.+?)\*/g, '<em>$1</em>');
+          .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+        // 斜体 - 简单处理
+        let parts = processedContent.split('*');
+        if (parts.length >= 3) {
+          let newResult = parts[0];
+          for (let i = 1; i < parts.length; i += 2) {
+            if (i + 1 < parts.length) {
+              newResult += '<em>' + parts[i] + '</em>' + parts[i+1];
+            } else {
+              newResult += '*' + parts[i];
+            }
+          }
+          processedContent = newResult;
+        }
         
         // 转换换行
         processedContent = processedContent.replace(/\n/g, '<br>');
@@ -2200,8 +2212,19 @@
           let result = escapeHtml(str);
           // 粗体
           result = result.replace(/\*\*(.+?)\*\*/g, '<strong style="color: #fbbf24; font-weight: 600;">$1</strong>');
-          // 斜体（简单匹配，避免与粗体冲突）
-          result = result.replace(/(^|[^*])\*([^*]+?)\*([^*]|$)/g, '$1<em style="color: #a78bfa;">$2</em>$3');
+          // 斜体 - 使用简单字符串替换，避免正则问题
+          let parts = result.split('*');
+          if (parts.length >= 3) {
+            let newResult = parts[0];
+            for (let i = 1; i < parts.length; i += 2) {
+              if (i + 1 < parts.length) {
+                newResult += '<em style="color: #a78bfa;">' + parts[i] + '</em>' + parts[i+1];
+              } else {
+                newResult += '*' + parts[i];
+              }
+            }
+            result = newResult;
+          }
           return result;
         };
         
