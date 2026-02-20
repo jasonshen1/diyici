@@ -1524,8 +1524,8 @@
       // 跳过按钮
       document.getElementById('auto-pub-skip').onclick = () => {
         modal.remove();
-        // 滚动到结果区域，让用户看到完整结果
-        resultSection.scrollIntoView({ behavior: 'smooth' });
+        // 重新显示完整结果（确保所有角色卡片都显示）
+        displayResult(result);
       };
       
       // 发布按钮
