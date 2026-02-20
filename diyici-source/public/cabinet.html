@@ -1390,6 +1390,63 @@
       
       // 添加下载按钮
       addDownloadButtons(result);
+      
+      // 添加整体优化按钮
+      addOptimizeButton(result);
+    }
+    
+    // 添加整体优化按钮
+    function addOptimizeButton(result) {
+      const optimizeCard = document.createElement('div');
+      optimizeCard.className = 'result-card';
+      optimizeCard.style.cssText = 'background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(5, 150, 105, 0.1)); border: 1px solid rgba(16, 185, 129, 0.3); margin-top: 24px;';
+      
+      optimizeCard.innerHTML = `
+        <div class="result-header">
+          <div class="result-icon" style="background: linear-gradient(135deg, #10b981, #059669);">🔄</div>
+          <div class="result-title">
+            <h3>继续优化方案</h3>
+            <p>基于当前结果进行迭代改进</p>
+          </div>
+        </div>
+        <div class="result-content" style="margin-top: 16px;">
+          <p style="color: #94a3b8; margin-bottom: 12px;">对整体方案不满意？可以基于当前成果继续迭代优化。</p>
+          <div id="optimize-btn-container" style="text-align: center;"></div>
+        </div>
+      `;
+      
+      resultContainer.appendChild(optimizeCard);
+      
+      // 创建优化按钮
+      const btnContainer = optimizeCard.querySelector('#optimize-btn-container');
+      const optimizeBtn = document.createElement('button');
+      optimizeBtn.style.cssText = 'padding: 12px 24px; background: linear-gradient(135deg, #10b981, #059669); border: none; border-radius: 8px; color: #fff; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.3s;';
+      optimizeBtn.innerHTML = '🚀 基于当前方案继续优化';
+      optimizeBtn.onclick = function() {
+        // 回到顶部
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        
+        // 构建上下文摘要
+        const summary = [];
+        if (result.planning_result) summary.push('【谋局者分析】' + result.planning_result.substring(0, 200) + '...');
+        if (result.execution_result) summary.push('【执行者方案】' + result.execution_result.substring(0, 200) + '...');
+        if (result.final_result) summary.push('【沉淀者总结】' + result.final_result.substring(0, 200) + '...');
+        
+        const context = `【基于完整方案继续优化】\n\n之前四脑协作生成的方案核心内容：\n\n${summary.join('\n\n')}\n\n我需要进一步优化和完善：\n`;
+        
+        userInput.value = context;
+        userInput.focus();
+        
+        // 清空之前的结果区域
+        resultSection.style.display = 'none';
+        resultContainer.innerHTML = '';
+        
+        // 显示提示
+        statusText.textContent = '已加载完整方案上下文，请补充优化需求后点击开始执行';
+        statusText.style.color = '#10b981';
+      };
+      
+      btnContainer.appendChild(optimizeBtn);
     }
     
     // 📊 添加专业统计面板
@@ -2097,13 +2154,44 @@
       
       // 创建复制按钮（使用DOM API避免HTML属性注入问题）
       const copyBtnContainer = card.querySelector('.copy-btn-container');
+      
+      // 创建按钮容器
+      const btnContainer = document.createElement('div');
+      btnContainer.style.cssText = 'display: flex; gap: 8px; justify-content: flex-end; flex-wrap: wrap;';
+      
+      // 复制按钮
       const copyBtn = document.createElement('button');
       copyBtn.style.cssText = 'padding: 6px 12px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; color: #94a3b8; font-size: 12px; cursor: pointer; transition: all 0.3s; display: inline-flex; align-items: center; gap: 4px;';
       copyBtn.innerHTML = '📋 复制内容';
       copyBtn.onclick = function() {
         copyToClipboard(this, content || '');
       };
-      copyBtnContainer.appendChild(copyBtn);
+      
+      // 继续优化按钮
+      const optimizeBtn = document.createElement('button');
+      optimizeBtn.style.cssText = 'padding: 6px 12px; background: linear-gradient(135deg, #667eea, #764ba2); border: none; border-radius: 6px; color: #fff; font-size: 12px; cursor: pointer; transition: all 0.3s; display: inline-flex; align-items: center; gap: 4px;';
+      optimizeBtn.innerHTML = '🔄 继续优化';
+      optimizeBtn.onclick = function() {
+        // 回到顶部
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        
+        // 预填充输入框
+        const context = `【基于之前的方案继续优化】\n\n之前${title}的核心内容：\n${content.substring(0, 500)}${content.length > 500 ? '...' : ''}\n\n我需要进一步优化：\n`;
+        userInput.value = context;
+        userInput.focus();
+        
+        // 可选：清空之前的结果区域
+        resultSection.style.display = 'none';
+        resultContainer.innerHTML = '';
+        
+        // 显示提示
+        statusText.textContent = '已加载上下文，请补充优化需求后点击开始执行';
+        statusText.style.color = '#10b981';
+      };
+      
+      btnContainer.appendChild(optimizeBtn);
+      btnContainer.appendChild(copyBtn);
+      copyBtnContainer.appendChild(btnContainer);
       
       resultContainer.appendChild(card);
     }
