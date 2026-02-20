@@ -2495,11 +2495,17 @@
     // 更新工作流步骤显示
     function updateWorkflowSteps(statusData) {
       const steps = ['planning', 'execution', 'review', 'archive'];
-      // 将 finalizing 映射到 archive，completed 映射到最后一步之后
+      // 将后端状态映射到前端步骤名称
       let currentStatus = statusData.status;
-      if (currentStatus === 'finalizing') {
-        currentStatus = 'archive';
-      }
+      const statusMapping = {
+        'planning': 'planning',
+        'executing': 'execution',
+        'reviewing': 'review',
+        'finalizing': 'archive',
+        'completed': 'completed',
+        'failed': 'failed'
+      };
+      currentStatus = statusMapping[currentStatus] || currentStatus;
       
       steps.forEach((step, index) => {
         const stepEl = document.getElementById(`step-${step}`);
