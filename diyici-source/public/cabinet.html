@@ -1322,74 +1322,91 @@
         return num.toLocaleString().replace(/,/g, '');
       };
       
-      statsCard.innerHTML = `
-        <div class="result-header">
-          <div class="result-icon" style="background: linear-gradient(135deg, #667eea, #764ba2);">📊</div>
-          <div class="result-title">
-            <h3>执行统计报告</h3>
-            <p>四脑协作工作量概览</p>
-          </div>
-        </div>
-        
-        <div class="result-content" style="margin-top: 16px;">
-          <!-- 核心指标 -->
-          <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 20px;">
-            <div style="text-align: center; padding: 16px 8px; background: rgba(255,255,255,0.05); border-radius: 12px; min-width: 0;">
-              <div style="font-size: 32px; font-weight: 700; color: #667eea; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${roleCount}</div>
-              <div style="font-size: 12px; color: #94a3b8; margin-top: 4px;">参与角色</div>
-            </div>
-            <div style="text-align: center; padding: 16px 8px; background: rgba(255,255,255,0.05); border-radius: 12px; min-width: 0;">
-              <div style="font-size: 32px; font-weight: 700; color: #10b981; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${formatNumber(totalChars)}</div>
-              <div style="font-size: 12px; color: #94a3b8; margin-top: 4px;">总字数</div>
-            </div>
-            <div style="text-align: center; padding: 16px 8px; background: rgba(255,255,255,0.05); border-radius: 12px; min-width: 0;">
-              <div style="font-size: 32px; font-weight: 700; color: #f59e0b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${reviewCount}</div>
-              <div style="font-size: 12px; color: #94a3b8; margin-top: 4px;">审核轮次</div>
-            </div>
-          </div>
-          
-          <!-- 详细工作量 -->
-          <div style="background: rgba(0,0,0,0.2); border-radius: 12px; padding: 16px; margin-bottom: 16px;">
-            <h4 style="color: #e2e8f0; margin-bottom: 12px; font-size: 14px;">📈 各角色工作量</h4>
-            ${planningChars > 0 ? `
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.1);">
-              <span style="color: #94a3b8;">🧠 谋局者分析</span>
-              <span style="color: #667eea; font-weight: 600;">${formatNumber(planningChars)} 字</span>
-            </div>` : ''}
-            ${executionChars > 0 ? `
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.1);">
-              <span style="color: #94a3b8;">👨‍💻 执行者产出</span>
-              <span style="color: #f093fb; font-weight: 600;">${formatNumber(executionChars)} 字</span>
-            </div>` : ''}
-            ${reviewChars > 0 ? `
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.1);">
-              <span style="color: #94a3b8;">🔍 找茬者审核</span>
-              <span style="color: #4facfe; font-weight: 600;">${formatNumber(reviewChars)} 字</span>
-            </div>` : ''}
-            ${finalChars > 0 ? `
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.1);">
-              <span style="color: #94a3b8;">📚 沉淀者总结</span>
-              <span style="color: #f5576c; font-weight: 600;">${formatNumber(finalChars)} 字</span>
-            </div>` : ''}
-            ${templateChars > 0 ? `
-            <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px 0;">
-              <span style="color: #94a3b8;">📋 万能模板</span>
-              <span style="color: #10b981; font-weight: 600;">${formatNumber(templateChars)} 字</span>
-            </div>` : ''}
-          </div>
-          
-          <!-- 质量评估 -->
-          <div style="display: flex; align-items: center; gap: 16px; padding: 16px; background: rgba(16, 185, 129, 0.1); border-radius: 12px;">
-            <div style="font-size: 24px;">✨</div>
-            <div style="flex: 1;">
-              <div style="color: #10b981; font-weight: 600; margin-bottom: 4px;">质量评估：${qualityScore} 分</div>
-              <div style="color: #94a3b8; font-size: 12px;">经过 ${reviewCount} 轮严格审核，方案已达到可执行标准</div>
-            </div>
-            <div style="font-size: 32px; font-weight: 700; color: #10b981;">${qualityScore}</div>
-          </div>
+      // 创建头部
+      const header = document.createElement('div');
+      header.className = 'result-header';
+      header.innerHTML = `
+        <div class="result-icon" style="background: linear-gradient(135deg, #667eea, #764ba2);">📊</div>
+        <div class="result-title">
+          <h3>执行统计报告</h3>
+          <p>四脑协作工作量概览</p>
         </div>
       `;
+      statsCard.appendChild(header);
       
+      // 创建内容区
+      const content = document.createElement('div');
+      content.className = 'result-content';
+      content.style.marginTop = '16px';
+      
+      // 核心指标
+      const coreMetrics = document.createElement('div');
+      coreMetrics.style.cssText = 'display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-bottom: 20px;';
+      
+      const metrics = [
+        { value: roleCount, label: '参与角色', color: '#667eea' },
+        { value: formatNumber(totalChars), label: '总字数', color: '#10b981' },
+        { value: reviewCount, label: '审核轮次', color: '#f59e0b' }
+      ];
+      
+      metrics.forEach(metric => {
+        const metricDiv = document.createElement('div');
+        metricDiv.style.cssText = 'text-align: center; padding: 16px 8px; background: rgba(255,255,255,0.05); border-radius: 12px; min-width: 0;';
+        metricDiv.innerHTML = `
+          <div style="font-size: 32px; font-weight: 700; color: ${metric.color}; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${metric.value}</div>
+          <div style="font-size: 12px; color: #94a3b8; margin-top: 4px;">${metric.label}</div>
+        `;
+        coreMetrics.appendChild(metricDiv);
+      });
+      content.appendChild(coreMetrics);
+      
+      // 详细工作量
+      const details = document.createElement('div');
+      details.style.cssText = 'background: rgba(0,0,0,0.2); border-radius: 12px; padding: 16px; margin-bottom: 16px;';
+      
+      const detailsTitle = document.createElement('h4');
+      detailsTitle.style.cssText = 'color: #e2e8f0; margin-bottom: 12px; font-size: 14px;';
+      detailsTitle.textContent = '📈 各角色工作量';
+      details.appendChild(detailsTitle);
+      
+      const workloads = [
+        { chars: planningChars, icon: '🧠', label: '谋局者分析', color: '#667eea' },
+        { chars: executionChars, icon: '👨‍💻', label: '执行者产出', color: '#f093fb' },
+        { chars: reviewChars, icon: '🔍', label: '找茬者审核', color: '#4facfe' },
+        { chars: finalChars, icon: '📚', label: '沉淀者总结', color: '#f5576c' },
+        { chars: templateChars, icon: '📋', label: '万能模板', color: '#10b981' }
+      ];
+      
+      workloads.forEach((work, index) => {
+        if (work.chars > 0) {
+          const workDiv = document.createElement('div');
+          workDiv.style.cssText = 'display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.1);';
+          if (index === workloads.filter(w => w.chars > 0).length - 1) {
+            workDiv.style.borderBottom = 'none';
+          }
+          workDiv.innerHTML = `
+            <span style="color: #94a3b8;">${work.icon} ${work.label}</span>
+            <span style="color: ${work.color}; font-weight: 600;">${formatNumber(work.chars)} 字</span>
+          `;
+          details.appendChild(workDiv);
+        }
+      });
+      content.appendChild(details);
+      
+      // 质量评估
+      const quality = document.createElement('div');
+      quality.style.cssText = 'display: flex; align-items: center; gap: 16px; padding: 16px; background: rgba(16, 185, 129, 0.1); border-radius: 12px;';
+      quality.innerHTML = `
+        <div style="font-size: 24px;">✨</div>
+        <div style="flex: 1;">
+          <div style="color: #10b981; font-weight: 600; margin-bottom: 4px;">质量评估：${qualityScore} 分</div>
+          <div style="color: #94a3b8; font-size: 12px;">经过 ${reviewCount} 轮严格审核，方案已达到可执行标准</div>
+        </div>
+        <div style="font-size: 32px; font-weight: 700; color: #10b981;">${qualityScore}</div>
+      `;
+      content.appendChild(quality);
+      
+      statsCard.appendChild(content);
       resultContainer.appendChild(statsCard);
     }
     
@@ -1421,29 +1438,45 @@
         fullContent += `## 五、万能模板\n\n${result.template}\n\n`;
       }
       
-      downloadCard.innerHTML = `
-        <div class="result-header">
-          <div class="result-icon" style="background: linear-gradient(135deg, #10b981, #059669);">💾</div>
-          <div class="result-title">
-            <h3>下载成果</h3>
-            <p>保存执行结果到本地</p>
-          </div>
-        </div>
-        <div class="result-content" style="margin-top: 16px;">
-          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px;">
-            <button onclick="downloadMarkdown()" class="download-btn" style="padding: 12px 20px; background: linear-gradient(135deg, #667eea, #764ba2); border: none; border-radius: 8px; color: #fff; cursor: pointer; font-size: 14px; font-weight: 600; transition: all 0.3s ease;">
-              📄 下载 Markdown
-            </button>
-            <button onclick="downloadWord()" class="download-btn" style="padding: 12px 20px; background: linear-gradient(135deg, #f093fb, #f5576c); border: none; border-radius: 8px; color: #fff; cursor: pointer; font-size: 14px; font-weight: 600; transition: all 0.3s ease;">
-              📝 下载 Word
-            </button>
-            <button onclick="downloadText()" class="download-btn" style="padding: 12px 20px; background: linear-gradient(135deg, #4facfe, #00f2fe); border: none; border-radius: 8px; color: #fff; cursor: pointer; font-size: 14px; font-weight: 600; transition: all 0.3s ease;">
-              📃 下载纯文本
-            </button>
-          </div>
+      // 创建头部
+      const header = document.createElement('div');
+      header.className = 'result-header';
+      header.innerHTML = `
+        <div class="result-icon" style="background: linear-gradient(135deg, #10b981, #059669);">💾</div>
+        <div class="result-title">
+          <h3>下载成果</h3>
+          <p>保存执行结果到本地</p>
         </div>
       `;
+      downloadCard.appendChild(header);
       
+      // 创建内容区
+      const content = document.createElement('div');
+      content.className = 'result-content';
+      content.style.marginTop = '16px';
+      
+      // 创建按钮容器
+      const btnContainer = document.createElement('div');
+      btnContainer.style.cssText = 'display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 12px;';
+      
+      // 下载按钮配置
+      const downloadBtns = [
+        { text: '📄 下载 Markdown', color: 'linear-gradient(135deg, #667eea, #764ba2)', action: window.downloadMarkdown },
+        { text: '📝 下载 Word', color: 'linear-gradient(135deg, #f093fb, #f5576c)', action: window.downloadWord },
+        { text: '📃 下载纯文本', color: 'linear-gradient(135deg, #4facfe, #00f2fe)', action: window.downloadText }
+      ];
+      
+      downloadBtns.forEach(btnConfig => {
+        const btn = document.createElement('button');
+        btn.className = 'download-btn';
+        btn.style.cssText = 'padding: 12px 20px; background: ' + btnConfig.color + '; border: none; border-radius: 8px; color: #fff; cursor: pointer; font-size: 14px; font-weight: 600; transition: all 0.3s ease;';
+        btn.textContent = btnConfig.text;
+        btn.onclick = btnConfig.action;
+        btnContainer.appendChild(btn);
+      });
+      
+      content.appendChild(btnContainer);
+      downloadCard.appendChild(content);
       resultContainer.appendChild(downloadCard);
       
       // 存储内容供下载使用
