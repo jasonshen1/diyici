@@ -692,10 +692,17 @@
     </div>
     
     <div class="input-section">
-      <div class="input-header">
+      <div class="input-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
         <label for="user-input">请描述您的需求</label>
-        <span class="input-hint">支持上传图片、PDF、Word 等文件，或直接在下方输入文本</span>
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <label style="display: flex; align-items: center; gap: 6px; cursor: pointer; font-size: 13px; color: #94a3b8;">
+            <input type="checkbox" id="strict-mode" style="accent-color: #667eea;">
+            <span>🔒 严格模式</span>
+          </label>
+          <span class="tooltip" title="开启后，AI会强制要求输出具体可量化的内容，避免空泛建议" style="color: #64748b; cursor: help;">ⓘ</span>
+        </div>
       </div>
+      <span class="input-hint">支持上传图片、PDF、Word 等文件，或直接在下方输入文本</span>
       
       <!-- 文件上传区域 -->
       <div class="file-upload-section" style="margin-bottom: 16px;">
@@ -1093,7 +1100,14 @@ ${result.text}`);
         }
         
         // 合并文本和文件内容
-        const combinedText = inputText + fileContents;
+        let combinedText = inputText + fileContents;
+        
+        // 严格模式：自动添加强化要求
+        const strictMode = document.getElementById('strict-mode').checked;
+        if (strictMode) {
+          const strictPrefix = `【严格模式 - 强制要求】\n\n以下要求必须严格遵守，否则输出将被视为不合格：\n\n1. 所有目标必须量化（含具体数字、百分比、时间节点）\n2. 每个步骤必须有：做什么 + 怎么做 + 验收标准（可验证）\n3. 所有资源必须明确：人力（几人）、预算（多少钱）、工具（什么软件/设备）、时间（几天/几小时）\n4. 所有风险必须有：具体问题 + 应对方案（不是"注意风险"）\n5. 禁止出现：\n   - "根据实际情况调整"\n   - "建议考虑"\n   - "适当优化"\n   - "灵活处理"\n   - 任何无法量化验证的表述\n\n6. 必须提供：\n   - 执行清单（checklist，可勾选）\n   - 话术/模板（直接复制可用）\n   - 自查表（执行前/中/后检查什么）\n\n【用户原始需求】\n`;
+          combinedText = strictPrefix + combinedText;
+        }
         
         // 初始化步骤状态
         initializeWorkflowSteps();
