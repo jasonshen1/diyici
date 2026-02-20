@@ -48,9 +48,20 @@ function checkResetStats() {
   }
 }
 
-// 调用本地 PaddleOCR
+// 调用本地 PaddleOCR（带自动启动）
 async function callLocalOCR(imagePath: string): Promise<{ text: string; confidence: number }> {
   try {
+    // 先检查本地服务是否运行
+    try {
+      await axios.get('http://localhost:8000/health', { timeout: 3000 });
+    } catch (e) {
+      // 服务未运行，自动启动
+      console.log('[OCR] 本地服务未运行，正在启动...');
+      await startLocalOCRService();
+      // 等待服务启动完成
+      await waitForLocalService();
+    }
+
     const formData = new FormData();
     formData.append('file', fs.createReadStream(imagePath));
 
@@ -72,6 +83,46 @@ async function callLocalOCR(imagePath: string): Promise<{ text: string; confiden
     console.error('本地 OCR 调用失败:', error);
     throw error;
   }
+}
+
+// 启动本地 OCR 服务
+async function startLocalOCRService(): Promise<void> {
+  return new Promise((resolve, reject) => {
+    const { spawn } = require('child_process');
+    
+    const ocrProcess = spawn('bash', ['-c', `
+      cd /var/www/diyici.ai/ocr-service && 
+      source venv/bin/activate && 
+      nohup python main.py > /tmp/ocr.log 2>&1 &
+    `], {
+      detached: true,
+      stdio: 'ignore'
+    });
+    
+    ocrProcess.on('error', (err: any) => {
+      console.error('[OCR] 启动本地服务失败:', err);
+      reject(err);
+    });
+    
+    ocrProcess.unref();
+    
+    // 给进程一点时间启动
+    setTimeout(resolve, 2000);
+  });
+}
+
+// 等待本地服务就绪
+async function waitForLocalService(maxRetries = 60): Promise<void> {
+  for (let i = 0; i < maxRetries; i++) {
+    try {
+      await axios.get('http://localhost:8000/health', { timeout: 5000 });
+      console.log('[OCR] 本地服务已就绪');
+      return;
+    } catch (e) {
+      await new Promise(r => setTimeout(r, 2000));
+    }
+  }
+  throw new Error('本地 OCR 服务启动超时');
 }
 
 // 调用腾讯云 OCR
