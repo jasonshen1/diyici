@@ -215,13 +215,43 @@
     });
     
     // 提交按钮
-    submitBtn.addEventListener('click', function() {
+    submitBtn.addEventListener('click', async function() {
       var text = userInput.value.trim();
       if (!text) {
         alert('请输入需求');
         return;
       }
-      alert('开始执行: ' + text.substring(0, 50) + '...');
+      
+      // 严格模式前缀
+      if (strictMode.checked) {
+        text = '【严格模式】' + text;
+      }
+      
+      submitBtn.disabled = true;
+      submitBtn.textContent = '执行中...';
+      
+      try {
+        var response = await fetch('/api/cabinet/run', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ text: text })
+        });
+        
+        var data = await response.json();
+        
+        if (data.taskId) {
+          alert('任务已创建，ID: ' + data.taskId + '\n请前往完整版查看进度');
+          // 存储taskId供查看
+          localStorage.setItem('current_task', data.taskId);
+        } else {
+          alert('创建失败: ' + (data.error || '未知错误'));
+        }
+      } catch (e) {
+        alert('网络错误: ' + e.message);
+      }
+      
+      submitBtn.disabled = false;
+      submitBtn.textContent = '开始执行';
     });
   </script>
 </body>
