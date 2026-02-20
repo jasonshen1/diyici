@@ -2196,3 +2196,57 @@
       console.log('========================');
     });
   </script>
+
+<script>
+// 备用实现
+(function() {
+  console.log('备用实现加载中...');
+  
+  const strictCheckbox = document.getElementById('strict-mode');
+  const strictInfo = document.getElementById('strict-mode-info');
+  const strictLabel = document.getElementById('strict-mode-label');
+  
+  if (strictCheckbox && strictInfo) {
+    strictCheckbox.addEventListener('change', function() {
+      strictInfo.style.display = this.checked ? 'block' : 'none';
+      if (strictLabel) strictLabel.style.color = this.checked ? '#fbbf24' : '#94a3b8';
+    });
+  }
+  
+  const resetButton = document.getElementById('reset-btn');
+  const userInputField = document.getElementById('user-input');
+  const fileListEl = document.getElementById('file-list');
+  const fileItemsEl = document.getElementById('file-items');
+  
+  if (resetButton) {
+    resetButton.addEventListener('click', function() {
+      if (userInputField) userInputField.value = '';
+      if (strictCheckbox) strictCheckbox.checked = false;
+      if (strictInfo) strictInfo.style.display = 'none';
+      if (strictLabel) strictLabel.style.color = '#94a3b8';
+      if (fileItemsEl) fileItemsEl.innerHTML = '';
+      if (fileListEl) fileListEl.style.display = 'none';
+    });
+  }
+  
+  const fileUploadAreaEl = document.getElementById('file-upload-area');
+  const fileInputEl = document.getElementById('file-input');
+  
+  if (fileUploadAreaEl && fileInputEl) {
+    fileUploadAreaEl.addEventListener('click', function() {
+      fileInputEl.click();
+    });
+    
+    fileInputEl.addEventListener('change', function(e) {
+      if (fileItemsEl && fileListEl && e.target.files.length > 0) {
+        const file = e.target.files[0];
+        fileItemsEl.innerHTML = '<div style="padding: 8px;">📎 ' + file.name + ' (' + (file.size/1024).toFixed(1) + ' KB)</div>';
+        fileListEl.style.display = 'block';
+      }
+    });
+  }
+  
+  console.log('备用实现加载完成');
+})();
+</script>
+</body></html>
