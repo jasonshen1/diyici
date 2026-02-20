@@ -1195,6 +1195,13 @@
     
     let pollingInterval;
     
+    // iOS Safari 错误诊断
+    window.onerror = function(msg, url, line, col, error) {
+      alert('JS错误: ' + msg + '\n行号: ' + line + '\n列号: ' + col + '\nURL: ' + url);
+      console.error('Global error:', {msg, url, line, col, error});
+      return false;
+    };
+    
     submitBtn.addEventListener('click', async () => {
       const inputText = userInput.value.trim();
       
