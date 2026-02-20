@@ -703,6 +703,7 @@
           <div class="upload-icon" style="font-size: 48px; margin-bottom: 12px;">📎</div>
           <p style="color: #94a3b8; margin-bottom: 8px;">点击或拖拽文件到此处上传</p>
           <p style="color: #64748b; font-size: 12px;">支持：图片、PDF、Word、TXT、Markdown</p>
+          <p style="color: #94a3b8; font-size: 11px; margin-top: 6px;">⚠️ 单个文件最大 10MB</p>
           <input type="file" id="file-input" style="display: none;" accept=".pdf,.doc,.docx,.txt,.md,image/*" multiple>
         </div>
         
@@ -911,7 +912,8 @@
         
         // 检查文件大小（最大 10MB）
         if (file.size > 10 * 1024 * 1024) {
-          alert(`文件太大: ${file.name} (最大 10MB)`);
+          const sizeMB = (file.size / (1024 * 1024)).toFixed(1);
+          alert(`❌ 文件过大\n\n文件名: ${file.name}\n文件大小: ${sizeMB} MB\n大小限制: 10 MB\n\n请压缩图片或选择更小的文件。`);
           return;
         }
         
