@@ -2315,11 +2315,11 @@
 </body></html>
 
 <script>
-    // 全局错误处理
-    window.onerror = function(msg, url, line) {
-      console.error("JS错误:", msg, "行:", line);
-      alert("页面错误: " + msg + " (行: " + line + ")");
-    };
+// 全局错误处理
+window.onerror = function(msg, url, line) {
+  console.error("JS错误:", msg, "行:", line);
+};
+
 // 检查submit按钮
 (function() {
   console.log('=== 检查submit按钮 ===');
@@ -2337,3 +2337,6 @@
   console.log('========================');
 })();
 </script>
+
+</body>
+</html>
