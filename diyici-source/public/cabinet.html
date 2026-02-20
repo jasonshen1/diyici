@@ -1556,7 +1556,7 @@
       // 下载按钮配置
       const downloadBtns = [
         { text: '📄 下载 Markdown', color: 'linear-gradient(135deg, #667eea, #764ba2)', action: window.downloadMarkdown },
-        { text: '📝 下载 Word', color: 'linear-gradient(135deg, #f093fb, #f5576c)', action: window.downloadWord },
+        { text: '📝 下载 HTML', color: 'linear-gradient(135deg, #f093fb, #f5576c)', action: window.downloadWord },
         { text: '📃 下载纯文本', color: 'linear-gradient(135deg, #4facfe, #00f2fe)', action: window.downloadText }
       ];
       
@@ -1590,43 +1590,57 @@
       URL.revokeObjectURL(url);
     };
     
-    // 下载 Word（使用 HTML 格式）
+    // 下载 Word（使用 HTML 格式，保存为 .html 文件）
     window.downloadWord = function() {
       try {
-        // 安全地处理内容
-        let processedContent = (window._downloadContent || '')
-          .replace(/&/g, '&amp;')
-          .replace(/</g, '&lt;')
-          .replace(/>/g, '&gt;');
+        // 处理 Markdown 格式
+        let processedContent = (window._downloadContent || '');
+        
+        // 转换标题 # ## ### 为 HTML
+        processedContent = processedContent
+          .replace(/^###### (.*$)/gm, '<h6>$1</h6>')
+          .replace(/^##### (.*$)/gm, '<h5>$1</h5>')
+          .replace(/^#### (.*$)/gm, '<h4>$1</h4>')
+          .replace(/^### (.*$)/gm, '<h3>$1</h3>')
+          .replace(/^## (.*$)/gm, '<h2>$1</h2>')
+          .replace(/^# (.*$)/gm, '<h1>$1</h1>');
+        
+        // 转换粗体和斜体
+        processedContent = processedContent
+          .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+          .replace(/\*(.+?)\*/g, '<em>$1</em>');
         
         // 转换换行
         processedContent = processedContent.replace(/\n/g, '<br>');
         
-        // 转换标题
-        processedContent = processedContent.replace(/#{1,6} (.*?)<br>/g, function(match, p1) {
-          return '<h2>' + p1 + '</h2>';
-        });
-        
-        const htmlContent = '<!DOCTYPE html>' +
-          '<html>' +
-          '<head>' +
-          '<meta charset="UTF-8">' +
-          '<title>数字内阁执行结果</title>' +
-          '<style>' +
-          'body { font-family: \'Microsoft YaHei\', Arial, sans-serif; line-height: 1.8; padding: 40px; max-width: 800px; margin: 0 auto; }' +
-          'h1 { color: #667eea; border-bottom: 2px solid #667eea; padding-bottom: 10px; }' +
-          'h2 { color: #764ba2; margin-top: 30px; }' +
-          'pre { background: #f5f5f5; padding: 15px; border-radius: 5px; white-space: pre-wrap; }' +
-          '</style>' +
-          '</head>' +
-          '<body>' + processedContent + '</body>' +
+        const htmlContent = '<!DOCTYPE html>\n' +
+          '<html>\n' +
+          '<head>\n' +
+          '  <meta charset="UTF-8">\n' +
+          '  <title>数字内阁执行结果</title>\n' +
+          '  <style>\n' +
+          '    body { font-family: "Microsoft YaHei", "SimSun", sans-serif; line-height: 1.8; padding: 40px; max-width: 800px; margin: 0 auto; color: #333; }\n' +
+          '    h1 { color: #667eea; border-bottom: 2px solid #667eea; padding-bottom: 10px; font-size: 24px; }\n' +
+          '    h2 { color: #764ba2; margin-top: 30px; font-size: 20px; }\n' +
+          '    h3 { color: #667eea; font-size: 18px; }\n' +
+          '    strong { color: #f59e0b; font-weight: bold; }\n' +
+          '    em { color: #8b5cf6; font-style: italic; }\n' +
+          '    br { margin: 8px 0; }\n' +
+          '  </style>\n' +
+          '</head>\n' +
+          '<body>\n' +
+          '  <h1>数字内阁执行结果</h1>\n' +
+          '  <p>生成时间: ' + new Date().toLocaleString('zh-CN') + '</p>\n' +
+          '  <hr>\n' +
+          processedContent + '\n' +
+          '</body>\n' +
           '</html>';
           
-        const blob = new Blob([htmlContent], { type: 'application/msword;charset=utf-8' });
+        const blob = new Blob([htmlContent], { type: 'text/html;charset=utf-8' });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = '数字内阁成果_' + new Date().toISOString().slice(0, 10) + '.doc';
+        a.download = '数字内阁成果_' + new Date().toISOString().slice(0, 10) + '.html';
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
