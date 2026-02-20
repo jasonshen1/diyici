@@ -959,18 +959,34 @@
     
     // 提取文件内容
     async function extractFileContent(file) {
-      return new Promise((resolve) => {
-        // 图片文件
+      return new Promise(async (resolve) => {
+        // 图片文件 - 调用 OCR 服务
         if (file.type.startsWith('image/')) {
-          const reader = new FileReader();
-          reader.onload = (e) => {
+          try {
+            const formData = new FormData();
+            formData.append('file', file);
+            
+            const response = await fetch('http://diyici.ai:8000/ocr', {
+              method: 'POST',
+              body: formData
+            });
+            
+            const result = await response.json();
+            
+            if (result.success) {
+              resolve(`[图片文件: ${file.name}]
+识别文字：
+${result.text}`);
+            } else {
+              resolve(`[图片文件: ${file.name}]
+OCR识别失败: ${result.error || '未知错误'}
+请手动描述图片内容`);
+            }
+          } catch (error) {
             resolve(`[图片文件: ${file.name}]
-文件大小: ${(file.size / 1024).toFixed(1)} KB
-图片类型: ${file.type}
-
-注：图片内容需要后端 OCR 支持才能识别。当前您可以描述图片内容或输入相关文本。`);
-          };
-          reader.readAsDataURL(file);
+OCR服务连接失败: ${error.message}
+请手动描述图片内容`);
+          }
           return;
         }
         
