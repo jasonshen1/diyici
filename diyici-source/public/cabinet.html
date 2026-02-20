@@ -2280,21 +2280,44 @@
             continue;
           }
           
-          // 无序列表
-          if (trimmed.match(/^[-\*]\s/)) {
+          // 无序列表 - iOS Safari 16兼容修复
+          if (trimmed.charAt(0) === '-' && trimmed.charAt(1) === ' ') {
+            const content = processInline(trimmed.slice(2));
+            listItems.push('<div style="margin: 4px 0; padding-left: 16px; position: relative;"><span style="position: absolute; left: 0; color: #667eea; font-weight: bold;">•</span>' + content + '</div>');
+            inList = true;
+            continue;
+          }
+          if (trimmed.charAt(0) === '*' && trimmed.charAt(1) === ' ') {
             const content = processInline(trimmed.slice(2));
             listItems.push('<div style="margin: 4px 0; padding-left: 16px; position: relative;"><span style="position: absolute; left: 0; color: #667eea; font-weight: bold;">•</span>' + content + '</div>');
             inList = true;
             continue;
           }
           
-          // 有序列表
-          const orderedMatch = trimmed.match(/^(\d+)\.\s(.+)$/);
-          if (orderedMatch) {
-            const content = processInline(orderedMatch[2]);
-            listItems.push('<div style="margin: 4px 0; padding-left: 24px; position: relative;"><span style="position: absolute; left: 0; color: #10b981; font-weight: 600;">' + orderedMatch[1] + '.</span>' + content + '</div>');
-            inList = true;
-            continue;
+          // 有序列表 - iOS Safari 16兼容修复
+          let dotPos = -1;
+          for (let j = 0; j < trimmed.length; j++) {
+            if (trimmed.charAt(j) === '.' && trimmed.charAt(j + 1) === ' ') {
+              dotPos = j;
+              break;
+            }
+          }
+          if (dotPos > 0) {
+            let isAllDigits = true;
+            for (let j = 0; j < dotPos; j++) {
+              const c = trimmed.charAt(j);
+              if (c < '0' || c > '9') {
+                isAllDigits = false;
+                break;
+              }
+            }
+            if (isAllDigits) {
+              const numPart = trimmed.substring(0, dotPos);
+              const content = processInline(trimmed.substring(dotPos + 2));
+              listItems.push('<div style="margin: 4px 0; padding-left: 24px; position: relative;"><span style="position: absolute; left: 0; color: #10b981; font-weight: 600;">' + numPart + '.</span>' + content + '</div>');
+              inList = true;
+              continue;
+            }
           }
           
           // 普通段落
