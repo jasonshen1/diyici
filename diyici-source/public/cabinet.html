@@ -2354,7 +2354,11 @@
     // 更新工作流步骤显示
     function updateWorkflowSteps(statusData) {
       const steps = ['planning', 'execution', 'review', 'archive'];
-      const currentStatus = statusData.status;
+      // 将 finalizing 映射到 archive，completed 映射到最后一步之后
+      let currentStatus = statusData.status;
+      if (currentStatus === 'finalizing') {
+        currentStatus = 'archive';
+      }
       
       steps.forEach((step, index) => {
         const stepEl = document.getElementById(`step-${step}`);
@@ -2363,6 +2367,10 @@
         const statusEl = stepEl.querySelector('.step-status');
         const thinkingEl = document.getElementById(`${step}-thinking`);
         const outputEl = document.getElementById(`${step}-output`);
+        
+        // 获取当前状态在steps中的索引
+        const currentIndex = steps.indexOf(currentStatus);
+        const stepIndex = steps.indexOf(step);
         
         // 根据当前状态更新步骤
         if (currentStatus === step) {
@@ -2378,8 +2386,8 @@
           if (statusData[`${step}_output`] && outputEl) {
             outputEl.textContent = statusData[`${step}_output`];
           }
-        } else if (steps.indexOf(currentStatus) > index) {
-          // 已完成的步骤
+        } else if (currentIndex > stepIndex || statusData.status === 'completed') {
+          // 已完成的步骤（包括completed状态时所有步骤都已完成）
           stepEl.classList.remove('active');
           stepEl.classList.add('completed');
           statusEl.textContent = '✅ 已完成';
@@ -2536,39 +2544,42 @@
       
       // 显示谋局者输出
       if (statusData.planningResult) {
+        const isCompleted = statusData.status === 'executing' || statusData.status === 'reviewing' || statusData.status === 'finalizing' || statusData.status === 'completed';
         const planningCard = createRoleCard(
           '谋局者（首辅）',
           '谋',
           '#667eea',
           statusData.planningResult,
           statusData.status,
-          statusData.status === 'planning' ? '正在分析...' : '分析完成'
+          statusData.status === 'planning' ? '正在分析...' : (isCompleted ? '分析完成' : '等待中')
         );
         resultContainer.appendChild(planningCard);
       }
       
       // 显示执行者输出
       if (statusData.executionResult) {
+        const isCompleted = statusData.status === 'reviewing' || statusData.status === 'finalizing' || statusData.status === 'completed';
         const executionCard = createRoleCard(
           '执行者（干吏）',
           '执',
           '#f093fb',
           statusData.executionResult,
           statusData.status,
-          statusData.status === 'executing' ? '正在干活...' : '执行完成'
+          statusData.status === 'executing' ? '正在干活...' : (isCompleted ? '执行完成' : '等待中')
         );
         resultContainer.appendChild(executionCard);
       }
       
       // 显示审查员输出
       if (statusData.reviewResult) {
+        const isCompleted = statusData.status === 'finalizing' || statusData.status === 'completed';
         const reviewCard = createRoleCard(
           '找茬者（御史）',
           '查',
           '#4facfe',
           statusData.reviewResult,
           statusData.status,
-          statusData.status === 'reviewing' ? '正在审核...' : '审核完成'
+          statusData.status === 'reviewing' ? '正在审核...' : (isCompleted ? '审核完成' : '等待中')
         );
         
         // 添加重试次数显示
@@ -2580,6 +2591,19 @@
         }
         
         resultContainer.appendChild(reviewCard);
+      }
+      
+      // 显示沉淀者输出
+      if (statusData.finalResult || statusData.template) {
+        const finalCard = createRoleCard(
+          '沉淀者（史官）',
+          '记',
+          '#10b981',
+          statusData.finalResult || statusData.template || '正在总结...',
+          statusData.status,
+          (statusData.status === 'finalizing' || statusData.status === 'completed') ? '正在总结...' : '总结完成'
+        );
+        resultContainer.appendChild(finalCard);
       }
       
       // 滚动到最新内容
