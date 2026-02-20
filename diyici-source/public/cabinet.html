@@ -900,32 +900,34 @@
     const submitBtn = document.getElementById('submit-btn');
     const resetBtn = document.getElementById('reset-btn');
     const userInput = document.getElementById('user-input');
-    
-    // 检查是否有预填充内容（从知识库详情页跳转过来）
-    const prefillContent = localStorage.getItem('diyici_prefill');
-    if (prefillContent) {
-      userInput.value = prefillContent;
-      localStorage.removeItem('diyici_prefill'); // 清除，避免重复填充
-      // 显示提示
-      statusText.textContent = '已加载知识库方案，请补充您的具体需求后点击开始执行';
-      statusText.style.color = '#10b981';
-    }
-    
-    // 检查URL参数是否有使用某个方案的请求
-    const urlParams = new URLSearchParams(window.location.search);
-    const useTitle = urlParams.get('use');
-    if (useTitle) {
-      const prompt = `我想创建一个类似「${decodeURIComponent(useTitle)}」的方案，但针对我的具体需求进行调整：\n\n我的具体需求是：`;
-      userInput.value = prompt;
-      // 清除URL参数
-      window.history.replaceState({}, document.title, window.location.pathname);
-    }
     const progressSection = document.querySelector('.progress-section');
     const progressFill = document.querySelector('.progress-fill');
     const progressPercentage = document.getElementById('progress-percentage');
     const statusText = document.getElementById('status-text');
     const resultSection = document.querySelector('.result-section');
     const resultContainer = document.getElementById('result-container');
+    
+    // 检查是否有预填充内容（从知识库详情页跳转过来）
+    const prefillContent = localStorage.getItem('diyici_prefill');
+    if (prefillContent && userInput) {
+      userInput.value = prefillContent;
+      localStorage.removeItem('diyici_prefill'); // 清除，避免重复填充
+      // 显示提示
+      if (statusText) {
+        statusText.textContent = '已加载知识库方案，请补充您的具体需求后点击开始执行';
+        statusText.style.color = '#10b981';
+      }
+    }
+    
+    // 检查URL参数是否有使用某个方案的请求
+    const urlParams = new URLSearchParams(window.location.search);
+    const useTitle = urlParams.get('use');
+    if (useTitle && userInput) {
+      const prompt = `我想创建一个类似「${decodeURIComponent(useTitle)}」的方案，但针对我的具体需求进行调整：\n\n我的具体需求是：`;
+      userInput.value = prompt;
+      // 清除URL参数
+      window.history.replaceState({}, document.title, window.location.pathname);
+    }
     
     // 严格模式相关
     const strictModeCheckbox = document.getElementById('strict-mode');
@@ -1791,13 +1793,6 @@
               <div style="color: #f59e0b; font-weight: 700; font-size: 16px;">运算 ${work.ops} 次</div>
               <div style="color: #94a3b8; font-size: 12px;">${formatNumber(work.chars)} 字</div>
             </div>
-          `;
-          details.appendChild(workDiv);
-        }
-      });
-      content.appendChild(details);
-            <span style="color: #94a3b8;">${work.icon} ${work.label}</span>
-            <span style="color: ${work.color}; font-weight: 600;">${formatNumber(work.chars)} 字</span>
           `;
           details.appendChild(workDiv);
         }
