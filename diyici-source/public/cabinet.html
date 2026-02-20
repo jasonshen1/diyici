@@ -1503,57 +1503,79 @@
     
     // 下载 Word（使用 HTML 格式）
     window.downloadWord = function() {
-      const htmlContent = `
-        <!DOCTYPE html>
-        <html>
-        <head>
-          <meta charset="UTF-8">
-          <title>数字内阁执行结果</title>
-          <style>
-            body { font-family: 'Microsoft YaHei', Arial, sans-serif; line-height: 1.8; padding: 40px; max-width: 800px; margin: 0 auto; }
-            h1 { color: #667eea; border-bottom: 2px solid #667eea; padding-bottom: 10px; }
-            h2 { color: #764ba2; margin-top: 30px; }
-            pre { background: #f5f5f5; padding: 15px; border-radius: 5px; white-space: pre-wrap; }
-          </style>
-        </head>
-        <body>
-          ${window._downloadContent.replace(/\n/g, '<br>').replace(/#{1,6} (.*?)<br>/g, (match, p1) => `<h2>${p1}</h2>`)}
-        </body>
-        </html>
-      `;
-      const blob = new Blob([htmlContent], { type: 'application/msword;charset=utf-8' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `数字内阁成果_${new Date().toISOString().slice(0, 10)}.doc`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
+      try {
+        // 安全地处理内容
+        let processedContent = (window._downloadContent || '')
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;');
+        
+        // 转换换行
+        processedContent = processedContent.replace(/\n/g, '<br>');
+        
+        // 转换标题
+        processedContent = processedContent.replace(/#{1,6} (.*?)<br>/g, function(match, p1) {
+          return '<h2>' + p1 + '</h2>';
+        });
+        
+        const htmlContent = '<!DOCTYPE html>' +
+          '<html>' +
+          '<head>' +
+          '<meta charset="UTF-8">' +
+          '<title>数字内阁执行结果</title>' +
+          '<style>' +
+          'body { font-family: \'Microsoft YaHei\', Arial, sans-serif; line-height: 1.8; padding: 40px; max-width: 800px; margin: 0 auto; }' +
+          'h1 { color: #667eea; border-bottom: 2px solid #667eea; padding-bottom: 10px; }' +
+          'h2 { color: #764ba2; margin-top: 30px; }' +
+          'pre { background: #f5f5f5; padding: 15px; border-radius: 5px; white-space: pre-wrap; }' +
+          '</style>' +
+          '</head>' +
+          '<body>' + processedContent + '</body>' +
+          '</html>';
+          
+        const blob = new Blob([htmlContent], { type: 'application/msword;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = '数字内阁成果_' + new Date().toISOString().slice(0, 10) + '.doc';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      } catch (error) {
+        console.error('下载Word失败:', error);
+        alert('下载失败，请重试');
+      }
     };
     
     // 下载纯文本
     window.downloadText = function() {
-      const textContent = window._downloadContent
-        .replace(/#{1,6} /g, '')
-        .replace(/---/g, '-------------------')
-        .replace(/\*\*/g, '');
-      const blob = new Blob([textContent], { type: 'text/plain;charset=utf-8' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `数字内阁成果_${new Date().toISOString().slice(0, 10)}.txt`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
+      try {
+        const textContent = (window._downloadContent || '')
+          .replace(/#{1,6} /g, '')
+          .replace(/^---$/gm, '-------------------')
+          .replace(/\*\*/g, '');
+          
+        const blob = new Blob([textContent], { type: 'text/plain;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = '数字内阁成果_' + new Date().toISOString().slice(0, 10) + '.txt';
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      } catch (error) {
+        console.error('下载文本失败:', error);
+        alert('下载失败，请重试');
+      }
     };
     
     // 复制内容到剪贴板
-    window.copyToClipboard = async function(button, encodedText) {
+    window.copyToClipboard = async function(button, text) {
       try {
-        const text = decodeURIComponent(encodedText);
-        await navigator.clipboard.writeText(text);
+        // 直接接收文本，不需要解码
+        await navigator.clipboard.writeText(text || '');
         
         // 显示复制成功
         const originalText = button.innerHTML;
@@ -1573,45 +1595,62 @@
         alert('复制失败，请手动复制');
       }
     };
+        alert('复制失败，请手动复制');
+      }
+    };
     
     // 将 Markdown 渲染为美观的 HTML
     function renderMarkdown(text) {
       if (!text) return '';
       
-      // 转义 HTML 特殊字符
-      let html = text
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;');
-      
-      // 标题 (# ## ###)
-      html = html.replace(/^##### (.*$)/gim, '<h5 style="color: #94a3b8; font-size: 14px; margin: 16px 0 8px; font-weight: 600;">$1</h5>');
-      html = html.replace(/^#### (.*$)/gim, '<h4 style="color: #e2e8f0; font-size: 15px; margin: 18px 0 10px; font-weight: 600;">$1</h4>');
-      html = html.replace(/^### (.*$)/gim, '<h3 style="color: #667eea; font-size: 17px; margin: 20px 0 12px; font-weight: 600; border-bottom: 1px solid rgba(102,126,234,0.3); padding-bottom: 8px;">$1</h3>');
-      html = html.replace(/^## (.*$)/gim, '<h2 style="color: #f093fb; font-size: 19px; margin: 24px 0 14px; font-weight: 600;">$1</h2>');
-      html = html.replace(/^# (.*$)/gim, '<h1 style="color: #667eea; font-size: 22px; margin: 28px 0 16px; font-weight: 700;">$1</h1>');
-      
-      // 粗体 (**text**)
-      html = html.replace(/\*\*(.*?)\*\*/g, '<strong style="color: #fbbf24; font-weight: 600;">$1</strong>');
-      
-      // 斜体 (*text*)
-      html = html.replace(/\*(.*?)\*/g, '<em style="color: #a78bfa;">$1</em>');
-      
-      // 分割线 (---)
-      html = html.replace(/---/g, '<hr style="border: none; border-top: 1px solid rgba(255,255,255,0.1); margin: 20px 0;">');
-      
-      // 列表项 (- 或 * 或 1.)
-      html = html.replace(/^- (.*$)/gim, '<div style="margin: 6px 0; padding-left: 16px; position: relative;"><span style="position: absolute; left: 0; color: #667eea;">•</span>$1</div>');
-      html = html.replace(/^\* (.*$)/gim, '<div style="margin: 6px 0; padding-left: 16px; position: relative;"><span style="position: absolute; left: 0; color: #667eea;">•</span>$1</div>');
-      html = html.replace(/^\d+\. (.*$)/gim, '<div style="margin: 6px 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #10b981;">$&</span></div>');
-      
-      // 换行处理
-      html = html.replace(/\n/g, '<br>');
-      
-      // 清理多余的 <br>
-      html = html.replace(/<br><br><br>/g, '<br><br>');
-      
-      return html;
+      try {
+        // 转义 HTML 特殊字符
+        let html = text
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;');
+        
+        // 标题 (# ## ###)
+        html = html.replace(/^##### (.*$)/gim, '<h5 style="color: #94a3b8; font-size: 14px; margin: 16px 0 8px; font-weight: 600;">$1</h5>');
+        html = html.replace(/^#### (.*$)/gim, '<h4 style="color: #e2e8f0; font-size: 15px; margin: 18px 0 10px; font-weight: 600;">$1</h4>');
+        html = html.replace(/^### (.*$)/gim, '<h3 style="color: #667eea; font-size: 17px; margin: 20px 0 12px; font-weight: 600; border-bottom: 1px solid rgba(102,126,234,0.3); padding-bottom: 8px;">$1</h3>');
+        html = html.replace(/^## (.*$)/gim, '<h2 style="color: #f093fb; font-size: 19px; margin: 24px 0 14px; font-weight: 600;">$1</h2>');
+        html = html.replace(/^# (.*$)/gim, '<h1 style="color: #667eea; font-size: 22px; margin: 28px 0 16px; font-weight: 700;">$1</h1>');
+        
+        // 粗体 (**text**)
+        html = html.replace(/\*\*(.*?)\*\*/g, '<strong style="color: #fbbf24; font-weight: 600;">$1</strong>');
+        
+        // 斜体 (*text*) - 避免匹配 ** 中的 *
+        html = html.replace(/(?<!\*)\*(?!\*)(.*?)\*(?!\*)/g, '<em style="color: #a78bfa;">$1</em>');
+        
+        // 分割线 (---)
+        html = html.replace(/^---$/gim, '<hr style="border: none; border-top: 1px solid rgba(255,255,255,0.1); margin: 20px 0;">');
+        
+        // 列表项 (- 或 * 开头)
+        html = html.replace(/^- (.*$)/gim, '<div style="margin: 6px 0; padding-left: 16px; position: relative;"><span style="position: absolute; left: 0; color: #667eea;">•</span>$1</div>');
+        html = html.replace(/^\* (.*$)/gim, '<div style="margin: 6px 0; padding-left: 16px; position: relative;"><span style="position: absolute; left: 0; color: #667eea;">•</span>$1</div>');
+        
+        // 有序列表 (1. 2. 3.)
+        html = html.replace(/^\d+\. (.*$)/gim, function(match, p1) {
+          return '<div style="margin: 6px 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #10b981;">' + match.split(' ')[0] + '</span>' + p1 + '</div>';
+        });
+        
+        // 换行处理
+        html = html.replace(/\n/g, '<br>');
+        
+        // 清理多余的 <br>
+        html = html.replace(/<br><br><br>/g, '<br><br>');
+        
+        return html;
+      } catch (error) {
+        console.error('renderMarkdown 错误:', error);
+        // 如果正则处理失败，返回简单的转义文本
+        return text
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/\n/g, '<br>');
+      }
     }
     
     // 显示失败详情
