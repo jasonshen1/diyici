@@ -695,12 +695,24 @@
       <div class="input-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
         <label for="user-input">请描述您的需求</label>
         <div style="display: flex; align-items: center; gap: 8px;">
-          <label style="display: flex; align-items: center; gap: 6px; cursor: pointer; font-size: 13px; color: #94a3b8;">
+          <label id="strict-mode-label" style="display: flex; align-items: center; gap: 6px; cursor: pointer; font-size: 13px; color: #94a3b8;">
             <input type="checkbox" id="strict-mode" style="accent-color: #667eea;">
             <span>🔒 严格模式</span>
           </label>
-          <span class="tooltip" title="开启后，AI会强制要求输出具体可量化的内容，避免空泛建议" style="color: #64748b; cursor: help;">ⓘ</span>
+          <span class="tooltip" title="严格模式会强制AI输出：1.量化目标 2.具体步骤 3.明确资源 4.风险控制 5.禁止空话" style="color: #64748b; cursor: help;">ⓘ</span>
         </div>
+      </div>
+      <!-- 严格模式说明 -->
+      <div id="strict-mode-info" style="display: none; background: rgba(102, 126, 234, 0.1); border: 1px solid rgba(102, 126, 234, 0.3); border-radius: 8px; padding: 12px; margin-bottom: 12px; font-size: 12px; color: #e2e8f0;">
+        <strong style="color: #fbbf24;">📋 严格模式已开启，AI将被强制要求：</strong>
+        <ul style="margin: 8px 0 0 16px; color: #94a3b8; line-height: 1.8;">
+          <li>所有目标必须<strong style="color: #fbbf24;">量化</strong>（具体数字、百分比、时间节点）</li>
+          <li>每个步骤必须包含【做什么】+【怎么做】+<strong style="color: #fbbf24;">【验收标准】</strong></li>
+          <li>资源明确：人力（几人）、预算（多少钱）、工具（什么软件）、时间（几天）</li>
+          <li>风险必须有：具体问题 + 应对方案</li>
+          <li>禁止出现"建议考虑""适当优化"等空泛表述</li>
+          <li>必须提供可直接使用的<strong style="color: #fbbf24;">话术/模板/自查表</strong></li>
+        </ul>
       </div>
       <span class="input-hint">支持上传图片、PDF、Word 等文件，或直接在下方输入文本</span>
       
@@ -856,6 +868,22 @@
     const resultSection = document.querySelector('.result-section');
     const resultContainer = document.getElementById('result-container');
     
+    // 严格模式相关
+    const strictModeCheckbox = document.getElementById('strict-mode');
+    const strictModeInfo = document.getElementById('strict-mode-info');
+    const strictModeLabel = document.getElementById('strict-mode-label');
+    
+    // 监听严格模式变化
+    strictModeCheckbox.addEventListener('change', () => {
+      if (strictModeCheckbox.checked) {
+        strictModeInfo.style.display = 'block';
+        strictModeLabel.style.color = '#fbbf24';
+      } else {
+        strictModeInfo.style.display = 'none';
+        strictModeLabel.style.color = '#94a3b8';
+      }
+    });
+    
     // 文件上传相关
     const fileUploadArea = document.getElementById('file-upload-area');
     const fileInput = document.getElementById('file-input');
@@ -891,13 +919,21 @@
     
     // 文件选择事件
     fileInput.addEventListener('change', (e) => {
+      console.log('文件选择事件触发，文件数量:', e.target.files.length);
       const files = Array.from(e.target.files);
-      handleFiles(files);
+      if (files.length > 0) {
+        handleFiles(files);
+      }
+      // 重置 input 以便可以再次选择同一文件
+      e.target.value = '';
     });
     
     // 处理文件
     function handleFiles(files) {
+      console.log('处理文件:', files.length, '个文件');
       files.forEach(file => {
+        console.log('处理文件:', file.name, '类型:', file.type, '大小:', file.size);
+        
         // 检查文件类型
         const allowedTypes = [
           'image/*', 'application/pdf', 
@@ -912,23 +948,37 @@
           return file.type === type;
         });
         
-        if (!isAllowed) {
-          alert(`不支持的文件类型: ${file.name}`);
+        // 通过后缀名再检查一次（某些设备可能不返回 type）
+        const allowedExtensions = ['.pdf', '.doc', '.docx', '.txt', '.md', '.jpg', '.jpeg', '.png', '.gif', '.webp'];
+        const hasAllowedExt = allowedExtensions.some(ext => file.name.toLowerCase().endsWith(ext));
+        
+        if (!isAllowed && !hasAllowedExt) {
+          alert('❌ 不支持的文件类型: ' + file.name + '\n\n支持类型：图片、PDF、Word、TXT、Markdown');
           return;
         }
         
         // 检查文件大小（最大 10MB）
         if (file.size > 10 * 1024 * 1024) {
           const sizeMB = (file.size / (1024 * 1024)).toFixed(1);
-          alert(`❌ 文件过大\n\n文件名: ${file.name}\n文件大小: ${sizeMB} MB\n大小限制: 10 MB\n\n请压缩图片或选择更小的文件。`);
+          alert('❌ 文件过大\n\n文件名: ' + file.name + '\n文件大小: ' + sizeMB + ' MB\n大小限制: 10 MB\n\n请压缩图片或选择更小的文件。');
           return;
         }
         
-        uploadedFiles.push(file);
-        displayFile(file);
+        // 检查是否已存在同名文件
+        const existingIndex = uploadedFiles.findIndex(f => f.name === file.name);
+        if (existingIndex > -1) {
+          uploadedFiles[existingIndex] = file;
+          // 重新渲染文件列表
+          fileItems.innerHTML = '';
+          uploadedFiles.forEach(f => displayFile(f));
+        } else {
+          uploadedFiles.push(file);
+          displayFile(file);
+        }
       });
       
       fileList.style.display = 'block';
+      console.log('当前上传文件总数:', uploadedFiles.length);
     }
     
     // 显示文件
@@ -1253,7 +1303,10 @@
     });
     
     resetBtn.addEventListener('click', () => {
+      // 清除用户输入
       userInput.value = '';
+      
+      // 隐藏进度和结果区域
       progressSection.style.display = 'none';
       resultSection.style.display = 'none';
       
@@ -1261,6 +1314,37 @@
       uploadedFiles.length = 0;
       fileItems.innerHTML = '';
       fileList.style.display = 'none';
+      
+      // 重置严格模式
+      strictModeCheckbox.checked = false;
+      strictModeInfo.style.display = 'none';
+      strictModeLabel.style.color = '#94a3b8';
+      
+      // 清除轮询定时器
+      if (pollingInterval) {
+        clearInterval(pollingInterval);
+        pollingInterval = null;
+      }
+      
+      // 恢复按钮状态
+      submitBtn.disabled = false;
+      submitBtn.innerHTML = '<span>开始执行</span>';
+      resetBtn.disabled = false;
+      
+      // 重置进度条
+      progressFill.style.width = '0%';
+      progressPercentage.textContent = '0%';
+      statusText.textContent = '';
+      statusText.style.color = '';
+      
+      // 清空结果容器
+      resultContainer.innerHTML = '';
+      
+      // 重置工作流步骤显示
+      initializeWorkflowSteps();
+      
+      // 滚动到页面顶部
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     });
     
     function displayResult(result) {
