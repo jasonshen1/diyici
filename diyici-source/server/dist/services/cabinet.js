@@ -35,7 +35,7 @@ class CabinetService {
             let executionResult = '';
             let reviewResult = '';
             let retryCount = 0;
-            const maxRetries = 3; // 减少重试次数，避免超时
+            const maxRetries = 5; // 增加重试次数，确保任务能完成
             do {
                 await task_1.Task.update({ status: task_1.TaskStatus.EXECUTING }, { where: { id: taskId } });
                 const executorInput = retryCount > 0 && reviewResult

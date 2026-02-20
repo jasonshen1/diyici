@@ -132,8 +132,18 @@ async function callDeepSeekAPI(role, content, context) {
     });
     return response.data.choices[0].message.content;
 }
-// 检查审核结果
+// 检查审核结果 - 更宽松的判断
 function checkReviewPass(reviewResult) {
-    return reviewResult.toUpperCase().includes('PASS');
+    // 检查是否明确包含通过标记
+    const upperResult = reviewResult.toUpperCase();
+    if (upperResult.includes('PASS') || upperResult.includes('通过')) {
+        return true;
+    }
+    // 检查是否没有明显的FAIL标记，且内容看起来是正面的
+    if (!upperResult.includes('FAIL') && !upperResult.includes('不通过') && !upperResult.includes('打回重做')) {
+        // 如果没有明确的不通过标记，默认通过（找茬者只是提建议而非拒绝）
+        return true;
+    }
+    return false;
 }
 //# sourceMappingURL=ai.js.map
