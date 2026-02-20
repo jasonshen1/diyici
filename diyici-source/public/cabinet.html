@@ -972,8 +972,9 @@
     // 提取文件内容
     async function extractFileContent(file, retryCount = 0) {
       return new Promise(async (resolve) => {
-        // 图片文件 - 调用后端 OCR 服务
-        if (file.type.startsWith('image/')) {
+        try {
+          // 图片文件 - 调用后端 OCR 服务
+          if (file.type.startsWith('image/')) {
           try {
             const formData = new FormData();
             formData.append('file', file);
@@ -1065,6 +1066,10 @@ ${result.text}`);
           resolve(`[文件读取失败: ${file.name}]`);
         };
         reader.readAsText(file);
+        } catch (error) {
+          console.error('提取文件内容时出错:', error);
+          resolve(`[文件处理失败: ${file.name} - ${error.message}]`);
+        }
       });
     }
     
@@ -1093,9 +1098,14 @@ ${result.text}`);
         let fileContents = '';
         if (uploadedFiles.length > 0) {
           for (const file of uploadedFiles) {
-            statusText.textContent = `正在识别 ${file.name}...`;
-            const content = await extractFileContent(file);
-            fileContents += `\n\n=== 文件: ${file.name} ===\n${content}`;
+            try {
+              statusText.textContent = `正在识别 ${file.name}...`;
+              const content = await extractFileContent(file);
+              fileContents += `\n\n=== 文件: ${file.name} ===\n${content}`;
+            } catch (fileError) {
+              console.error(`处理文件 ${file.name} 时出错:`, fileError);
+              fileContents += `\n\n=== 文件: ${file.name} ===\n[文件处理失败: ${fileError.message}]`;
+            }
           }
         }
         
@@ -1227,7 +1237,9 @@ ${result.text}`);
         }, 1000); // 每秒轮询一次
         
       } catch (error) {
-        statusText.textContent = `错误: ${error.message}`;
+        console.error('执行错误:', error);
+        statusText.textContent = `错误: ${error.message || '未知错误'}`;
+        statusText.style.color = '#ef4444';
         submitBtn.disabled = false;
         submitBtn.innerHTML = '<span>开始执行</span>';
         resetBtn.disabled = false;
