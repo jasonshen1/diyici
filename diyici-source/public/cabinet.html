@@ -691,9 +691,26 @@
     <div class="input-section">
       <div class="input-header">
         <label for="user-input">请描述您的需求</label>
-        <span class="input-hint">例如：为我的线上课程设计一个完整的推广方案，包括目标受众分析、渠道选择和内容策略</span>
+        <span class="input-hint">支持上传图片、PDF、Word 等文件，或直接在下方输入文本</span>
       </div>
-      <textarea id="user-input" placeholder="请详细描述您的需求，越具体越好...">为我的线上课程《数据分析入门到精通》设计一个完整的推广方案，包括目标受众分析、推广渠道选择、内容策略和转化优化方案</textarea>
+      
+      <!-- 文件上传区域 -->
+      <div class="file-upload-section" style="margin-bottom: 16px;">
+        <div class="file-upload-area" id="file-upload-area" style="border: 2px dashed rgba(102, 126, 234, 0.5); border-radius: 12px; padding: 24px; text-align: center; background: rgba(102, 126, 234, 0.05); cursor: pointer; transition: all 0.3s ease;">
+          <div class="upload-icon" style="font-size: 48px; margin-bottom: 12px;">📎</div>
+          <p style="color: #94a3b8; margin-bottom: 8px;">点击或拖拽文件到此处上传</p>
+          <p style="color: #64748b; font-size: 12px;">支持：图片、PDF、Word、TXT、Markdown</p>
+          <input type="file" id="file-input" style="display: none;" accept=".pdf,.doc,.docx,.txt,.md,image/*" multiple>
+        </div>
+        
+        <!-- 已上传文件列表 -->
+        <div id="file-list" style="margin-top: 12px; display: none;">
+          <p style="color: #94a3b8; font-size: 12px; margin-bottom: 8px;">已上传文件：</p>
+          <div id="file-items" style="display: flex; flex-wrap: wrap; gap: 8px;"></div>
+        </div>
+      </div>
+      
+      <textarea id="user-input" placeholder="请详细描述您的需求，或上传文件后在此补充说明...">为我的线上课程《数据分析入门到精通》设计一个完整的推广方案，包括目标受众分析、推广渠道选择、内容策略和转化优化方案</textarea>
       
       <div class="button-group">
         <button id="submit-btn" class="btn-primary">
@@ -828,13 +845,172 @@
     const resultSection = document.querySelector('.result-section');
     const resultContainer = document.getElementById('result-container');
     
+    // 文件上传相关
+    const fileUploadArea = document.getElementById('file-upload-area');
+    const fileInput = document.getElementById('file-input');
+    const fileList = document.getElementById('file-list');
+    const fileItems = document.getElementById('file-items');
+    const uploadedFiles = [];
+    
+    // 文件上传点击事件
+    fileUploadArea.addEventListener('click', () => {
+      fileInput.click();
+    });
+    
+    // 拖拽上传
+    fileUploadArea.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      fileUploadArea.style.borderColor = '#667eea';
+      fileUploadArea.style.background = 'rgba(102, 126, 234, 0.1)';
+    });
+    
+    fileUploadArea.addEventListener('dragleave', () => {
+      fileUploadArea.style.borderColor = 'rgba(102, 126, 234, 0.5)';
+      fileUploadArea.style.background = 'rgba(102, 126, 234, 0.05)';
+    });
+    
+    fileUploadArea.addEventListener('drop', (e) => {
+      e.preventDefault();
+      fileUploadArea.style.borderColor = 'rgba(102, 126, 234, 0.5)';
+      fileUploadArea.style.background = 'rgba(102, 126, 234, 0.05)';
+      
+      const files = Array.from(e.dataTransfer.files);
+      handleFiles(files);
+    });
+    
+    // 文件选择事件
+    fileInput.addEventListener('change', (e) => {
+      const files = Array.from(e.target.files);
+      handleFiles(files);
+    });
+    
+    // 处理文件
+    function handleFiles(files) {
+      files.forEach(file => {
+        // 检查文件类型
+        const allowedTypes = [
+          'image/*', 'application/pdf', 
+          'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+          'text/plain', 'text/markdown'
+        ];
+        
+        const isAllowed = allowedTypes.some(type => {
+          if (type.endsWith('/*')) {
+            return file.type.startsWith(type.replace('/*', ''));
+          }
+          return file.type === type;
+        });
+        
+        if (!isAllowed) {
+          alert(`不支持的文件类型: ${file.name}`);
+          return;
+        }
+        
+        // 检查文件大小（最大 10MB）
+        if (file.size > 10 * 1024 * 1024) {
+          alert(`文件太大: ${file.name} (最大 10MB)`);
+          return;
+        }
+        
+        uploadedFiles.push(file);
+        displayFile(file);
+      });
+      
+      fileList.style.display = 'block';
+    }
+    
+    // 显示文件
+    function displayFile(file) {
+      const fileItem = document.createElement('div');
+      fileItem.style.cssText = 'display: flex; align-items: center; gap: 8px; padding: 8px 12px; background: rgba(102, 126, 234, 0.1); border-radius: 8px; font-size: 12px;';
+      
+      const icon = getFileIcon(file.type);
+      fileItem.innerHTML = `
+        <span>${icon}</span>
+        <span style="color: #e2e8f0; max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${file.name}</span>
+        <span style="color: #64748b;">(${(file.size / 1024).toFixed(1)} KB)</span>
+        <button onclick="removeFile('${file.name}')" style="background: none; border: none; color: #ef4444; cursor: pointer; font-size: 14px;">×</button>
+      `;
+      
+      fileItems.appendChild(fileItem);
+    }
+    
+    // 获取文件图标
+    function getFileIcon(type) {
+      if (type.startsWith('image/')) return '🖼️';
+      if (type === 'application/pdf') return '📄';
+      if (type.includes('word')) return '📝';
+      if (type === 'text/plain' || type === 'text/markdown') return '📃';
+      return '📎';
+    }
+    
+    // 移除文件
+    window.removeFile = function(fileName) {
+      const index = uploadedFiles.findIndex(f => f.name === fileName);
+      if (index > -1) {
+        uploadedFiles.splice(index, 1);
+        fileItems.innerHTML = '';
+        uploadedFiles.forEach(f => displayFile(f));
+        if (uploadedFiles.length === 0) {
+          fileList.style.display = 'none';
+        }
+      }
+    };
+    
+    // 提取文件内容
+    async function extractFileContent(file) {
+      return new Promise((resolve) => {
+        // 图片文件
+        if (file.type.startsWith('image/')) {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            resolve(`[图片文件: ${file.name}]
+文件大小: ${(file.size / 1024).toFixed(1)} KB
+图片类型: ${file.type}
+
+注：图片内容需要后端 OCR 支持才能识别。当前您可以描述图片内容或输入相关文本。`);
+          };
+          reader.readAsDataURL(file);
+          return;
+        }
+        
+        // PDF 文件
+        if (file.type === 'application/pdf') {
+          resolve(`[PDF文件: ${file.name}]
+文件大小: ${(file.size / 1024).toFixed(1)} KB
+
+注：PDF 内容提取需要后端支持。当前您可以手动粘贴 PDF 中的关键内容。`);
+          return;
+        }
+        
+        // Word 文件
+        if (file.type.includes('word') || file.name.endsWith('.doc') || file.name.endsWith('.docx')) {
+          resolve(`[Word文档: ${file.name}]
+文件大小: ${(file.size / 1024).toFixed(1)} KB
+
+注：Word 内容提取需要后端支持。当前您可以手动粘贴文档中的关键内容。`);
+          return;
+        }
+        
+        // 文本文件
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          resolve(e.target.result);
+        };
+        reader.onerror = () => {
+          resolve(`[文件读取失败: ${file.name}]`);
+        };
+        reader.readAsText(file);
+      });
+    }
+    
     let pollingInterval;
     
     submitBtn.addEventListener('click', async () => {
       const inputText = userInput.value.trim();
       
-      if (!inputText) {
-        alert('请输入需求内容');
+      if (!inputText && uploadedFiles.length === 0) {
+        alert('请输入需求内容或上传文件');
         return;
       }
       
@@ -843,22 +1019,36 @@
       resultSection.style.display = 'none';
       progressFill.style.width = '0%';
       progressPercentage.textContent = '0%';
-      statusText.textContent = '提交中...';
+      statusText.textContent = '正在处理文件...';
       submitBtn.disabled = true;
-      submitBtn.innerHTML = '<span>执行中...</span>';
+      submitBtn.innerHTML = '<span>处理中...</span>';
       resetBtn.disabled = true;
       
-      // 初始化步骤状态
-      initializeWorkflowSteps();
-      
       try {
+        // 处理上传的文件
+        let fileContents = '';
+        if (uploadedFiles.length > 0) {
+          for (const file of uploadedFiles) {
+            statusText.textContent = `正在读取 ${file.name}...`;
+            const content = await extractFileContent(file);
+            fileContents += `\n\n=== 文件: ${file.name} ===\n${content}`;
+          }
+        }
+        
+        // 合并文本和文件内容
+        const combinedText = inputText + fileContents;
+        
+        // 初始化步骤状态
+        initializeWorkflowSteps();
+        
         // 调用 API 创建任务
+        statusText.textContent = '提交任务...';
         const response = await fetch('https://diyici.ai/api/cabinet/run', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify({ text: inputText })
+          body: JSON.stringify({ text: combinedText })
         });
         
         const data = await response.json();
@@ -964,6 +1154,11 @@
       userInput.value = '';
       progressSection.style.display = 'none';
       resultSection.style.display = 'none';
+      
+      // 清除已上传文件
+      uploadedFiles.length = 0;
+      fileItems.innerHTML = '';
+      fileList.style.display = 'none';
     });
     
     function displayResult(result) {
