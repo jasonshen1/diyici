@@ -71,15 +71,55 @@ class CabinetService {
             let finalSummary = finalResult;
             let template = finalResult;
             
-            // 尝试提取两部分
-            const summaryMatch = finalResult.match(/===== 沉淀者总结 =====([\s\S]*?)(?====== 万能模板 =====|$)/);
-            const templateMatch = finalResult.match(/===== 万能模板 =====([\s\S]*?)$/);
+            // 尝试提取两部分（支持多种格式）
+            // 格式1: ===== 沉淀者总结 ===== / ===== 万能模板 =====
+            // 格式2: ## 沉淀者总结 / ## 万能模板
+            // 格式3: 沉淀者总结： / 万能模板：
             
-            if (summaryMatch && summaryMatch[1]) {
-                finalSummary = summaryMatch[1].trim();
+            const summaryPatterns = [
+                /[=\-#]{3,}\s*沉淀者总结\s*[=\-#]{3,}([\s\S]*?)(?=[=\-#]{3,}\s*万能模板\s*[=\-#]{3,}|$)/i,
+                /沉淀者总结[：:]([\s\S]*?)(?=万能模板[：:]|$)/i,
+                /[=\-#]{3,}\s*总结\s*[=\-#]{3,}([\s\S]*?)(?=[=\-#]{3,}\s*模板\s*[=\-#]{3,}|$)/i
+            ];
+            
+            const templatePatterns = [
+                /[=\-#]{3,}\s*万能模板\s*[=\-#]{3,}([\s\S]*?)$/i,
+                /万能模板[：:]([\s\S]*?)$/i,
+                /[=\-#]{3,}\s*模板\s*[=\-#]{3,}([\s\S]*?)$/i
+            ];
+            
+            // 尝试匹配总结部分
+            for (const pattern of summaryPatterns) {
+                const match = finalResult.match(pattern);
+                if (match && match[1] && match[1].trim().length > 100) {
+                    finalSummary = match[1].trim();
+                    break;
+                }
             }
-            if (templateMatch && templateMatch[1]) {
-                template = templateMatch[1].trim();
+            
+            // 尝试匹配模板部分
+            for (const pattern of templatePatterns) {
+                const match = finalResult.match(pattern);
+                if (match && match[1] && match[1].trim().length > 100) {
+                    template = match[1].trim();
+                    break;
+                }
+            }
+            
+            // 如果模板和总结一样，或者模板为空，从总结中提取简化版
+            if (template === finalSummary || template.length < 100) {
+                // 从总结中提取核心框架作为模板
+                const lines = finalSummary.split('\n');
+                const keyPoints = [];
+                for (const line of lines) {
+                    // 提取标题、列表项、关键数据
+                    if (line.match(/^#{1,3}\s/) || line.match(/^\d+\./) || line.match(/^[-*]\s/) || line.match(/\d+[%\d]/)) {
+                        keyPoints.push(line);
+                    }
+                }
+                if (keyPoints.length > 3) {
+                    template = '【核心要点提取】\n\n' + keyPoints.slice(0, 20).join('\n');
+                }
             }
             
             await task_1.Task.update({
