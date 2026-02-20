@@ -1471,6 +1471,46 @@ ${result.text}`);
       URL.revokeObjectURL(url);
     };
     
+    // 将 Markdown 渲染为美观的 HTML
+    function renderMarkdown(text) {
+      if (!text) return '';
+      
+      // 转义 HTML 特殊字符
+      let html = text
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+      
+      // 标题 (# ## ###)
+      html = html.replace(/^##### (.*$)/gim, '<h5 style="color: #94a3b8; font-size: 14px; margin: 16px 0 8px; font-weight: 600;">$1</h5>');
+      html = html.replace(/^#### (.*$)/gim, '<h4 style="color: #e2e8f0; font-size: 15px; margin: 18px 0 10px; font-weight: 600;">$1</h4>');
+      html = html.replace(/^### (.*$)/gim, '<h3 style="color: #667eea; font-size: 17px; margin: 20px 0 12px; font-weight: 600; border-bottom: 1px solid rgba(102,126,234,0.3); padding-bottom: 8px;">$1</h3>');
+      html = html.replace(/^## (.*$)/gim, '<h2 style="color: #f093fb; font-size: 19px; margin: 24px 0 14px; font-weight: 600;">$1</h2>');
+      html = html.replace(/^# (.*$)/gim, '<h1 style="color: #667eea; font-size: 22px; margin: 28px 0 16px; font-weight: 700;">$1</h1>');
+      
+      // 粗体 (**text**)
+      html = html.replace(/\*\*(.*?)\*\*/g, '<strong style="color: #fbbf24; font-weight: 600;">$1</strong>');
+      
+      // 斜体 (*text*)
+      html = html.replace(/\*(.*?)\*/g, '<em style="color: #a78bfa;">$1</em>');
+      
+      // 分割线 (---)
+      html = html.replace(/---/g, '<hr style="border: none; border-top: 1px solid rgba(255,255,255,0.1); margin: 20px 0;">');
+      
+      // 列表项 (- 或 * 或 1.)
+      html = html.replace(/^- (.*$)/gim, '<div style="margin: 6px 0; padding-left: 16px; position: relative;"><span style="position: absolute; left: 0; color: #667eea;">•</span>$1</div>');
+      html = html.replace(/^\* (.*$)/gim, '<div style="margin: 6px 0; padding-left: 16px; position: relative;"><span style="position: absolute; left: 0; color: #667eea;">•</span>$1</div>');
+      html = html.replace(/^\d+\. (.*$)/gim, '<div style="margin: 6px 0; padding-left: 20px; position: relative;"><span style="position: absolute; left: 0; color: #10b981;">$&</span></div>');
+      
+      // 换行处理
+      html = html.replace(/\n/g, '<br>');
+      
+      // 清理多余的 <br>
+      html = html.replace(/<br><br><br>/g, '<br><br>');
+      
+      return html;
+    }
+    
     // 显示失败详情
     function displayFailure(statusData) {
       resultSection.style.display = 'block';
@@ -1689,7 +1729,7 @@ ${result.text}`);
           <div style="text-align: right;">
             <div style="font-size: 18px; font-weight: 700; color: ${borderColor};">${wordCount}</div>            <div style="font-size: 11px; color: #64748b;">字 · ${readTime}分钟阅读</div>
           </div>        </div>
-        <div class="result-content" style="margin-top: 16px; line-height: 1.8; color: #e2e8f0;">${content}</div>
+        <div class="result-content" style="margin-top: 16px; line-height: 1.8; color: #e2e8f0;">${renderMarkdown(content)}</div>
       `;
       resultContainer.appendChild(card);
     }
@@ -1718,7 +1758,7 @@ ${result.text}`);
             </div>
           </div>
           <div class="result-content" style="margin-top: 12px; max-height: 300px; overflow-y: auto;">
-            <pre style="white-space: pre-wrap; word-wrap: break-word; color: #e2e8f0; font-family: inherit; line-height: 1.6;">${statusData.planningResult}</pre>
+            ${renderMarkdown(statusData.planningResult)}
           </div>
         `;
         resultContainer.appendChild(planningCard);
@@ -1738,7 +1778,7 @@ ${result.text}`);
             </div>
           </div>
           <div class="result-content" style="margin-top: 12px; max-height: 300px; overflow-y: auto;">
-            <pre style="white-space: pre-wrap; word-wrap: break-word; color: #e2e8f0; font-family: inherit; line-height: 1.6;">${statusData.executionResult}</pre>
+            ${renderMarkdown(statusData.executionResult)}
           </div>
         `;
         resultContainer.appendChild(executionCard);
@@ -1758,7 +1798,7 @@ ${result.text}`);
             </div>
           </div>
           <div class="result-content" style="margin-top: 12px; max-height: 300px; overflow-y: auto;">
-            <pre style="white-space: pre-wrap; word-wrap: break-word; color: #e2e8f0; font-family: inherit; line-height: 1.6;">${statusData.reviewResult}</pre>
+            ${renderMarkdown(statusData.reviewResult)}
           </div>
           ${statusData.retryCount ? `
           <div style="margin-top: 12px; padding: 8px 12px; background: rgba(99, 102, 241, 0.1); border-radius: 8px; font-size: 12px; color: #818cf8;">
