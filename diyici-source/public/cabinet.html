@@ -858,6 +858,11 @@
   </div>
   
   <script>
+    // 全局错误处理
+    window.onerror = function(msg, url, line) {
+      console.error("JS错误:", msg, "行:", line);
+      alert("页面错误: " + msg + " (行: " + line + ")");
+    };
     const submitBtn = document.getElementById('submit-btn');
     const resetBtn = document.getElementById('reset-btn');
     const userInput = document.getElementById('user-input');
@@ -2184,6 +2189,11 @@
 </body>
 </html>
   <script>
+    // 全局错误处理
+    window.onerror = function(msg, url, line) {
+      console.error("JS错误:", msg, "行:", line);
+      alert("页面错误: " + msg + " (行: " + line + ")");
+    };
     // 页面加载完成后检查DOM元素
     document.addEventListener('DOMContentLoaded', () => {
       console.log('=== 数字内阁页面加载完成 ===');
@@ -2198,6 +2208,11 @@
   </script>
 
 <script>
+    // 全局错误处理
+    window.onerror = function(msg, url, line) {
+      console.error("JS错误:", msg, "行:", line);
+      alert("页面错误: " + msg + " (行: " + line + ")");
+    };
 // 备用实现 - 简化版确保基本功能
 (function() {
   console.log('备用实现加载中...');
@@ -2298,3 +2313,27 @@
 })();
 </script>
 </body></html>
+
+<script>
+    // 全局错误处理
+    window.onerror = function(msg, url, line) {
+      console.error("JS错误:", msg, "行:", line);
+      alert("页面错误: " + msg + " (行: " + line + ")");
+    };
+// 检查submit按钮
+(function() {
+  console.log('=== 检查submit按钮 ===');
+  const submitBtn = document.getElementById('submit-btn');
+  console.log('submitBtn:', submitBtn ? '✅ 存在' : '❌ 不存在');
+  if (submitBtn) {
+    console.log('submitBtn.disabled:', submitBtn.disabled);
+    console.log('submitBtn.innerHTML:', submitBtn.innerHTML.substring(0, 50));
+    
+    // 添加测试点击
+    submitBtn.addEventListener('click', function(e) {
+      console.log('✅ submit按钮被点击！');
+    });
+  }
+  console.log('========================');
+})();
+</script>
