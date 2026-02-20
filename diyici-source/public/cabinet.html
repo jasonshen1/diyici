@@ -2200,8 +2200,8 @@
           let result = escapeHtml(str);
           // 粗体
           result = result.replace(/\*\*(.+?)\*\*/g, '<strong style="color: #fbbf24; font-weight: 600;">$1</strong>');
-          // 斜体（不匹配 ** 中的 *）
-          result = result.replace(/(?<!\*)\*(?!\*)(.+?)\*(?!\*)/g, '<em style="color: #a78bfa;">$1</em>');
+          // 斜体（简单匹配，避免与粗体冲突）
+          result = result.replace(/(^|[^*])\*([^*]+?)\*([^*]|$)/g, '$1<em style="color: #a78bfa;">$2</em>$3');
           return result;
         };
         
