@@ -1,31 +1,89 @@
 import express from 'express';
 import multer from 'multer';
-import { TencentCloudOCR } from '../services/tencent-ocr';
+import { OCRService } from '../services/ocr-service';
 
 const router = express.Router();
 const upload = multer({ dest: '/tmp/uploads/' });
 
+// POST /api/ocr/recognize
+// 智能识别（自动切换腾讯云/本地）
+router.post('/recognize', upload.single('file'), async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ error: '请上传图片文件' });
+    }
+
+    const result = await OCRService.recognize(req.file.path);
+    
+    // 删除临时文件
+    try {
+      require('fs').unlinkSync(req.file.path);
+    } catch (e) {}
+    
+    res.json({
+      success: true,
+      ...result
+    });
+  } catch (error) {
+    // 删除临时文件
+    try {
+      if (req.file) require('fs').unlinkSync(req.file.path);
+    } catch (e) {}
+    
+    console.error('OCR 识别失败:', error);
+    res.status(500).json({
+      success: false,
+      error: error instanceof Error ? error.message : 'OCR 识别失败'
+    });
+  }
+});
+
 // POST /api/ocr/tencent
-// 调用腾讯云 OCR 识别图片
+// 强制使用腾讯云（兼容旧接口）
 router.post('/tencent', upload.single('file'), async (req, res) => {
   try {
     if (!req.file) {
       return res.status(400).json({ error: '请上传图片文件' });
     }
 
-    const result = await TencentCloudOCR.recognize(req.file.path);
+    const result = await OCRService.recognize(req.file.path);
+    
+    // 删除临时文件
+    try {
+      require('fs').unlinkSync(req.file.path);
+    } catch (e) {}
     
     res.json({
       success: true,
-      text: result.text,
-      confidence: result.confidence,
-      service: 'tencent-cloud-ocr'
+      ...result
     });
   } catch (error) {
-    console.error('腾讯云 OCR 调用失败:', error);
+    // 删除临时文件
+    try {
+      if (req.file) require('fs').unlinkSync(req.file.path);
+    } catch (e) {}
+    
+    console.error('OCR 识别失败:', error);
     res.status(500).json({
       success: false,
       error: error instanceof Error ? error.message : 'OCR 识别失败'
+    });
+  }
+});
+
+// GET /api/ocr/stats
+// 获取 OCR 使用统计
+router.get('/stats', async (req, res) => {
+  try {
+    const stats = OCRService.getStats();
+    res.json({
+      success: true,
+      ...stats
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: '获取统计失败'
     });
   }
 });
