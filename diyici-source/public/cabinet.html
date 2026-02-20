@@ -2155,21 +2155,16 @@
       // 创建复制按钮（使用DOM API避免HTML属性注入问题）
       const copyBtnContainer = card.querySelector('.copy-btn-container');
       
-      // 创建按钮容器
+      // 创建按钮容器 - 使用flex布局确保对齐
       const btnContainer = document.createElement('div');
-      btnContainer.style.cssText = 'display: flex; gap: 8px; justify-content: flex-end; flex-wrap: wrap;';
+      btnContainer.style.cssText = 'display: flex; gap: 8px; justify-content: flex-end; align-items: center;';
       
-      // 复制按钮
-      const copyBtn = document.createElement('button');
-      copyBtn.style.cssText = 'padding: 6px 12px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; color: #94a3b8; font-size: 12px; cursor: pointer; transition: all 0.3s; display: inline-flex; align-items: center; gap: 4px;';
-      copyBtn.innerHTML = '📋 复制内容';
-      copyBtn.onclick = function() {
-        copyToClipboard(this, content || '');
-      };
+      // 按钮基础样式
+      const baseBtnStyle = 'padding: 6px 12px; border-radius: 6px; font-size: 12px; cursor: pointer; transition: all 0.3s; display: inline-flex; align-items: center; gap: 4px; line-height: 1.5;';
       
       // 继续优化按钮
       const optimizeBtn = document.createElement('button');
-      optimizeBtn.style.cssText = 'padding: 6px 12px; background: linear-gradient(135deg, #667eea, #764ba2); border: none; border-radius: 6px; color: #fff; font-size: 12px; cursor: pointer; transition: all 0.3s; display: inline-flex; align-items: center; gap: 4px;';
+      optimizeBtn.style.cssText = baseBtnStyle + ' background: linear-gradient(135deg, #667eea, #764ba2); border: none; color: #fff;';
       optimizeBtn.innerHTML = '🔄 继续优化';
       optimizeBtn.onclick = function() {
         // 回到顶部
@@ -2187,6 +2182,14 @@
         // 显示提示
         statusText.textContent = '已加载上下文，请补充优化需求后点击开始执行';
         statusText.style.color = '#10b981';
+      };
+      
+      // 复制按钮
+      const copyBtn = document.createElement('button');
+      copyBtn.style.cssText = baseBtnStyle + ' background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #94a3b8;';
+      copyBtn.innerHTML = '📋 复制内容';
+      copyBtn.onclick = function() {
+        copyToClipboard(this, content || '');
       };
       
       btnContainer.appendChild(optimizeBtn);
