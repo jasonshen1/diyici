@@ -1631,6 +1631,15 @@
         btnContainer.appendChild(btn);
       });
       
+      // 添加发布到知识库按钮
+      const publishBtn = document.createElement('button');
+      publishBtn.style.cssText = 'padding: 12px 20px; background: linear-gradient(135deg, #f59e0b, #d97706); border: none; border-radius: 8px; color: #fff; cursor: pointer; font-size: 14px; font-weight: 600; transition: all 0.3s ease;';
+      publishBtn.innerHTML = '💾 发布到知识库';
+      publishBtn.onclick = function() {
+        window.publishToKnowledge(result);
+      };
+      btnContainer.appendChild(publishBtn);
+      
       content.appendChild(btnContainer);
       downloadCard.appendChild(content);
       resultContainer.appendChild(downloadCard);
@@ -1759,6 +1768,97 @@
         console.error('复制失败:', err);
         alert('复制失败，请手动复制');
       }
+    };
+    
+    // 发布到知识库
+    window.publishToKnowledge = async function(result) {
+      // 创建发布表单弹窗
+      const modal = document.createElement('div');
+      modal.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: flex; align-items: center; justify-content: center; z-index: 1000; padding: 20px; box-sizing: border-box;';
+      
+      // 提取标题（从用户输入或模板中提取）
+      const defaultTitle = result.user_input ? result.user_input.substring(0, 30) + '...' : '未命名方案';
+      
+      modal.innerHTML = `
+        <div style="background: #1a1a3e; border-radius: 16px; padding: 24px; max-width: 500px; width: 100%; border: 1px solid rgba(102,126,234,0.3);">
+          <h3 style="color: #fff; margin-bottom: 20px; font-size: 18px;">💾 发布到知识库</h3>
+          <p style="color: #94a3b8; font-size: 13px; margin-bottom: 16px;">分享你的方案，让更多人受益</p>
+          
+          <div style="margin-bottom: 16px;">
+            <label style="display: block; color: #94a3b8; font-size: 13px; margin-bottom: 6px;">标题 *</label>
+            <input type="text" id="pub-title" value="${defaultTitle}" style="width: 100%; padding: 10px 12px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; color: #fff; font-size: 14px; box-sizing: border-box;">
+          </div>
+          
+          <div style="margin-bottom: 16px;">
+            <label style="display: block; color: #94a3b8; font-size: 13px; margin-bottom: 6px;">分类</label>
+            <select id="pub-category" style="width: 100%; padding: 10px 12px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; color: #fff; font-size: 14px; box-sizing: border-box;">
+              <option value="营销方案">营销方案</option>
+              <option value="产品规划">产品规划</option>
+              <option value="运营策略">运营策略</option>
+              <option value="内容创作">内容创作</option>
+              <option value="其他">其他</option>
+            </select>
+          </div>
+          
+          <div style="margin-bottom: 20px;">
+            <label style="display: block; color: #94a3b8; font-size: 13px; margin-bottom: 6px;">一句话简介</label>
+            <textarea id="pub-summary" rows="2" placeholder="简要描述这个方案能解决什么问题..." style="width: 100%; padding: 10px 12px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; color: #fff; font-size: 14px; box-sizing: border-box; resize: vertical;"></textarea>
+          </div>
+          
+          <div style="display: flex; gap: 12px; justify-content: flex-end;">
+            <button id="pub-cancel" style="padding: 10px 20px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); border-radius: 8px; color: #94a3b8; font-size: 14px; cursor: pointer;">取消</button>
+            <button id="pub-submit" style="padding: 10px 20px; background: linear-gradient(135deg, #10b981, #059669); border: none; border-radius: 8px; color: #fff; font-size: 14px; font-weight: 600; cursor: pointer;">确认发布</button>
+          </div>
+        </div>
+      `;
+      
+      document.body.appendChild(modal);
+      
+      // 绑定事件
+      document.getElementById('pub-cancel').onclick = () => modal.remove();
+      modal.onclick = (e) => { if (e.target === modal) modal.remove(); };
+      
+      document.getElementById('pub-submit').onclick = async () => {
+        const title = document.getElementById('pub-title').value.trim();
+        const category = document.getElementById('pub-category').value;
+        const summary = document.getElementById('pub-summary').value.trim();
+        
+        if (!title) {
+          alert('请输入标题');
+          return;
+        }
+        
+        // 构建完整内容
+        const fullContent = `# ${title}\n\n` +
+          `**分类**: ${category}\n` +
+          `**发布时间**: ${new Date().toLocaleString('zh-CN')}\n\n` +
+          `## 方案简介\n${summary || '暂无简介'}\n\n` +
+          `---\n\n` +
+          `## 详细内容\n\n` +
+          (result.planning_result ? `### 谋局者分析\n${result.planning_result}\n\n` : '') +
+          (result.execution_result ? `### 执行者方案\n${result.execution_result}\n\n` : '') +
+          (result.review_result ? `### 找茬者审核\n${result.review_result}\n\n` : '') +
+          (result.final_result ? `### 沉淀者总结\n${result.final_result}\n\n` : '') +
+          (result.template ? `### 万能模板\n${result.template}\n\n` : '');
+        
+        try {
+          const response = await fetch('/api/knowledge/publish', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ title, category, summary, content: fullContent })
+          });
+          
+          if (response.ok) {
+            alert('✅ 发布成功！你的方案已进入知识库。');
+            modal.remove();
+          } else {
+            alert('❌ 发布失败，请稍后重试');
+          }
+        } catch (error) {
+          console.error('发布失败:', error);
+          alert('❌ 发布失败: ' + error.message);
+        }
+      };
     };
 
     // 将 Markdown 渲染为美观的 HTML
