@@ -1524,8 +1524,8 @@
       // 跳过按钮
       document.getElementById('auto-pub-skip').onclick = () => {
         modal.remove();
-        // 重新显示完整结果（确保所有角色卡片都显示）
-        displayResult(result);
+        // 滚动到结果区域，让用户看到完整结果
+        resultSection.scrollIntoView({ behavior: 'smooth' });
       };
       
       // 发布按钮
@@ -2210,49 +2210,43 @@
         };
         
         const processInline = (str) => {
-          try {
-            // 先转义 HTML
-            let result = escapeHtml(str);
-            // 粗体
-            result = result.replace(/\*\*(.+?)\*\*/g, '<strong style="color: #fbbf24; font-weight: 600;">$1</strong>');
-            // 斜体 - 使用简单字符串替换，避免正则问题
-            let parts = result.split('*');
-            if (parts.length >= 3) {
-              let newResult = parts[0];
-              for (let i = 1; i < parts.length; i += 2) {
-                if (i + 1 < parts.length) {
-                  newResult += '<em style="color: #a78bfa;">' + parts[i] + '</em>' + parts[i+1];
-                } else {
-                  newResult += '*' + parts[i];
-                }
+          // 先转义 HTML
+          let result = escapeHtml(str);
+          // 粗体
+          result = result.replace(/\*\*(.+?)\*\*/g, '<strong style="color: #fbbf24; font-weight: 600;">$1</strong>');
+          // 斜体 - 使用简单字符串替换，避免正则问题
+          let parts = result.split('*');
+          if (parts.length >= 3) {
+            let newResult = parts[0];
+            for (let i = 1; i < parts.length; i += 2) {
+              if (i + 1 < parts.length) {
+                newResult += '<em style="color: #a78bfa;">' + parts[i] + '</em>' + parts[i+1];
+              } else {
+                newResult += '*' + parts[i];
               }
-              result = newResult;
             }
-            return result;
-          } catch (e) {
-            console.error('processInline错误:', e, '输入:', str);
-            return escapeHtml(str);
+            result = newResult;
           }
+          return result;
         };
         
         for (let i = 0; i < lines.length; i++) {
-          try {
-            const line = lines[i];
-            const trimmed = line.trim();
-            
-            // 空行
-            if (!trimmed) {
-              flushList();
-              html += '<br>';
-              continue;
-            }
-            
-            // 分割线
-            if (trimmed === '---' || trimmed === '***' || trimmed === '___') {
-              flushList();
-              html += '<hr style="border: none; border-top: 1px solid rgba(255,255,255,0.1); margin: 20px 0;">';
-              continue;
-            }
+          const line = lines[i];
+          const trimmed = line.trim();
+          
+          // 空行
+          if (!trimmed) {
+            flushList();
+            html += '<br>';
+            continue;
+          }
+          
+          // 分割线
+          if (trimmed === '---' || trimmed === '***' || trimmed === '___') {
+            flushList();
+            html += '<hr style="border: none; border-top: 1px solid rgba(255,255,255,0.1); margin: 20px 0;">';
+            continue;
+          }
           
           // 标题
           if (trimmed.startsWith('# ')) {
@@ -2286,33 +2280,27 @@
             continue;
           }
           
-          // 无序列表 - 使用简单字符串检查代替正则
-          if (trimmed.startsWith('- ') || trimmed.startsWith('* ')) {
+          // 无序列表
+          if (trimmed.match(/^[-\*]\s/)) {
             const content = processInline(trimmed.slice(2));
             listItems.push('<div style="margin: 4px 0; padding-left: 16px; position: relative;"><span style="position: absolute; left: 0; color: #667eea; font-weight: bold;">•</span>' + content + '</div>');
             inList = true;
             continue;
           }
           
-          // 有序列表 - 使用简单字符串检查
-          const dotIndex = trimmed.indexOf('. ');
-          if (dotIndex > 0) {
-            const numPart = trimmed.substring(0, dotIndex);
-            if (/^\d+$/.test(numPart)) {
-              const content = processInline(trimmed.substring(dotIndex + 2));
-              listItems.push('<div style="margin: 4px 0; padding-left: 24px; position: relative;"><span style="position: absolute; left: 0; color: #10b981; font-weight: 600;">' + numPart + '.</span>' + content + '</div>');
-              inList = true;
-              continue;
-            }
+          // 有序列表
+          const orderedMatch = trimmed.match(/^(\d+)\.\s(.+)$/);
+          if (orderedMatch) {
+            const content = processInline(orderedMatch[2]);
+            listItems.push('<div style="margin: 4px 0; padding-left: 24px; position: relative;"><span style="position: absolute; left: 0; color: #10b981; font-weight: 600;">' + orderedMatch[1] + '.</span>' + content + '</div>');
+            inList = true;
+            continue;
           }
           
           // 普通段落
           flushList();
           const content = processInline(trimmed);
           html += '<p style="margin: 8px 0; line-height: 1.8;">' + content + '</p>';
-        } catch (lineError) {
-          console.error('renderMarkdown行错误:', lineError, '行号:', i, '内容:', lines[i]);
-          continue;
         }
         
         flushList();
