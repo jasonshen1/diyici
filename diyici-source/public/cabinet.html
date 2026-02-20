@@ -1178,11 +1178,16 @@
             };
             
             const baseStatus = statusMap[statusData.status] || statusData.status;
-            statusText.textContent = `${baseStatus}（已用时 ${elapsedText}）`;
+            statusText.textContent = baseStatus + '（已用时 ' + elapsedText + '）';
             
             // 超时提醒（超过5分钟）
             if (elapsedSeconds > 300 && statusData.status !== 'completed' && statusData.status !== 'failed') {
-              statusText.innerHTML = `${baseStatus}（已用时 ${elapsedText}）<br><span style="font-size: 12px; color: #f59e0b;">⏳ 任务较复杂，请耐心等待...</span>`;
+              statusText.innerHTML = '';
+              statusText.appendChild(document.createTextNode(baseStatus + '（已用时 ' + elapsedText + '）'));
+              const remindSpan = document.createElement('span');
+              remindSpan.style.cssText = 'font-size: 12px; color: #f59e0b; display: block; margin-top: 4px;';
+              remindSpan.textContent = '⏳ 任务较复杂，请耐心等待...';
+              statusText.appendChild(remindSpan);
             }
             
             // 更新可视化步骤
@@ -1618,6 +1623,11 @@
       const failHeader = document.createElement('div');
       failHeader.className = 'result-card';
       failHeader.style.borderLeft = '4px solid #ef4444';
+      
+      const failStep = getStepName(statusData.failStep) || '审查环节';
+      const failReason = statusData.failReason || '审核未通过，已达到最大重试次数';
+      const retryCount = statusData.retryCount || 0;
+      
       failHeader.innerHTML = `
         <div class="result-header">
           <div class="result-icon" style="background: linear-gradient(135deg, #ef4444, #dc2626);">❌</div>
@@ -1626,23 +1636,46 @@
             <p>四脑协作未能完成任务</p>
           </div>
         </div>
-        <div class="result-content" style="margin-top: 16px;">
-          <div style="background: rgba(239, 68, 68, 0.1); border-radius: 12px; padding: 16px; margin-bottom: 16px;">
-            <h4 style="color: #ef4444; margin-bottom: 8px;">📍 失败环节</h4>
-            <p style="color: #e2e8f0;">${getStepName(statusData.failStep) || '审查环节'}</p>
-          </div>
-          <div style="background: rgba(239, 68, 68, 0.05); border-radius: 12px; padding: 16px; margin-bottom: 16px;">
-            <h4 style="color: #f87171; margin-bottom: 8px;">❗ 失败原因</h4>
-            <p style="color: #e2e8f0; line-height: 1.6;">${statusData.failReason || '审核未通过，已达到最大重试次数'}</p>
-          </div>
-          ${statusData.retryCount ? `
-          <div style="background: rgba(99, 102, 241, 0.1); border-radius: 12px; padding: 16px; margin-bottom: 16px;">
-            <h4 style="color: #818cf8; margin-bottom: 8px;">🔄 重试次数</h4>
-            <p style="color: #e2e8f0;">共尝试 ${statusData.retryCount} 次</p>
-          </div>
-          ` : ''}
-        </div>
       `;
+      
+      // 创建内容区
+      const contentDiv = document.createElement('div');
+      contentDiv.className = 'result-content';
+      contentDiv.style.marginTop = '16px';
+      
+      // 失败环节
+      const failStepDiv = document.createElement('div');
+      failStepDiv.style.cssText = 'background: rgba(239, 68, 68, 0.1); border-radius: 12px; padding: 16px; margin-bottom: 16px;';
+      failStepDiv.innerHTML = '<h4 style="color: #ef4444; margin-bottom: 8px;">📍 失败环节</h4>';
+      const failStepP = document.createElement('p');
+      failStepP.style.color = '#e2e8f0';
+      failStepP.textContent = failStep;
+      failStepDiv.appendChild(failStepP);
+      contentDiv.appendChild(failStepDiv);
+      
+      // 失败原因
+      const failReasonDiv = document.createElement('div');
+      failReasonDiv.style.cssText = 'background: rgba(239, 68, 68, 0.05); border-radius: 12px; padding: 16px; margin-bottom: 16px;';
+      failReasonDiv.innerHTML = '<h4 style="color: #f87171; margin-bottom: 8px;">❗ 失败原因</h4>';
+      const failReasonP = document.createElement('p');
+      failReasonP.style.cssText = 'color: #e2e8f0; line-height: 1.6;';
+      failReasonP.textContent = failReason;
+      failReasonDiv.appendChild(failReasonP);
+      contentDiv.appendChild(failReasonDiv);
+      
+      // 重试次数
+      if (retryCount > 0) {
+        const retryDiv = document.createElement('div');
+        retryDiv.style.cssText = 'background: rgba(99, 102, 241, 0.1); border-radius: 12px; padding: 16px; margin-bottom: 16px;';
+        retryDiv.innerHTML = '<h4 style="color: #818cf8; margin-bottom: 8px;">🔄 重试次数</h4>';
+        const retryP = document.createElement('p');
+        retryP.style.color = '#e2e8f0';
+        retryP.textContent = '共尝试 ' + retryCount + ' 次';
+        retryDiv.appendChild(retryP);
+        contentDiv.appendChild(retryDiv);
+      }
+      
+      failHeader.appendChild(contentDiv);
       resultContainer.appendChild(failHeader);
       
       // 显示已有的成果
@@ -1670,15 +1703,30 @@
             <p>如何让任务更容易通过</p>
           </div>
         </div>
-        <div class="result-content" style="margin-top: 16px;">
-          <ul style="color: #e2e8f0; line-height: 1.8; padding-left: 20px;">
-            <li>需求描述更具体，包含背景、目标、约束条件</li>
-            <li>提供具体的例子或参考标准</li>
-            <li>说明期望的输出格式和详细程度</li>
-            <li>如果涉及专业知识，提供相关术语解释</li>
-          </ul>
-        </div>
       `;
+      
+      const suggestionContent = document.createElement('div');
+      suggestionContent.className = 'result-content';
+      suggestionContent.style.marginTop = '16px';
+      
+      const suggestionList = document.createElement('ul');
+      suggestionList.style.cssText = 'color: #e2e8f0; line-height: 1.8; padding-left: 20px;';
+      
+      const suggestions = [
+        '需求描述更具体，包含背景、目标、约束条件',
+        '提供具体的例子或参考标准',
+        '说明期望的输出格式和详细程度',
+        '如果涉及专业知识，提供相关术语解释'
+      ];
+      
+      suggestions.forEach(text => {
+        const li = document.createElement('li');
+        li.textContent = text;
+        suggestionList.appendChild(li);
+      });
+      
+      suggestionContent.appendChild(suggestionList);
+      suggestionCard.appendChild(suggestionContent);
       resultContainer.appendChild(suggestionCard);
       
       // 如果有部分成果，添加下载按钮
