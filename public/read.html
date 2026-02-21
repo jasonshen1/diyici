@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>阅读文档 - 第一次 智能助手 成功入口</title>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(180deg, #0f0f23 0%, #1a1a3e 50%, #0f0f23 100%);
+            color: #e2e8f0;
+            line-height: 1.8;
+            min-height: 100vh;
+        }
+        
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+            color: white;
+            padding: 16px 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header-content {
+            max-width: 900px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        .header-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: white;
+        }
+        
+        .header-brand-icon {
+            font-size: 28px;
+        }
+        
+        .header-brand-text {
+            font-size: 20px;
+            font-weight: 700;
+        }
+        
+        .header-back {
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: none;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            transition: background 0.2s;
+        }
+        
+        .header-back:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        /* Content */
+        .content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        
+        /* Markdown Styles */
+        .markdown-body h1 {
+            font-size: 32px;
+            font-weight: 700;
+            margin: 0 0 24px 0;
+            padding-bottom: 16px;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+            color: #fff;
+        }
+        
+        .markdown-body h2 {
+            font-size: 24px;
+            font-weight: 600;
+            margin: 40px 0 20px 0;
+            padding-bottom: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            color: #fff;
+        }
+        
+        .markdown-body h3 {
+            font-size: 20px;
+            font-weight: 600;
+            margin: 32px 0 16px 0;
+            color: #e2e8f0;
+        }
+        
+        .markdown-body p {
+            margin: 16px 0;
+            line-height: 1.8;
+            color: #94a3b8;
+        }
+        
+        .markdown-body pre {
+            background: rgba(0, 0, 0, 0.3);
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 12px;
+            overflow-x: auto;
+            font-family: 'Courier New', 'Consolas', '等线', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+            margin: 20px 0;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .markdown-body code {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-family: 'Courier New', 'Consolas', '等线', monospace;
+            font-size: 14px;
+            color: #fbbf24;
+        }
+        
+        .markdown-body pre code {
+            background: transparent;
+            padding: 0;
+            color: inherit;
+        }
+        
+        .markdown-body table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 24px 0;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .markdown-body th {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 14px 16px;
+            text-align: left;
+            font-weight: 600;
+        }
+        
+        .markdown-body td {
+            padding: 12px 16px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            color: #94a3b8;
+        }
+        
+        .markdown-body tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .markdown-body tr:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
+        
+        .markdown-body ul, .markdown-body ol {
+            margin: 16px 0;
+            padding-left: 24px;
+            color: #94a3b8;
+        }
+        
+        .markdown-body li {
+            margin: 8px 0;
+        }
+        
+        .markdown-body blockquote {
+            border-left: 4px solid #667eea;
+            background: rgba(102, 126, 234, 0.1);
+            padding: 16px 20px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+            font-style: italic;
+        }
+        
+        .markdown-body blockquote p {
+            margin: 0;
+            color: #e2e8f0;
+        }
+        
+        .markdown-body hr {
+            border: none;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin: 40px 0;
+        }
+        
+        .markdown-body a {
+            color: #667eea;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        
+        .markdown-body a:hover {
+            color: #f093fb;
+            text-decoration: underline;
+        }
+        
+        .markdown-body img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin: 20px 0;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+        
+        /* Loading */
+        .loading {
+            text-align: center;
+            padding: 100px 20px;
+            color: #64748b;
+        }
+        
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(255, 255, 255, 0.1);
+            border-top-color: #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+            box-shadow: 0 0 20px rgba(102, 126, 234, 0.3);
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Error */
+        .error {
+            text-align: center;
+            padding: 100px 20px;
+        }
+        
+        .error-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+        }
+        
+        .error-text {
+            color: #f87171;
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+        
+        .error-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 30px;
+            font-size: 16px;
+            cursor: pointer;
+            box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4);
+            transition: all 0.3s;
+        }
+        
+        .error-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(102, 126, 234, 0.5);
+        }
+        
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 40px 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: 60px;
+            color: #64748b;
+        }
+        
+        .footer a {
+            color: #667eea;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        
+        .footer a:hover {
+            color: #f093fb;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-brand-text {
+                font-size: 16px;
+            }
+            
+            .markdown-body h1 {
+                font-size: 26px;
+            }
+            
+            .markdown-body h2 {
+                font-size: 20px;
+            }
+            
+            .markdown-body pre {
+                padding: 16px;
+                font-size: 13px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-content">
+            <a href="/" class="header-brand">
+                <span class="header-brand-icon"></span>
+                <span class="header-brand-text">第一次 · diyici.ai</span>
+            </a>
+            <a href="/" class="header-back">
+                ← 返回首页
+            </a>
+        </div>
+    </header>
+    
+    <main class="content">
+        <div id="loading" class="loading">
+            <div class="loading-spinner"></div>
+            <div>正在加载文档...</div>
+        </div>
+        
+        <div id="content" class="markdown-body" style="display: none;"></div>
+        
+        <div id="error" class="error" style="display: none;">
+            <div class="error-icon"></div>
+            <div class="error-text" id="errorText">文档加载失败</div>
+            <button class="error-btn" onclick="location.reload()">重新加载</button>
+        </div>
+    </main>
+    
+    <footer class="footer">
+        <p> 第一次 智能助手 成功入口 · <a href="/">diyici.ai</a></p>
+    </footer>
+    
+    <script>
+        // 获取URL参数
+        function getUrlParam(name) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(name);
+        }
+        
+        // 加载文档
+        async function loadDocument() {
+            const docName = getUrlParam('doc');
+            
+            if (!docName) {
+                // 显示知识库首页
+                showKnowledgeBaseHome();
+                return;
+            }
+            
+            // 安全检查：只允许读取 knowledge 目录下的 md 文件
+            // 清理参数中的空白字符
+            const cleanDocName = docName.trim();
+            if (!cleanDocName.match(/^[\w-]+\.md$/)) {
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('error').style.display = 'block';
+                document.getElementById('errorText').textContent = '无效的文档名称';
+                return;
+            }
+            
+            try {
+                const response = await fetch(`/knowledge/${cleanDocName}`);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+                
+                const markdown = await response.text();
+                
+                // 使用 marked 渲染 Markdown
+                document.getElementById('content').innerHTML = marked.parse(markdown);
+                
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('content').style.display = 'block';
+                
+                // 更新页面标题
+                const titleMatch = markdown.match(/^#\s+(.+)$/m);
+                if (titleMatch) {
+                    document.title = `${titleMatch[1]} - 第一次 智能助手 成功入口`;
+                }
+                
+            } catch (error) {
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('error').style.display = 'block';
+                document.getElementById('errorText').textContent = `加载失败: ${error.message}`;
+            }
+        }
+        
+        // 显示知识库首页
+        async function showKnowledgeBaseHome() {
+            try {
+                const response = await fetch('/knowledge/index.json');
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+                
+                const data = await response.json();
+                
+                // 生成知识库首页内容
+                let content = `
+                    <h1>知识库</h1>
+                    <p>欢迎来到第一次智能助手的知识库，这里收录了各种使用指南和最佳实践。</p>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 24px; margin-top: 40px;">
+                `;
+                
+                // 遍历文档列表
+                data.entries.forEach(doc => {
+                    content += `
+                        <div style="background: rgba(255, 255, 255, 0.05); border-radius: 16px; padding: 28px; border: 1px solid rgba(255, 255, 255, 0.1); transition: all 0.3s;">
+                            <h3 style="margin-top: 0; color: #fff;">${doc.title}</h3>
+                            <p style="color: #64748b; font-size: 14px; margin-bottom: 16px;">${doc.subtitle}</p>
+                            <p style="color: #94a3b8; font-size: 15px; line-height: 1.7; margin-bottom: 20px;">${doc.description}</p>
+                            <div style="display: flex; gap: 8px; margin-bottom: 20px;">
+                                <span style="font-size: 12px; padding: 4px 12px; border-radius: 20px; font-weight: 500; background: rgba(255, 255, 255, 0.1); color: #94a3b8;">${doc.category}</span>
+                                <span style="font-size: 12px; padding: 4px 12px; border-radius: 20px; font-weight: 500; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">${doc.level}</span>
+                            </div>
+                            <a href="/read.html?doc=${doc.file}" style="display: inline-block; padding: 10px 20px; border-radius: 8px; font-size: 14px; font-weight: 500; text-decoration: none; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4); transition: all 0.3s;">开始阅读</a>
+                        </div>
+                    `;
+                });
+                
+                content += `
+                    </div>
+                `;
+                
+                document.getElementById('content').innerHTML = content;
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('content').style.display = 'block';
+                
+                // 更新页面标题
+                document.title = '知识库 - 第一次 智能助手 成功入口';
+                
+            } catch (error) {
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('error').style.display = 'block';
+                document.getElementById('errorText').textContent = `加载失败: ${error.message}`;
+            }
+        }
+        
+        // 页面加载完成后执行
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', loadDocument);
+        } else {
+            loadDocument();
+        }
+    </script>
+</body>
+</html>

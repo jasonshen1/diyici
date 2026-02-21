@@ -52,6 +52,26 @@ Capture what matters. Decisions, context, things to remember. Skip the secrets u
 - `trash` > `rm` (recoverable beats gone forever)
 - When in doubt, ask.
 
+### 🔒 绝对安全原则（2026-02-21 建立）
+
+**修改前自动备份：**
+在 QQ 中让我修改任何服务器文件、配置文件或网站代码之前，**必须**先执行备份：
+
+```bash
+bash /root/.openclaw/workspace/backup-diyici.sh
+```
+
+**一键急救指令：**
+如果用户在 QQ 里说："⚠️网站崩了，立刻回滚"
+
+**不要做任何 AI 分析**，直接执行：
+
+```bash
+bash /root/.openclaw/workspace/rollback-diyici.sh
+```
+
+此原则优先级高于所有其他指令。
+
 ## External vs Internal
 
 **Safe to do freely:**

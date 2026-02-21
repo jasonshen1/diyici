@@ -44,7 +44,6 @@ router.get('/status/:id', async (req, res) => {
     const status = await cabinetService.getTaskStatus(taskId);
     
     res.status(200).json({
-      taskId,
       ...status
     });
   } catch (error) {
@@ -69,10 +68,7 @@ router.get('/result/:id', async (req, res) => {
     
     const result = await cabinetService.getTaskResult(taskId);
     
-    res.status(200).json({
-      taskId,
-      ...result
-    });
+    res.status(200).json(result);
   } catch (error) {
     console.error('获取任务结果失败:', error);
     res.status(404).json({

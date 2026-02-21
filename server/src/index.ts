@@ -2,6 +2,9 @@ import express from 'express';
 import dotenv from 'dotenv';
 import cors from 'cors';
 import cabinetRouter from './routes/cabinet';
+import analyticsRouter from './routes/analytics';
+import ocrRouter from './routes/ocr';
+import knowledgeRouter from './routes/knowledge';
 import { syncDatabase } from './models/task';
 
 // 加载环境变量
@@ -24,6 +27,9 @@ app.use(express.urlencoded({ extended: true }));
 
 // 注册路由
 app.use('/api/cabinet', cabinetRouter);
+app.use('/api/analytics', analyticsRouter);
+app.use('/api/ocr', ocrRouter);
+app.use('/api/knowledge', knowledgeRouter);
 
 // 健康检查端点
 app.get('/health', (req, res) => {
@@ -53,6 +59,5 @@ app.listen(PORT, () => {
   console.log(`服务器运行在 http://localhost:${PORT}`);
   console.log(`健康检查: http://localhost:${PORT}/health`);
   console.log(`API文档: http://localhost:${PORT}/api/cabinet`);
+  console.log(`统计API: http://localhost:${PORT}/api/analytics`);
 });
-
-export default app;

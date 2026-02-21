@@ -1,0 +1,751 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>数字内阁 - 智能助手</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+      background: linear-gradient(135deg, #1a1a3e 0%, #0f0f23 100%);
+      min-height: 100vh;
+      color: #e2e8f0;
+      line-height: 1.6;
+    }
+    
+    .container {
+      max-width: 900px;
+      margin: 40px auto;
+      padding: 40px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 16px;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: 
+        radial-gradient(circle at 50% 50%, rgba(102, 126, 234, 0.1) 0%, transparent 60%),
+        radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.1) 0%, transparent 50%);
+      pointer-events: none;
+    }
+    
+    .header {
+      text-align: center;
+      margin-bottom: 40px;
+      position: relative;
+      z-index: 1;
+    }
+    
+    .brand-name {
+      font-size: 36px;
+      font-weight: 800;
+      background: linear-gradient(135deg, #667eea 0%, #f093fb 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 8px;
+      letter-spacing: 2px;
+    }
+    
+    .page-title {
+      font-size: 28px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 16px;
+    }
+    
+    .page-subtitle {
+      font-size: 16px;
+      color: #94a3b8;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    
+    .input-section {
+      margin-bottom: 40px;
+      position: relative;
+      z-index: 1;
+    }
+    
+    .input-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    
+    label {
+      display: block;
+      font-weight: 600;
+      color: #fff;
+      font-size: 16px;
+    }
+    
+    .input-hint {
+      font-size: 14px;
+      color: #64748b;
+    }
+    
+    textarea {
+      width: 100%;
+      padding: 20px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      resize: vertical;
+      min-height: 200px;
+      font-size: 16px;
+      font-family: inherit;
+      color: #e2e8f0;
+      transition: all 0.3s ease;
+    }
+    
+    textarea:focus {
+      outline: none;
+      border-color: rgba(102, 126, 234, 0.5);
+      box-shadow: 0 0 20px rgba(102, 126, 234, 0.2);
+    }
+    
+    textarea::placeholder {
+      color: #64748b;
+    }
+    
+    .button-group {
+      display: flex;
+      gap: 16px;
+      margin-top: 20px;
+      flex-wrap: wrap;
+    }
+    
+    button {
+      flex: 1;
+      min-width: 200px;
+      padding: 16px 32px;
+      border-radius: 30px;
+      font-size: 16px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all 0.3s;
+      cursor: pointer;
+      border: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    
+    .btn-primary {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4);
+    }
+    
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 30px rgba(102, 126, 234, 0.5);
+    }
+    
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.1);
+      color: #e2e8f0;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+    
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.15);
+      border-color: rgba(255, 255, 255, 0.3);
+    }
+    
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none !important;
+      box-shadow: none !important;
+    }
+    
+    .progress-section {
+      margin: 40px 0;
+      padding: 30px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      position: relative;
+      z-index: 1;
+    }
+    
+    .progress-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    
+    .progress-header h3 {
+      font-size: 18px;
+      font-weight: 700;
+      color: #fff;
+    }
+    
+    .progress-status {
+      font-size: 14px;
+      color: #64748b;
+    }
+    
+    .progress-bar {
+      width: 100%;
+      height: 12px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 6px;
+      overflow: hidden;
+      margin: 20px 0;
+    }
+    
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #667eea, #764ba2);
+      border-radius: 6px;
+      transition: width 0.5s ease;
+      position: relative;
+    }
+    
+    .progress-fill::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+      animation: shimmer 2s infinite;
+    }
+    
+    @keyframes shimmer {
+      0% { transform: translateX(-100%); }
+      100% { transform: translateX(100%); }
+    }
+    
+    .status-text {
+      font-size: 16px;
+      color: #94a3b8;
+      text-align: center;
+      margin-top: 16px;
+    }
+    
+    .result-section {
+      margin-top: 40px;
+      padding-top: 30px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+      position: relative;
+      z-index: 1;
+    }
+    
+    .result-header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    
+    .result-header h3 {
+      font-size: 20px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 8px;
+    }
+    
+    .result-header p {
+      font-size: 14px;
+      color: #64748b;
+    }
+    
+    .result-card {
+      margin: 20px 0;
+      padding: 24px;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .result-card:hover {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(102, 126, 234, 0.3);
+      transform: translateY(-4px);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+    }
+    
+    .result-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #667eea, #764ba2);
+    }
+    
+    .result-card h4 {
+      font-size: 18px;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    .result-card h4::before {
+      content: '';
+      width: 4px;
+      height: 16px;
+      background: linear-gradient(180deg, #667eea, #764ba2);
+      border-radius: 2px;
+    }
+    
+    .result-content {
+      font-size: 16px;
+      line-height: 1.7;
+      white-space: pre-wrap;
+      word-break: break-word;
+      color: #e2e8f0;
+    }
+    
+    .error-message {
+      color: #f87171;
+      margin-top: 16px;
+      padding: 16px;
+      background: rgba(248, 113, 113, 0.1);
+      border-radius: 8px;
+      border: 1px solid rgba(248, 113, 113, 0.2);
+      position: relative;
+      z-index: 1;
+    }
+    
+    .success-message {
+      color: #34d399;
+      margin-top: 16px;
+      padding: 16px;
+      background: rgba(52, 211, 153, 0.1);
+      border-radius: 8px;
+      border: 1px solid rgba(52, 211, 153, 0.2);
+      position: relative;
+      z-index: 1;
+    }
+    
+    .back-link {
+      display: inline-block;
+      margin-top: 30px;
+      color: #667eea;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      font-size: 14px;
+    }
+    
+    .back-link:hover {
+      color: #764ba2;
+      text-decoration: underline;
+    }
+    
+    /* Responsive Styles */
+    @media (max-width: 768px) {
+      .container {
+        margin: 20px;
+        padding: 30px;
+        border-radius: 12px;
+      }
+      
+      .brand-name {
+        font-size: 28px;
+      }
+      
+      .page-title {
+        font-size: 24px;
+      }
+      
+      .button-group {
+        flex-direction: column;
+      }
+      
+      button {
+        width: 100%;
+        min-width: unset;
+      }
+      
+      textarea {
+        min-height: 150px;
+        padding: 16px;
+      }
+      
+      .progress-section {
+        padding: 20px;
+      }
+      
+      .result-card {
+        padding: 20px;
+      }
+    }
+    
+    /* Small Mobile */
+    @media (max-width: 480px) {
+      .container {
+        margin: 10px;
+        padding: 20px;
+      }
+      
+      .brand-name {
+        font-size: 24px;
+      }
+      
+      .page-title {
+        font-size: 20px;
+      }
+      
+      .page-subtitle {
+        font-size: 14px;
+      }
+      
+      textarea {
+        min-height: 120px;
+        font-size: 14px;
+      }
+      
+      button {
+        padding: 14px 24px;
+        font-size: 15px;
+      }
+      
+      .progress-section {
+        padding: 16px;
+      }
+      
+      .result-card {
+        padding: 16px;
+      }
+      
+      .result-card h4 {
+        font-size: 16px;
+      }
+      
+      .result-content {
+        font-size: 14px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="brand-name">数字内阁</div>
+      <h1 class="page-title">智能助手</h1>
+      <p class="page-subtitle">第一次把才华系统化成为开创者，你的专属四人AI内阁</p>
+    </div>
+    
+    <!-- 数字内阁介绍 -->
+    <div class="cabinet-intro" style="margin-bottom: 40px; position: relative; z-index: 1;">
+      <h2 style="font-size: 20px; font-weight: 700; color: #fff; margin-bottom: 24px; text-align: center;">数字内阁工作流程</h2>
+      <p style="text-align: center; color: #94a3b8; margin-bottom: 32px;">四个AI角色互相制约、互相协作，为你完成从规划到执行的全流程</p>
+      
+      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-bottom: 24px;">
+        <!-- 谋局者 -->
+        <div style="padding: 24px; background: rgba(255, 255, 255, 0.05); border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.1); text-align: center; transition: all 0.3s ease;">
+          <div style="margin-bottom: 16px;">
+            <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=smart%20business%20consultant%20analyzing%20data%20charts%2C%20wearing%20formal%20attire%2C%20modern%20flat%20design%2C%20dark%20purple%20background%2C%20professional%20corporate%20style&image_size=square" alt="谋局者" style="width: 80px; height: 80px; object-fit: contain;">
+          </div>
+          <h3 style="font-size: 16px; font-weight: 700; color: #fff; margin-bottom: 12px;">谋局者（首辅）</h3>
+          <p style="font-size: 13px; color: #94a3b8; line-height: 1.5;">分析用户需求，制定详细的行动指南，明确任务目标、步骤和预期成果。</p>
+        </div>
+        
+        <!-- 执行者 -->
+        <div style="padding: 24px; background: rgba(255, 255, 255, 0.05); border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.1); text-align: center; transition: all 0.3s ease;">
+          <div style="margin-bottom: 16px;">
+            <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=efficient%20project%20manager%20executing%20tasks%2C%20holding%20checklist%2C%20dynamic%20action%20pose%2C%20modern%20flat%20design%2C%20dark%20purple%20background%2C%20professional%20style&image_size=square" alt="执行者" style="width: 80px; height: 80px; object-fit: contain;">
+          </div>
+          <h3 style="font-size: 16px; font-weight: 700; color: #fff; margin-bottom: 12px;">执行者（干吏）</h3>
+          <p style="font-size: 13px; color: #94a3b8; line-height: 1.5;">根据行动指南执行任务，生成高质量的初版成果，确保成果符合用户需求。</p>
+        </div>
+        
+        <!-- 找茬者 -->
+        <div style="padding: 24px; background: rgba(255, 255, 255, 0.05); border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.1); text-align: center; transition: all 0.3s ease;">
+          <div style="margin-bottom: 16px;">
+            <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=strict%20quality%20inspector%20with%20magnifying%20glass%2C%20reviewing%20documents%2C%20critical%20analysis%2C%20modern%20flat%20design%2C%20dark%20purple%20background%2C%20professional%20style&image_size=square" alt="找茬者" style="width: 80px; height: 80px; object-fit: contain;">
+          </div>
+          <h3 style="font-size: 16px; font-weight: 700; color: #fff; margin-bottom: 12px;">找茬者（御史）</h3>
+          <p style="font-size: 13px; color: #94a3b8; line-height: 1.5;">严格审核提交的成果，找出问题和不足，给出详细的审核报告，最终做出裁决：PASS 或 FAIL。</p>
+        </div>
+      </div>
+      
+      <!-- 沉淀者单独一行 -->
+      <div style="display: grid; grid-template-columns: 1fr; gap: 24px; margin-bottom: 32px;">
+        <!-- 沉淀者 -->
+        <div style="padding: 24px; background: rgba(255, 255, 255, 0.05); border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.1); text-align: center; transition: all 0.3s ease;">
+          <div style="margin-bottom: 16px;">
+            <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=knowledge%20archivist%20organizing%20documents%2C%20creating%20reports%2C%20summarizing%20information%2C%20modern%20flat%20design%2C%20dark%20purple%20background%2C%20professional%20style&image_size=square" alt="沉淀者" style="width: 80px; height: 80px; object-fit: contain;">
+          </div>
+          <h3 style="font-size: 16px; font-weight: 700; color: #fff; margin-bottom: 12px;">沉淀者（史官）</h3>
+          <p style="font-size: 13px; color: #94a3b8; line-height: 1.5;">总结整个流程，提取关键信息，生成可复用的万能模板，确保模板结构清晰、内容完整。</p>
+        </div>
+      </div>
+      
+      <!-- 工作流程 -->
+      <div style="padding: 24px; background: rgba(255, 255, 255, 0.05); border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.1); margin-bottom: 32px;">
+        <h3 style="font-size: 18px; font-weight: 700; color: #fff; margin-bottom: 16px; text-align: center;">工作流程</h3>
+        <div style="display: flex; flex-direction: column; gap: 12px;">
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <div style="width: 32px; height: 32px; background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px;">1</div>
+            <p style="color: #e2e8f0; flex: 1;"><span style="font-weight: 600; color: #fff;">提交需求</span> - 输入您的具体需求，越详细越好</p>
+          </div>
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <div style="width: 32px; height: 32px; background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px;">2</div>
+            <p style="color: #e2e8f0; flex: 1;"><span style="font-weight: 600; color: #fff;">谋局者分析</span> - 制定详细的行动指南</p>
+          </div>
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <div style="width: 32px; height: 32px; background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px;">3</div>
+            <p style="color: #e2e8f0; flex: 1;"><span style="font-weight: 600; color: #fff;">执行者执行</span> - 根据指南生成初版成果</p>
+          </div>
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <div style="width: 32px; height: 32px; background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px;">4</div>
+            <p style="color: #e2e8f0; flex: 1;"><span style="font-weight: 600; color: #fff;">找茬者审核</span> - 严格审核并提出改进意见</p>
+          </div>
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <div style="width: 32px; height: 32px; background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px;">5</div>
+            <p style="color: #e2e8f0; flex: 1;"><span style="font-weight: 600; color: #fff;">沉淀者总结</span> - 生成可复用的万能模板</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="input-section">
+      <div class="input-header">
+        <label for="user-input">请描述您的需求</label>
+        <span class="input-hint">例如：为我的线上课程设计一个完整的推广方案，包括目标受众分析、渠道选择和内容策略</span>
+      </div>
+      <textarea id="user-input" placeholder="请详细描述您的需求，越具体越好...">为我的线上课程《数据分析入门到精通》设计一个完整的推广方案，包括目标受众分析、推广渠道选择、内容策略和转化优化方案</textarea>
+      
+      <div class="button-group">
+        <button id="submit-btn" class="btn-primary">
+          <span>开始执行</span>
+        </button>
+        <button id="reset-btn" class="btn-secondary">
+          <span>重置</span>
+        </button>
+      </div>
+    </div>
+    
+    <div class="progress-section" style="display: none;">
+      <div class="progress-header">
+        <h3>执行进度</h3>
+        <span class="progress-status" id="progress-percentage">0%</span>
+      </div>
+      <div class="progress-bar">
+        <div class="progress-fill" style="width: 0%;"></div>
+      </div>
+      <div class="status-text" id="status-text">准备中...</div>
+    </div>
+    
+    <div class="result-section" style="display: none;">
+      <div class="result-header">
+        <h3>执行结果</h3>
+        <p>数字内阁已完成您的需求，以下是详细执行过程</p>
+      </div>
+      <div id="result-container"></div>
+      <a href="/" class="back-link">← 返回首页</a>
+    </div>
+  </div>
+  
+  <script>
+    const submitBtn = document.getElementById('submit-btn');
+    const resetBtn = document.getElementById('reset-btn');
+    const userInput = document.getElementById('user-input');
+    const progressSection = document.querySelector('.progress-section');
+    const progressFill = document.querySelector('.progress-fill');
+    const progressPercentage = document.getElementById('progress-percentage');
+    const statusText = document.getElementById('status-text');
+    const resultSection = document.querySelector('.result-section');
+    const resultContainer = document.getElementById('result-container');
+    
+    let pollingInterval;
+    
+    submitBtn.addEventListener('click', async () => {
+      const inputText = userInput.value.trim();
+      
+      if (!inputText) {
+        alert('请输入需求内容');
+        return;
+      }
+      
+      // 重置状态
+      progressSection.style.display = 'block';
+      resultSection.style.display = 'none';
+      progressFill.style.width = '0%';
+      progressPercentage.textContent = '0%';
+      statusText.textContent = '提交中...';
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<span>执行中...</span>';
+      resetBtn.disabled = true;
+      
+      try {
+        // 调用 API 创建任务
+        const response = await fetch('http://localhost:3000/api/cabinet/run', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ text: inputText })
+        });
+        
+        const data = await response.json();
+        
+        if (!response.ok) {
+          throw new Error(data.error || '创建任务失败');
+        }
+        
+        const taskId = data.taskId;
+        
+        // 开始轮询状态
+        let retryCount = 0;
+        const maxRetries = 180; // 最多轮询 3 分钟
+        
+        pollingInterval = setInterval(async () => {
+          try {
+            const statusResponse = await fetch(`http://localhost:3000/api/cabinet/status/${taskId}`);
+            const statusData = await statusResponse.json();
+            
+            if (!statusResponse.ok) {
+              throw new Error(statusData.error || '查询状态失败');
+            }
+            
+            // 更新进度
+            const progress = statusData.progress;
+            progressFill.style.width = `${progress}%`;
+            progressPercentage.textContent = `${progress}%`;
+            
+            // 更新状态文本
+            const statusMap = {
+              pending: '等待中...',
+              planning: '谋局者正在制定行动指南...',
+              executing: '执行者正在执行任务...',
+              reviewing: '找茬者正在审核成果...',
+              finalizing: '沉淀者正在生成模板...',
+              completed: '任务完成',
+              failed: '任务失败'
+            };
+            
+            statusText.textContent = statusMap[statusData.status] || statusData.status;
+            
+            // 检查是否完成
+            if (statusData.status === 'completed' || statusData.status === 'failed') {
+              clearInterval(pollingInterval);
+              
+              if (statusData.status === 'completed') {
+                // 获取结果
+                const resultResponse = await fetch(`http://localhost:3000/api/cabinet/result/${taskId}`);
+                const resultData = await resultResponse.json();
+                
+                if (!resultResponse.ok) {
+                  throw new Error(resultData.error || '获取结果失败');
+                }
+                
+                // 显示结果
+                displayResult(resultData);
+              } else {
+                statusText.textContent = '任务执行失败';
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = '<span>开始执行</span>';
+                resetBtn.disabled = false;
+              }
+              
+              // 恢复按钮状态
+              submitBtn.disabled = false;
+              submitBtn.innerHTML = '<span>开始执行</span>';
+              resetBtn.disabled = false;
+            }
+            
+            retryCount++;
+            if (retryCount >= maxRetries) {
+              clearInterval(pollingInterval);
+              statusText.textContent = '任务执行超时';
+              submitBtn.disabled = false;
+              submitBtn.innerHTML = '<span>开始执行</span>';
+              resetBtn.disabled = false;
+            }
+            
+          } catch (error) {
+            clearInterval(pollingInterval);
+            statusText.textContent = `错误: ${error.message}`;
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<span>开始执行</span>';
+            resetBtn.disabled = false;
+          }
+        }, 1000); // 每秒轮询一次
+        
+      } catch (error) {
+        statusText.textContent = `错误: ${error.message}`;
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<span>开始执行</span>';
+        resetBtn.disabled = false;
+      }
+    });
+    
+    resetBtn.addEventListener('click', () => {
+      userInput.value = '';
+      progressSection.style.display = 'none';
+      resultSection.style.display = 'none';
+    });
+    
+    function displayResult(result) {
+      resultSection.style.display = 'block';
+      resultContainer.innerHTML = '';
+      
+      // 显示各步骤结果
+      if (result.planning_result) {
+        addResultCard('谋局者（首辅）', '分析需求并制定详细的行动指南', result.planning_result);
+      }
+      
+      if (result.execution_result) {
+        addResultCard('执行者（干吏）', '根据行动指南执行任务', result.execution_result);
+      }
+      
+      if (result.review_result) {
+        addResultCard('找茬者（御史）', '审核执行成果并提出改进意见', result.review_result);
+      }
+      
+      if (result.final_result) {
+        addResultCard('沉淀者（史官）', '总结流程并提取关键信息', result.final_result);
+      }
+      
+      if (result.template) {
+        addResultCard('万能模板', '可复用的标准化流程模板', result.template);
+      }
+    }
+    
+    function addResultCard(title, subtitle, content) {
+      const card = document.createElement('div');
+      card.className = 'result-card';
+      card.innerHTML = `
+        <h4>${title}</h4>
+        <p style="color: #94a3b8; margin-bottom: 12px; font-size: 14px;">${subtitle}</p>
+        <div class="result-content">${content}</div>
+      `;
+      resultContainer.appendChild(card);
+    }
+  </script>
+</body>
+</html>

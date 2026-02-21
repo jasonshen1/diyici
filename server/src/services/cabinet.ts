@@ -1,181 +1,190 @@
 import { Task, TaskStatus } from '../models/task';
-import { callKimiAPI, ROLES, checkReviewPass, extractReviewSuggestions } from './kimi';
+import { callKimiAPI, callDeepSeekAPI, ROLES, checkReviewPass } from './ai';
 
 // 数字内阁服务
 export class CabinetService {
-  // 运行数字内阁
   async runCabinet(userInput: string): Promise<number> {
     try {
-      // 创建新任务
       const task = await Task.create({
         user_input: userInput,
         status: TaskStatus.PENDING
       });
-      
-      // 异步执行四步流程
+
       this.executeFourStepProcess(task.id).catch(error => {
         console.error(`任务 ${task.id} 执行失败:`, error);
-        Task.update(
-          { status: TaskStatus.FAILED },
-          { where: { id: task.id } }
-        );
+        Task.update({ status: TaskStatus.FAILED }, { where: { id: task.id } });
       });
-      
+
       return task.id;
     } catch (error) {
       console.error('创建任务失败:', error);
       throw new Error('创建任务失败');
     }
   }
-  
-  // 执行四步流程
-  private async executeFourStepProcess(taskId: number): Promise<void> {
+
+  async executeFourStepProcess(taskId: number): Promise<void> {
     try {
       const task = await Task.findByPk(taskId);
       if (!task) throw new Error('任务不存在');
-      
-      // 第一步：谋局者（首辅）
+
+      // 第一步：谋局者
+      const planningStart = Date.now();
       await Task.update({ status: TaskStatus.PLANNING }, { where: { id: taskId } });
-      const planningResult = await callKimiAPI(
-        ROLES.PLANNER,
-        task.user_input
-      );
-      await Task.update(
-        { planning_result: planningResult },
-        { where: { id: taskId } }
-      );
-      
-      // 第二步到第三步：执行者和找茬者（最多循环3次）
-      let executionResult: string;
-      let reviewResult: string | undefined;
+      const planningResult = await this.callAIWithFallback(ROLES.PLANNER, task.user_input);
+      const planningDuration = Math.floor((Date.now() - planningStart) / 1000);
+      await Task.update({ 
+        planning_result: planningResult,
+        planning_duration: planningDuration
+      }, { where: { id: taskId } });
+
+      // 第二步到第三步
+      let executionResult = '';
+      let reviewResult = '';
       let retryCount = 0;
+      let totalExecutionDuration = 0;
+      let totalReviewDuration = 0;
       const maxRetries = 3;
-      
+
       do {
-        // 第二步：执行者（干吏）
+        // 执行者步骤
+        const executionStart = Date.now();
         await Task.update({ status: TaskStatus.EXECUTING }, { where: { id: taskId } });
-        executionResult = await callKimiAPI(
-          ROLES.EXECUTOR,
-          planningResult,
-          reviewResult
-        );
-        await Task.update(
-          { execution_result: executionResult },
-          { where: { id: taskId } }
-        );
-        
-        // 第三步：找茬者（御史）
+        const executorInput = retryCount > 0 && reviewResult 
+          ? `根据以下修改建议重新执行：\n${reviewResult}\n\n原始计划：${planningResult}`
+          : planningResult;
+        executionResult = await this.callAIWithFallback(ROLES.EXECUTOR, executorInput);
+        totalExecutionDuration += Math.floor((Date.now() - executionStart) / 1000);
+        await Task.update({ 
+          execution_result: executionResult,
+          execution_duration: totalExecutionDuration
+        }, { where: { id: taskId } });
+
+        // 审核者步骤
+        const reviewStart = Date.now();
         await Task.update({ status: TaskStatus.REVIEWING }, { where: { id: taskId } });
-        reviewResult = await callKimiAPI(
-          ROLES.REVIEWER,
-          executionResult
-        );
-        await Task.update(
-          { review_result: reviewResult },
-          { where: { id: taskId } }
-        );
-        
+        reviewResult = await this.callAIWithFallback(ROLES.REVIEWER, executionResult);
+        totalReviewDuration += Math.floor((Date.now() - reviewStart) / 1000);
+        await Task.update({ 
+          review_result: reviewResult,
+          review_duration: totalReviewDuration
+        }, { where: { id: taskId } });
+
         retryCount++;
       } while (!checkReviewPass(reviewResult) && retryCount < maxRetries);
-      
-      // 如果超过最大重试次数仍然失败
-      if (!checkReviewPass(reviewResult)) {
-        throw new Error('审核未通过，已达到最大重试次数');
-      }
-      
-      // 第四步：沉淀者（史官）
+
+      // 第四步：沉淀者
+      const finalizingStart = Date.now();
       await Task.update({ status: TaskStatus.FINALIZING }, { where: { id: taskId } });
-      const fullProcess = `用户需求: ${task.user_input}\n\n` +
-                     `第一步 - 谋局者结果: ${planningResult}\n\n` +
-                     `第二步 - 执行者结果: ${executionResult}\n\n` +
-                     `第三步 - 找茬者结果: ${reviewResult}`;
       
-      const finalResult = await callKimiAPI(
-        ROLES.FINALIZER,
-        fullProcess
-      );
+      const reviewPassed = checkReviewPass(reviewResult);
+      const finalizerInput = `用户需求: ${task.user_input}\n\n` +
+        `第一步 - 谋局者结果: ${planningResult}\n\n` +
+        `第二步 - 执行者结果: ${executionResult}\n\n` +
+        `第三步 - 找茬者结果: ${reviewResult}\n\n` +
+        `审核状态: ${reviewPassed ? '已通过' : '未通过（已尝试' + retryCount + '次修改）'}\n\n` +
+        `请生成最终成果和万能模板。${!reviewPassed ? '注意：虽然审核未完全通过，但仍需总结当前最优版本，并标注改进建议。' : ''}`;
       
-      // 提取万能模板（简单处理，实际可能需要更复杂的解析）
-      const template = finalResult;
-      
-      // 更新最终结果
-      await Task.update(
-        {
-          status: TaskStatus.COMPLETED,
-          final_result: finalResult,
-          template: template
-        },
-        { where: { id: taskId } }
-      );
-      
+      const finalResult = await this.callAIWithFallback(ROLES.FINALIZER, finalizerInput);
+      const finalizingDuration = Math.floor((Date.now() - finalizingStart) / 1000);
+
+      await Task.update({
+        status: TaskStatus.COMPLETED,
+        final_result: finalResult,
+        template: finalResult,
+        retry_count: retryCount,
+        finalizing_duration: finalizingDuration
+      }, { where: { id: taskId } });
+
     } catch (error) {
       console.error(`四步流程执行失败 (任务 ${taskId}):`, error);
-      await Task.update(
-        { status: TaskStatus.FAILED },
-        { where: { id: taskId } }
-      );
+      const errorMessage = error instanceof Error ? error.message : '未知错误';
+      await Task.update({ 
+        status: TaskStatus.FAILED,
+        fail_reason: errorMessage
+      }, { where: { id: taskId } });
       throw error;
     }
   }
-  
-  // 获取任务状态
-  async getTaskStatus(taskId: number): Promise<{ status: TaskStatus; progress: number }> {
+
+  private async callAIWithFallback(role: string, content: string, context?: string): Promise<string> {
+    try {
+      return await callKimiAPI(role, content, context);
+    } catch (kimiError) {
+      console.log('Kimi 调用失败，切换到 DeepSeek');
+      return await callDeepSeekAPI(role, content, context);
+    }
+  }
+
+  async getTaskStatus(taskId: number) {
     const task = await Task.findByPk(taskId);
     if (!task) throw new Error('任务不存在');
-    
-    // 计算进度
+
     let progress = 0;
     switch (task.status) {
-      case TaskStatus.PENDING:
-        progress = 0;
-        break;
-      case TaskStatus.PLANNING:
-        progress = 25;
-        break;
-      case TaskStatus.EXECUTING:
-        progress = 50;
-        break;
-      case TaskStatus.REVIEWING:
-        progress = 75;
-        break;
-      case TaskStatus.FINALIZING:
-        progress = 90;
-        break;
-      case TaskStatus.COMPLETED:
-        progress = 100;
-        break;
-      case TaskStatus.FAILED:
-        progress = 0;
-        break;
+      case TaskStatus.PENDING: progress = 0; break;
+      case TaskStatus.PLANNING: progress = 25; break;
+      case TaskStatus.EXECUTING: progress = 50; break;
+      case TaskStatus.REVIEWING: progress = 75; break;
+      case TaskStatus.FINALIZING: progress = 90; break;
+      case TaskStatus.COMPLETED: progress = 100; break;
+      case TaskStatus.FAILED: progress = 0; break;
     }
-    
-    return { status: task.status, progress };
+
+    return { 
+      taskId: task.id, 
+      status: task.status, 
+      progress,
+      planningResult: task.planning_result,
+      executionResult: task.execution_result,
+      reviewResult: task.review_result,
+      failReason: task.fail_reason,
+      failStep: task.fail_step,
+      retryCount: task.retry_count
+    };
   }
-  
-  // 获取任务结果
-  async getTaskResult(taskId: number): Promise<{
-    user_input: string;
-    planning_result?: string;
-    execution_result?: string;
-    review_result?: string;
-    final_result?: string;
-    template?: string;
-    status: TaskStatus;
-  }> {
+
+  async getTaskResult(taskId: number) {
     const task = await Task.findByPk(taskId);
     if (!task) throw new Error('任务不存在');
-    
+
+    // 计算总耗时
+    const createdAt = task.created_at ? new Date(task.created_at) : null;
+    const updatedAt = task.updated_at ? new Date(task.updated_at) : new Date();
+    const totalDuration = createdAt ? Math.floor((updatedAt.getTime() - createdAt.getTime()) / 1000) : 0;
+
+    // 从 finalResult 中提取 Skill 配置
+    let skillConfig = null;
+    if (task.final_result) {
+      // 查找 YAML 代码块
+      const yamlMatch = task.final_result.match(/```yaml\n([\s\S]*?)\n```/);
+      if (yamlMatch) {
+        skillConfig = yamlMatch[1].trim();
+      }
+    }
+
     return {
-      user_input: task.user_input,
-      planning_result: task.planning_result,
-      execution_result: task.execution_result,
-      review_result: task.review_result,
-      final_result: task.final_result,
+      taskId: task.id,
+      status: task.status,
+      userInput: task.user_input,
+      planningResult: task.planning_result,
+      executionResult: task.execution_result,
+      reviewResult: task.review_result,
+      finalResult: task.final_result,
       template: task.template,
-      status: task.status
+      skillConfig: skillConfig, // 添加 Skill 配置
+      failReason: task.fail_reason,
+      failStep: task.fail_step,
+      retryCount: task.retry_count,
+      createdAt: task.created_at,
+      updatedAt: task.updated_at,
+      // 各步骤耗时（秒）
+      planningDuration: task.planning_duration || 0,
+      executionDuration: task.execution_duration || 0,
+      reviewDuration: task.review_duration || 0,
+      finalizingDuration: task.finalizing_duration || 0,
+      totalDuration: totalDuration
     };
   }
 }
 
-// 导出单例实例
 export const cabinetService = new CabinetService();

@@ -28,6 +28,14 @@ export class Task extends Model {
   public review_result?: string;
   public final_result?: string;
   public template?: string;
+  public fail_reason?: string;
+  public fail_step?: string;
+  public retry_count?: number;
+  // 各步骤耗时（秒）
+  public planning_duration?: number;
+  public execution_duration?: number;
+  public review_duration?: number;
+  public finalizing_duration?: number;
   public created_at!: Date;
   public updated_at!: Date;
 }
@@ -62,6 +70,33 @@ Task.init({
   template: {
     type: DataTypes.TEXT
   },
+  fail_reason: {
+    type: DataTypes.TEXT
+  },
+  fail_step: {
+    type: DataTypes.STRING
+  },
+  retry_count: {
+    type: DataTypes.INTEGER,
+    defaultValue: 0
+  },
+  // 各步骤耗时（秒）
+  planning_duration: {
+    type: DataTypes.INTEGER,
+    defaultValue: 0
+  },
+  execution_duration: {
+    type: DataTypes.INTEGER,
+    defaultValue: 0
+  },
+  review_duration: {
+    type: DataTypes.INTEGER,
+    defaultValue: 0
+  },
+  finalizing_duration: {
+    type: DataTypes.INTEGER,
+    defaultValue: 0
+  },
   created_at: {
     type: DataTypes.DATE,
     defaultValue: DataTypes.NOW
@@ -74,6 +109,47 @@ Task.init({
   sequelize,
   modelName: 'Task',
   tableName: 'tasks',
+  timestamps: true,
+  createdAt: 'created_at',
+  updatedAt: 'updated_at'
+});
+
+// OCR 统计模型
+export class OCRStats extends Model {
+  public id!: number;
+  public month!: string; // YYYY-MM
+  public tencent_count!: number;
+  public created_at!: Date;
+  public updated_at!: Date;
+}
+
+OCRStats.init({
+  id: {
+    type: DataTypes.INTEGER,
+    autoIncrement: true,
+    primaryKey: true
+  },
+  month: {
+    type: DataTypes.STRING(7),
+    allowNull: false,
+    unique: true
+  },
+  tencent_count: {
+    type: DataTypes.INTEGER,
+    defaultValue: 0
+  },
+  created_at: {
+    type: DataTypes.DATE,
+    defaultValue: DataTypes.NOW
+  },
+  updated_at: {
+    type: DataTypes.DATE,
+    defaultValue: DataTypes.NOW
+  }
+}, {
+  sequelize,
+  modelName: 'OCRStats',
+  tableName: 'ocr_stats',
   timestamps: true,
   createdAt: 'created_at',
   updatedAt: 'updated_at'

@@ -1,0 +1,146 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --font-sans: "Outfit", sans-serif;
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 12px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --shadow-soft: 0 8px 32px rgba(0, 0, 0, 0.06);
+  --shadow-soft-lg: 0 16px 48px rgba(0, 0, 0, 0.08);
+}
+
+:root {
+  --radius: 1.5rem;
+  /* 云舞白 - 营造留白美学 */
+  --background: #F0F0E8;
+  /* 深碳灰文字 - 温暖高对比度 */
+  --foreground: #4A4A4A;
+  
+  --card: rgba(255, 255, 255, 0.9);
+  --card-foreground: #4A4A4A;
+  
+  --popover: rgba(255, 255, 255, 0.95);
+  --popover-foreground: #4A4A4A;
+  
+  /* 鼠尾草绿 - 主品牌色 */
+  --primary: #91A398;
+  --primary-foreground: #FFFFFF;
+  
+  /* 浅鼠尾草绿 - 次要品牌色 */
+  --secondary: #E5EBE7;
+  --secondary-foreground: #91A398;
+  
+  --muted: #F0F0E8;
+  --muted-foreground: #666666;
+  
+  /* 摩卡棕 - 点缀色，增强亲和力 */
+  --accent: #A47864;
+  --accent-foreground: #FFFFFF;
+  
+  --destructive: #D6A2A2;
+  
+  /* 极细灰边框 */
+  --border: #E8E8E0;
+  --input: #F8F8F0;
+  --ring: #91A398;
+}
+
+.dark {
+  --background: oklch(0.145 0 0);
+  --foreground: oklch(0.985 0 0);
+  --card: oklch(0.205 0 0);
+  --card-foreground: oklch(0.985 0 0);
+  --popover: oklch(0.205 0 0);
+  --popover-foreground: oklch(0.985 0 0);
+  --primary: oklch(0.922 0 0);
+  --primary-foreground: oklch(0.205 0 0);
+  --secondary: oklch(0.269 0 0);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.269 0 0);
+  --muted-foreground: oklch(0.708 0 0);
+  --accent: oklch(0.269 0 0);
+  --accent-foreground: oklch(0.985 0 0);
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.556 0 0);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    line-height: 1.6;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-bold leading-tight;
+    line-height: 1.3;
+  }
+  h1 {
+    font-size: clamp(2.5rem, 8vw, 5rem);
+  }
+  h2 {
+    font-size: clamp(2rem, 6vw, 4rem);
+  }
+  h3 {
+    font-size: clamp(1.5rem, 4vw, 3rem);
+  }
+  h4 {
+    font-size: clamp(1.25rem, 3vw, 2rem);
+  }
+  p {
+    @apply leading-relaxed;
+    margin-bottom: 1rem;
+  }
+}
+
+@layer utilities {
+  .animate-pulse-slow {
+    animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+  
+  @keyframes pulse {
+    0%, 100% {
+      box-shadow: 0 0 0 0 rgba(236, 72, 153, 0.4);
+    }
+    50% {
+      box-shadow: 0 0 0 10px rgba(236, 72, 153, 0);
+    }
+  }
+  
+  /* Hide scrollbar for mobile carousel */
+  .mobile-carousel {
+    scrollbar-width: none; /* For Firefox */
+    -ms-overflow-style: none; /* For IE and Edge */
+  }
+  
+  .mobile-carousel::-webkit-scrollbar {
+    display: none; /* For Chrome, Safari and Opera */
+  }
+}
