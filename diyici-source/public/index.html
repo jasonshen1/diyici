@@ -1,10 +1,10 @@
+
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>diyici.ai - 3分钟让AI帮你完成第一个任务</title>
-    <script src="/js/analytics.js" defer></script>
+    <title>第一次 | 把才华系统化 · 成为开创者</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         
@@ -16,10 +16,10 @@
             line-height: 1.6;
         }
         
-        /* Hero Section - 动作入口 */
+        /* Hero Section */
         .hero {
             text-align: center;
-            padding: 80px 20px 60px;
+            padding: 120px 20px 100px;
             position: relative;
             overflow: hidden;
             background: linear-gradient(180deg, #1a1a3e 0%, #0f0f23 100%);
@@ -28,11 +28,21 @@
         .hero::before {
             content: '';
             position: absolute;
-            top: 0; left: 0; right: 0; bottom: 0;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
             background: 
                 radial-gradient(circle at 50% 30%, rgba(102, 126, 234, 0.4) 0%, transparent 60%),
-                radial-gradient(circle at 80% 70%, rgba(255, 119, 198, 0.3) 0%, transparent 50%);
+                radial-gradient(circle at 80% 70%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.2) 0%, transparent 40%);
             pointer-events: none;
+            animation: gradientShift 8s ease-in-out infinite;
+        }
+        
+        @keyframes gradientShift {
+            0%, 100% { transform: scale(1); opacity: 0.8; }
+            50% { transform: scale(1.1); opacity: 1; }
         }
         
         .hero-content {
@@ -40,521 +50,1301 @@
             z-index: 1;
             max-width: 800px;
             margin: 0 auto;
+            animation: fadeInUp 1s ease-out;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
         
         .brand-name {
-            font-size: 80px;
+            font-size: 140px;
             font-weight: 800;
             background: linear-gradient(135deg, #667eea 0%, #f093fb 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            margin-bottom: 8px;
-            letter-spacing: 2px;
+            background-clip: text;
+            margin-bottom: 16px;
+            letter-spacing: 4px;
+            text-shadow: 0 0 40px rgba(102, 126, 234, 0.6);
+            animation: pulse 2s ease-in-out infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
         }
         
         .brand-domain {
-            font-size: 18px;
-            color: #64748b;
-            margin-bottom: 40px;
-            font-family: 'Courier New', monospace;
-        }
-        
-        /* 核心问题 */
-        .hero-question {
-            font-size: 32px;
-            font-weight: 700;
-            margin-bottom: 24px;
-            color: #fff;
-        }
-        
-        .hero-subtitle {
-            font-size: 18px;
-            color: #94a3b8;
-            margin-bottom: 40px;
-        }
-        
-        /* 输入框区域 */
-        .action-box {
-            background: rgba(255,255,255,0.05);
-            border-radius: 16px;
-            padding: 32px;
-            border: 1px solid rgba(102, 126, 234, 0.3);
-            max-width: 600px;
-            margin: 0 auto 40px;
-        }
-        
-        .action-input {
-            width: 100%;
-            padding: 16px 20px;
-            border-radius: 12px;
-            border: 2px solid rgba(102, 126, 234, 0.3);
-            background: rgba(0,0,0,0.3);
-            color: #fff;
-            font-size: 16px;
-            margin-bottom: 16px;
-            outline: none;
-            transition: border-color 0.3s;
-        }
-        
-        .action-input:focus {
-            border-color: #667eea;
-        }
-        
-        .action-input::placeholder {
-            color: #64748b;
-        }
-        
-        .action-btn {
-            width: 100%;
-            padding: 16px 32px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            border-radius: 12px;
-            font-size: 18px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
-        }
-        
-        .action-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 30px rgba(102, 126, 234, 0.4);
-        }
-        
-        /* 快捷任务按钮 */
-        .quick-tasks {
-            display: flex;
-            gap: 12px;
-            justify-content: center;
-            flex-wrap: wrap;
-            margin-top: 24px;
-        }
-        
-        .task-chip {
-            padding: 10px 20px;
-            background: rgba(255,255,255,0.08);
-            border: 1px solid rgba(255,255,255,0.15);
-            border-radius: 30px;
-            color: #e2e8f0;
-            font-size: 14px;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        
-        .task-chip:hover {
-            background: rgba(102, 126, 234, 0.2);
-            border-color: #667eea;
-        }
-        
-        /* 三步流程 */
-        .steps-section {
-            padding: 60px 20px;
-            max-width: 900px;
-            margin: 0 auto;
-        }
-        
-        .steps-title {
-            text-align: center;
             font-size: 24px;
-            font-weight: 700;
+            color: #64748b;
             margin-bottom: 40px;
+            font-family: 'Courier New', 'Consolas', monospace;
+            letter-spacing: 2px;
+        }
+        
+        .hero-slogan {
+            font-size: 40px;
+            font-weight: 700;
+            margin-bottom: 32px;
             color: #fff;
+            letter-spacing: 1px;
+            line-height: 1.3;
         }
         
-        .steps-container {
-            display: flex;
-            justify-content: space-between;
-            gap: 20px;
-            flex-wrap: wrap;
+        .hero-desc {
+            font-size: 22px;
+            color: #94a3b8;
+            max-width: 600px;
+            margin: 0 auto 50px;
+            line-height: 1.8;
+            letter-spacing: 0.5px;
         }
         
-        .step-card {
-            flex: 1;
-            min-width: 250px;
-            background: rgba(255,255,255,0.05);
-            border-radius: 16px;
-            padding: 32px 24px;
-            text-align: center;
-            border: 1px solid rgba(255,255,255,0.1);
+        .hero-desc .highlight {
+            color: #fbbf24;
+            font-weight: 600;
+            text-shadow: 0 0 20px rgba(251, 191, 36, 0.3);
+        }
+        
+        /* Advantages Section */
+        .advantages-section {
+            padding: 80px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
             position: relative;
         }
         
-        .step-number {
-            width: 48px;
-            height: 48px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-            font-weight: 700;
-            color: white;
-            margin: 0 auto 16px;
+        .advantages-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.3), transparent);
         }
         
-        .step-title {
-            font-size: 18px;
-            font-weight: 600;
-            margin-bottom: 12px;
+        .advantages-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 50px;
+        }
+        
+        .advantage-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 32px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .advantage-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+        
+        .advantage-card:hover {
+            transform: translateY(-8px);
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(102, 126, 234, 0.5);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+        
+        .advantage-card:hover::before {
+            transform: scaleX(1);
+        }
+        
+        @media (max-width: 768px) {
+            .advantages-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .advantage-card {
+                padding: 24px;
+            }
+        }
+        
+        /* Digital Cabinet Section */
+        .cabinet-section {
+            padding: 100px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .cabinet-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 50% 50%, rgba(102, 126, 234, 0.1) 0%, transparent 60%),
+                radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.1) 0%, transparent 50%);
+            pointer-events: none;
+        }
+        
+        .cabinet-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+            margin: 60px 0;
+            position: relative;
+            z-index: 1;
+            max-width: 900px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .cabinet-role {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 40px 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .cabinet-role::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+        
+        .cabinet-role:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(102, 126, 234, 0.5);
+            transform: translateY(-12px);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+        }
+        
+        .cabinet-role:hover::before {
+            transform: scaleX(1);
+        }
+        
+        .role-icon {
+            font-size: 70px;
+            margin-bottom: 24px;
+            transition: transform 0.3s ease;
+        }
+        
+        .cabinet-role:hover .role-icon {
+            transform: scale(1.1);
+        }
+        
+        .role-title {
+            font-size: 22px;
+            font-weight: 700;
+            margin-bottom: 16px;
             color: #fff;
         }
         
-        .step-desc {
-            font-size: 14px;
+        .role-desc {
             color: #94a3b8;
             line-height: 1.7;
+            font-size: 15px;
         }
         
-        /* AI团队介绍 */
-        .team-section {
+        .cabinet-cta {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 80px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* CTA Buttons */
+        .hero-cta {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .cta-btn {
+            padding: 16px 32px;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s;
+            cursor: pointer;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .cta-btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        .cta-btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(102, 126, 234, 0.5);
+        }
+        
+        .cta-btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: #e2e8f0;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        .cta-btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+        
+        /* First Time Journey */
+        .journey-section {
             padding: 60px 20px;
             max-width: 1000px;
             margin: 0 auto;
         }
         
-        .team-title {
+        .section-header {
             text-align: center;
-            font-size: 24px;
-            font-weight: 700;
+            margin-bottom: 50px;
+        }
+        
+        .section-tag {
+            display: inline-block;
+            background: rgba(251, 191, 36, 0.2);
+            color: #fbbf24;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
             margin-bottom: 16px;
+        }
+        
+        .section-title {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 12px;
             color: #fff;
         }
         
-        .team-subtitle {
-            text-align: center;
-            color: #94a3b8;
-            margin-bottom: 48px;
+        .section-subtitle {
+            font-size: 16px;
+            color: #64748b;
         }
         
-        .team-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 20px;
+        /* Steps */
+        .steps-container {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            position: relative;
         }
         
-        .team-card {
-            background: rgba(255,255,255,0.05);
+        .step-item {
+            display: flex;
+            gap: 24px;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.05);
             border-radius: 16px;
-            padding: 28px 20px;
-            text-align: center;
-            border: 1px solid rgba(255,255,255,0.1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 20px;
+            transition: all 0.3s;
+            position: relative;
         }
         
-        .team-icon {
-            width: 56px;
-            height: 56px;
+        .step-item:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(102, 126, 234, 0.5);
+            transform: translateX(10px);
+        }
+        
+        .step-number {
+            width: 60px;
+            height: 60px;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            border-radius: 14px;
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 24px;
-            margin: 0 auto 16px;
+            font-weight: 700;
+            color: white;
+            flex-shrink: 0;
+            box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4);
         }
         
-        .team-role {
-            font-size: 16px;
-            font-weight: 600;
+        .step-content {
+            flex: 1;
+        }
+        
+        .step-title {
+            font-size: 20px;
+            font-weight: 700;
             margin-bottom: 8px;
             color: #fff;
         }
         
-        .team-benefit {
-            font-size: 14px;
+        .step-desc {
             color: #94a3b8;
-            line-height: 1.6;
-        }
-        
-        /* 成果展示 */
-        .result-section {
-            padding: 60px 20px;
-            background: rgba(102, 126, 234, 0.1);
-        }
-        
-        .result-container {
-            max-width: 800px;
-            margin: 0 auto;
-            text-align: center;
-        }
-        
-        .result-title {
-            font-size: 28px;
-            font-weight: 700;
             margin-bottom: 16px;
+            line-height: 1.7;
+        }
+        
+        .step-action {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: #667eea;
+            font-weight: 600;
+            text-decoration: none;
+            transition: gap 0.2s;
+        }
+        
+        .step-action:hover {
+            gap: 10px;
+        }
+        
+        /* Knowledge Cards */
+        .knowledge-section {
+            padding: 60px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .knowledge-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 24px;
+        }
+        
+        .knowledge-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            padding: 28px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.3s;
+        }
+        
+        .knowledge-card:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(102, 126, 234, 0.5);
+            transform: translateY(-4px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+        
+        .card-icon {
+            font-size: 40px;
+            margin-bottom: 16px;
+        }
+        
+        .card-title {
+            font-size: 20px;
+            font-weight: 700;
+            margin-bottom: 8px;
             color: #fff;
         }
         
-        .result-subtitle {
+        .card-subtitle {
+            font-size: 14px;
+            color: #64748b;
+            margin-bottom: 16px;
+        }
+        
+        .card-desc {
             color: #94a3b8;
-            margin-bottom: 40px;
+            font-size: 15px;
+            line-height: 1.7;
+            margin-bottom: 20px;
         }
         
-        .result-cards {
+        .card-meta {
             display: flex;
-            gap: 20px;
-            justify-content: center;
-            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 20px;
         }
         
-        .result-card {
-            background: rgba(255,255,255,0.08);
-            border-radius: 16px;
-            padding: 28px;
-            min-width: 200px;
-            text-align: center;
+        .badge {
+            font-size: 12px;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-weight: 500;
         }
         
-        .result-icon {
-            font-size: 36px;
-            margin-bottom: 12px;
+        .badge-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
         }
         
-        .result-text {
-            font-size: 16px;
+        .badge-secondary {
+            background: rgba(255, 255, 255, 0.1);
+            color: #94a3b8;
+        }
+        
+        .card-actions {
+            display: flex;
+            gap: 12px;
+        }
+        
+        .btn {
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s;
+            cursor: pointer;
+            border: none;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.1);
             color: #e2e8f0;
         }
         
-        /* 示例场景 */
-        .examples-section {
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+        
+        /* Stats */
+        .stats-section {
             padding: 60px 20px;
-            max-width: 900px;
+            background: rgba(255, 255, 255, 0.03);
+        }
+        
+        .stats-container {
+            max-width: 800px;
             margin: 0 auto;
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 40px;
         }
         
-        .examples-title {
+        .stat-item {
             text-align: center;
-            font-size: 24px;
-            font-weight: 700;
-            margin-bottom: 40px;
-            color: #fff;
         }
         
-        .example-card {
-            background: rgba(255,255,255,0.05);
-            border-radius: 16px;
-            padding: 24px;
-            margin-bottom: 20px;
-            border-left: 4px solid #667eea;
+        .stat-number {
+            font-size: 48px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea 0%, #f093fb 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
         
-        .example-input {
-            font-size: 16px;
-            color: #fff;
-            margin-bottom: 16px;
-            padding: 12px 16px;
-            background: rgba(0,0,0,0.3);
-            border-radius: 8px;
-            font-family: inherit;
-        }
-        
-        .example-output {
+        .stat-label {
             font-size: 14px;
-            color: #94a3b8;
-            line-height: 1.8;
-        }
-        
-        .example-output strong {
-            color: #667eea;
+            color: #64748b;
+            margin-top: 8px;
         }
         
         /* Footer */
         .footer {
             text-align: center;
-            padding: 40px 20px;
-            border-top: 1px solid rgba(255,255,255,0.1);
+            padding: 60px 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
         }
         
         .footer-brand {
             font-size: 24px;
             font-weight: 700;
-            margin-bottom: 8px;
+            margin-bottom: 12px;
             color: #fff;
         }
         
         .footer-desc {
             color: #64748b;
             font-size: 14px;
+            max-width: 500px;
+            margin: 0 auto 24px;
         }
         
-        /* Mobile */
+        .footer-links {
+            display: flex;
+            gap: 24px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .footer-link {
+            color: #94a3b8;
+            text-decoration: none;
+            font-size: 14px;
+            transition: color 0.2s;
+        }
+        
+        .footer-link:hover {
+            color: #667eea;
+        }
+        
+        /* Responsive */
         @media (max-width: 768px) {
-            .brand-name {
-                font-size: 48px;
+            /* Hero Section */
+            .hero {
+                padding: 80px 16px 60px;
             }
             
-            .hero-question {
+            .brand-name {
+                font-size: 80px;
+                letter-spacing: 2px;
+            }
+            
+            .brand-domain {
+                font-size: 18px;
+                margin-bottom: 20px;
+                letter-spacing: 1px;
+            }
+            
+            .hero-slogan {
+                font-size: 24px;
+                margin-bottom: 16px;
+                letter-spacing: 0.5px;
+            }
+            
+            .hero-desc {
+                font-size: 16px;
+                margin-bottom: 30px;
+                padding: 0 10px;
+                letter-spacing: 0.3px;
+            }
+            
+            .hero-cta {
+                flex-direction: column;
+                align-items: center;
+                gap: 12px;
+            }
+            
+            .cta-btn {
+                width: 100%;
+                max-width: 300px;
+                justify-content: center;
+                padding: 14px 24px;
+                font-size: 15px;
+            }
+            
+            /* Digital Cabinet Section */
+            .cabinet-section {
+                padding: 60px 16px;
+            }
+            
+            .cabinet-container {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .cabinet-role {
+                padding: 20px;
+            }
+            
+            .role-icon {
+                font-size: 40px;
+                margin-bottom: 12px;
+            }
+            
+            .role-title {
+                font-size: 16px;
+            }
+            
+            .cabinet-cta {
+                flex-direction: column;
+                align-items: center;
+                gap: 12px;
+                margin-top: 40px;
+            }
+            
+            .cabinet-cta .cta-btn {
+                width: 100%;
+                max-width: 280px;
+            }
+        }
+        
+        /* Small Mobile */
+        @media (max-width: 480px) {
+            .brand-name {
+                font-size: 56px;
+                letter-spacing: 1px;
+            }
+            
+            .hero-slogan {
+                font-size: 20px;
+            }
+            
+            .hero-desc {
+                font-size: 14px;
+            }
+            
+            .section-title {
+                font-size: 20px;
+            }
+            
+            .step-title {
+                font-size: 16px;
+            }
+            
+            .step-desc {
+                font-size: 13px;
+            }
+            
+            .stat-number {
+                font-size: 28px;
+            }
+            
+            /* Journey Section */
+            .journey-section {
+                padding: 40px 16px;
+            }
+            
+            .section-header {
+                margin-bottom: 30px;
+            }
+            
+            .section-title {
                 font-size: 24px;
             }
             
-            .steps-container {
-                flex-direction: column;
+            .section-subtitle {
+                font-size: 14px;
+                padding: 0 10px;
             }
             
-            .quick-tasks {
+            .step-item {
+                flex-direction: column;
+                text-align: center;
+                padding: 20px 16px;
+                margin-bottom: 16px;
+            }
+            
+            .step-item:hover {
+                transform: none;
+            }
+            
+            .step-number {
+                width: 50px;
+                height: 50px;
+                font-size: 20px;
+                margin: 0 auto 16px;
+            }
+            
+            .step-title {
+                font-size: 18px;
+                margin-bottom: 8px;
+            }
+            
+            .step-desc {
+                font-size: 14px;
+                line-height: 1.6;
+            }
+            
+            /* Knowledge Section */
+            .knowledge-section {
+                padding: 40px 16px;
+            }
+            
+            .knowledge-grid {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+            
+            .knowledge-card {
+                padding: 20px;
+            }
+            
+            .card-title {
+                font-size: 18px;
+            }
+            
+            .card-desc {
+                font-size: 14px;
+                line-height: 1.6;
+            }
+            
+            .card-actions {
+                flex-direction: column;
                 gap: 8px;
             }
             
-            .task-chip {
-                padding: 8px 16px;
+            .btn {
+                width: 100%;
+                justify-content: center;
+                padding: 12px 16px;
+            }
+            
+            /* Stats Section */
+            .stats-section {
+                padding: 40px 16px;
+            }
+            
+            .stats-container {
+                gap: 30px;
+            }
+            
+            .stat-number {
+                font-size: 36px;
+            }
+            
+            .stat-label {
+                font-size: 13px;
+            }
+            
+            /* Footer */
+            .footer {
+                padding: 40px 16px;
+            }
+            
+            .footer-brand {
+                font-size: 20px;
+            }
+            
+            .footer-desc {
+                font-size: 13px;
+                padding: 0 10px;
+            }
+            
+            .footer-links {
+                gap: 16px;
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .footer-link {
                 font-size: 13px;
             }
         }
+        
+
     </style>
+  <script src="/js/analytics.js" defer></script>
 </head>
 <body>
-    <!-- Hero - 动作入口 -->
+    <!-- Hero Section -->
     <section class="hero">
         <div class="hero-content">
-            <div class="brand-name">diyici</div>
+            <div class="brand-name">第一次</div>
             <div class="brand-domain">diyici.ai</div>
             
-            <h1 class="hero-question">你现在想让 AI 帮你完成什么？</h1>
-            <p class="hero-subtitle">3分钟，让 AI 团队帮你完成第一个任务</p>
+            <h1 class="hero-slogan">第一次，把才华系统化</h1>
             
-            <div class="action-box">
-                <input type="text" 
-                       class="action-input" 
-                       id="task-input"
-                       placeholder="例如：帮我写一个招聘文案、生成一份推广方案..."
-                       onkeypress="if(event.key==='Enter')startTask()">
-                <button class="action-btn" onclick="startTask()">
-                    立即开始
-                </button>
-                
-                <div class="quick-tasks">
-                    <span class="task-chip" onclick="setTask('帮我写一段产品推广文案')">写文案</span>
-                    <span class="task-chip" onclick="setTask('生成一份活动策划方案')">生成方案</span>
-                    <span class="task-chip" onclick="setTask('优化这篇内容的表达')">优化内容</span>
-                    <span class="task-chip" onclick="setTask('把这个流程做成模板')">制作模板</span>
-                </div>
+            <p class="hero-desc">
+                打造你的专属<span class="highlight">数字内阁</span>，四脑协同为你打工。<br>
+                完成你的<span class="highlight">第一次成功</span>，<span class="highlight">成为开创者</span>。
+            </p>
+            
+            <div class="hero-cta">
+                <a href="/cabinet.html" class="cta-btn cta-btn-primary">
+                    开始使用
+                </a>
+                <a href="#cabinet" class="cta-btn cta-btn-secondary">
+                    了解什么是数字内阁
+                </a>
             </div>
         </div>
     </section>
     
-    <!-- 三步流程 -->
-    <section class="steps-section">
-        <h2 class="steps-title">只需三步，完成你的任务</h2>
+    <!-- Digital Cabinet Section -->
+    <section class="journey-section" id="journey">
+        <div class="section-header">
+            <div class="section-tag">专为第一次设计</div>
+            <h2 class="section-title">从这里开始</h2>
+            <p class="section-subtitle">在这个增量时代，把你的才华系统化，完成从高级肉联到高效协作的跃迁</p>
+        </div>
+        
         <div class="steps-container">
-            <div class="step-card">
+            <div class="step-item">
                 <div class="step-number">1</div>
-                <h3 class="step-title">说出你的任务</h3>
-                <p class="step-desc">用一句话描述你想做什么<br>比如"帮我写一段招聘文案"</p>
+                <div class="step-content">
+                    <h3 class="step-title">在新时代的缝隙——你的才华，正在成为阻碍</h3>
+                    <p class="step-desc">
+                        你是那个"一个人顶一个团队"的存在，但你的本事处于极其原始和混沌的状态。
+                        学习如何把脑海中的灵光一现转化为可以复利增长的数字资产。
+                    </p>
+                    <a href="/read.html?doc=getting-started-guide.md" class="step-action">
+                        阅读新用户导读 
+                    </a>
+                </div>
             </div>
-            <div class="step-card">
-                <div class="step-number">2</div>
-                <h3 class="step-title">AI 团队自动执行</h3>
-                <p class="step-desc">四个AI角色分工协作<br>规划、执行、审核、优化</p>
-            </div>
-            <div class="step-card">
-                <div class="step-number">3</div>
-                <h3 class="step-title">一键获取成果</h3>
-                <p class="step-desc">获得完整方案 + 优化版本<br>+ 可复用的万能模板</p>
-            </div>
-        </div>
-    </section>
-    
-    <!-- AI团队介绍 -->
-    <section class="team-section">
-        <h2 class="team-title">我们的 AI 团队会这样帮你</h2>
-        <p class="team-subtitle">不是抽象的概念，是具体的帮助</p>
-        
-        <div class="team-grid">
-            <div class="team-card">
-                <div class="team-icon">1</div>
-                <h3 class="team-role">谋局者</h3>
-                <p class="team-benefit">把你的想法拆成清晰的执行计划，明确每一步该做什么</p>
-            </div>
-            <div class="team-card">
-                <div class="team-icon">2</div>
-                <h3 class="team-role">执行者</h3>
-                <p class="team-benefit">帮你生成第一版完整成果，不用从零开始写</p>
-            </div>
-            <div class="team-card">
-                <div class="team-icon">3</div>
-                <h3 class="team-role">找茬者</h3>
-                <p class="team-benefit">自动审核和优化，找出问题并给出改进建议</p>
-            </div>
-            <div class="team-card">
-                <div class="team-icon">4</div>
-                <h3 class="team-role">沉淀者</h3>
-                <p class="team-benefit">把结果变成可复用模板，下次直接套用</p>
-            </div>
-        </div>
-    </section>
-    
-    <!-- 成果展示 -->
-    <section class="result-section">
-        <div class="result-container">
-            <h2 class="result-title">这一次体验，你将得到</h2>
-            <p class="result-subtitle">不是概念，是具体可用的成果</p>
             
-            <div class="result-cards">
-                <div class="result-card">
-                    <div class="result-icon">1</div>
-                    <p class="result-text">一份完整方案文档</p>
+            <div class="step-item">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                    <h3 class="step-title">数字内阁——你专属的四人智囊团</h3>
+                    <p class="step-desc">
+                        diyici.ai 独创四人数字内阁体系：首辅谋局、干吏执行、御史审查、史官沉淀。
+                        四脑协同，互相校验，确保输出质量远超普通 AI。
+                    </p>
+                    <a href="/cabinet.html" class="step-action">
+                        查看数字内阁 
+                    </a>
                 </div>
-                <div class="result-card">
-                    <div class="result-icon">2</div>
-                    <p class="result-text">自动优化后的版本</p>
-                </div>
-                <div class="result-card">
-                    <div class="result-icon">3</div>
-                    <p class="result-text">可重复使用的模板</p>
+            </div>
+            
+            <div class="step-item">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                    <h3 class="step-title">炼金术——把死经验熬成活资产的五步走</h3>
+                    <p class="step-desc">
+                        要把冻在脑子里的本事掏出来，第一刀最疼。从靠直觉的路边摊，到写下一本菜谱，
+                        再到开一家大饭店、造一台自动炒菜机，完成从零到一的升维。
+                    </p>
+                    <a href="/read.html?doc=5-level-evolution-model.md" class="step-action">
+                        查看五级进化模型 
+                    </a>
                 </div>
             </div>
         </div>
     </section>
     
-    <!-- 示例场景 -->
-    <section class="examples-section">
-        <h2 class="examples-title">具体使用场景</h2>
+    <section class="cabinet-section" id="cabinet">
+        <div class="section-header">
+            <div class="section-tag">核心功能</div>
+            <h2 class="section-title">数字内阁</h2>
+            <p class="section-subtitle">首辅谋局、干吏执行、御史审查、史官沉淀，四脑协同为你完成从规划到执行的全流程</p>
+        </div>
         
-        <div class="example-card">
-            <div class="example-input">"帮我写一个招聘文案"</div>
-            <div class="example-output">
-                <strong>AI 会自动：</strong><br>
-                • 规划文案结构（岗位要求、公司亮点、联系方式）<br>
-                • 生成初稿（3个不同风格的版本）<br>
-                • 自动优化（检查吸引力、清晰度）<br>
-                • 输出模板（下次招聘直接改数字就能用）
+        <div class="cabinet-container">
+            <!-- 谋局者 -->
+            <div class="cabinet-role">
+                <div class="role-icon">
+                    <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=smart%20business%20consultant%20analyzing%20data%20charts%2C%20wearing%20formal%20attire%2C%20modern%20flat%20design%2C%20dark%20purple%20background%2C%20professional%20corporate%20style&image_size=square" alt="谋局者" style="width: 70px; height: 70px; object-fit: contain;">
+                </div>
+                <h3 class="role-title">谋局者（首辅）</h3>
+                <p class="role-desc" style="font-size: 13px; line-height: 1.6;">
+                    <strong style="color: #667eea;">战略与行动计划</strong><br>
+                    制定极其严密、可量化、强落地的行动计划。输出必须包含：量化目标、步骤拆解、资源盘点、风险风控、时间轴。禁止"正确的废话"，所有建议必须有数据支撑。
+                </p>
+            </div>
+            
+            <!-- 执行者 -->
+            <div class="cabinet-role">
+                <div class="role-icon">
+                    <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=efficient%20project%20manager%20executing%20tasks%2C%20holding%20checklist%2C%20dynamic%20action%20pose%2C%20modern%20flat%20design%2C%20dark%20purple%20background%2C%20professional%20style&image_size=square" alt="执行者" style="width: 70px; height: 70px; object-fit: contain;">
+                </div>
+                <h3 class="role-title">执行者（干吏）</h3>
+                <p class="role-desc" style="font-size: 13px; line-height: 1.6;">
+                    <strong style="color: #f093fb;">交付与落地成果</strong><br>
+                    产出"拿来即用"的最终交付物。提供三套方案（保守/标准/激进）、可直接复制的话术文案、责任人标注、傻瓜式自查表。禁止模糊表述，禁止半成品。
+                </p>
+            </div>
+            
+            <!-- 找茬者 -->
+            <div class="cabinet-role">
+                <div class="role-icon">
+                    <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=strict%20quality%20inspector%20with%20magnifying%20glass%2C%20reviewing%20documents%2C%20critical%20analysis%2C%20modern%20flat%20design%2C%20dark%20purple%20background%2C%20professional%20style&image_size=square" alt="找茬者" style="width: 70px; height: 70px; object-fit: contain;">
+                </div>
+                <h3 class="role-title">找茬者（御史）</h3>
+                <p class="role-desc" style="font-size: 13px; line-height: 1.6;">
+                    <strong style="color: #4facfe;">质量与逻辑审核</strong><br>
+                    极其苛刻的审查。审查维度：数据化、可用性、完备性。不通过红线：超过3处"正确的废话"、缺少量化指标、存在模糊指令。最终裁决：通过或不通过。
+                </p>
+            </div>
+            
+            <!-- 沉淀者 -->
+            <div class="cabinet-role">
+                <div class="role-icon">
+                    <img src="https://trae-api-cn.mchost.guru/api/ide/v1/text_to_image?prompt=knowledge%20archivist%20organizing%20documents%2C%20creating%20reports%2C%20summarizing%20information%2C%20modern%20flat%20design%2C%20dark%20purple%20background%2C%20professional%20style&image_size=square" alt="沉淀者" style="width: 70px; height: 70px; object-fit: contain;">
+                </div>
+                <h3 class="role-title">沉淀者（史官）</h3>
+                <p class="role-desc" style="font-size: 13px; line-height: 1.6;">
+                    <strong style="color: #10b981;">复盘与资产沉淀</strong><br>
+                    完成终局复盘并转化为万能模板。深度复盘：执行回顾、关键数据、踩坑记录、迭代建议。万能模板包：标准操作流程、工具清单、话术库、验收标准。
+                </p>
             </div>
         </div>
         
-        <div class="example-card">
-            <div class="example-input">"帮我生成一份推广方案"</div>
-            <div class="example-output">
-                <strong>AI 会自动：</strong><br>
-                • 规划方案框架（目标、策略、执行步骤、预算）<br>
-                • 生成完整方案（可直接提交的版本）<br>
-                • 自动审核（检查可行性、补充遗漏点）<br>
-                • 输出模板（以后做方案直接套用）
+        <!-- 数字内阁优势 -->
+        <div class="cabinet-advantages" style="margin-top: 60px; padding: 40px 20px; background: rgba(0, 0, 0, 0.2); border-radius: 20px;">
+            <h3 style="text-align: center; font-size: 24px; color: #fff; margin-bottom: 30px;">为什么选择数字内阁</h3>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 24px;">
+                <div style="background: rgba(255, 255, 255, 0.05); border-radius: 12px; padding: 24px; border: 1px solid rgba(255, 255, 255, 0.1);">
+                    <h4 style="font-size: 16px; font-weight: 600; color: #fff; margin-bottom: 10px;">具体可落地</h4>
+                    <p style="color: #94a3b8; font-size: 14px; line-height: 1.6;">每个建议都包含具体步骤、数据指标、验收标准，拿来就能用，不再是"正确的废话"。</p>
+                </div>
+                
+                <div style="background: rgba(255, 255, 255, 0.05); border-radius: 12px; padding: 24px; border: 1px solid rgba(255, 255, 255, 0.1);">
+                    <h4 style="font-size: 16px; font-weight: 600; color: #fff; margin-bottom: 10px;">质量有保障</h4>
+                    <p style="color: #94a3b8; font-size: 14px; line-height: 1.6;">找茬者严格审核，发现问题立即打回重做，确保输出达到可执行标准。</p>
+                </div>
+                
+                <div style="background: rgba(255, 255, 255, 0.05); border-radius: 12px; padding: 24px; border: 1px solid rgba(255, 255, 255, 0.1);">
+                    <h4 style="font-size: 16px; font-weight: 600; color: #fff; margin-bottom: 10px;">一次就到位</h4>
+                    <p style="color: #94a3b8; font-size: 14px; line-height: 1.6;">等待3-10分钟，输出质量高、可直接使用，省去反复追问修改的时间。</p>
+                </div>
+                
+                <div style="background: rgba(255, 255, 255, 0.05); border-radius: 12px; padding: 24px; border: 1px solid rgba(255, 255, 255, 0.1);">
+                    <h4 style="font-size: 16px; font-weight: 600; color: #fff; margin-bottom: 10px;">沉淀可复用</h4>
+                    <p style="color: #94a3b8; font-size: 14px; line-height: 1.6;">自动生成万能模板，沉淀经验形成标准流程，下次遇到类似任务可直接套用。</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="cabinet-cta">
+            <a href="/cabinet.html" class="cta-btn cta-btn-primary">
+                开始使用数字内阁
+            </a>
+            <a href="/read.html?doc=quad-brain.md" class="cta-btn cta-btn-secondary">
+                了解工作原理
+            </a>
+        </div>
+    </section>
+    
+    <!-- Journey Section -->
+    <!-- Knowledge Section -->
+    <section class="knowledge-section" id="knowledge">
+        <div class="section-header">
+            <div class="section-tag">知识库</div>
+            <h2 class="section-title">第一次之后的每一次</h2>
+            <p class="section-subtitle">时代的列车换轨，往往伴随着血肉横飞。去建造你的第一条自动化流水线吧。</p>
+        </div>
+        
+        <div class="knowledge-grid">
+            <!-- 新用户导读 -->
+            <article class="knowledge-card">
+                <div class="card-icon"></div>
+                <h3 class="card-title">新用户导读</h3>
+                <p class="card-subtitle">从新手到开创者的指南</p>
+                <p class="card-desc">
+                    了解如何在增量时代中脱颖而出，将你的专业知识转化为可复用的数字资产，
+                    开启从个人能力到系统化工具的转变之旅。
+                </p>
+                
+                <div class="card-meta">
+                    <span class="badge badge-primary">新手必读</span>
+                    <span class="badge badge-secondary">入门级</span>
+                </div>
+                
+                <div class="card-actions">
+                    <a href="/read.html?doc=getting-started-guide.md" class="btn btn-primary">开始阅读</a>
+                </div>
+            </article>
+            
+            <!-- 五级进化模型 -->
+            <article class="knowledge-card">
+                <div class="card-icon"></div>
+                <h3 class="card-title">五级进化模型</h3>
+                <p class="card-subtitle">经验资产化的进阶路径</p>
+                <p class="card-desc">
+                    从直觉经验到标准化流程，再到自动化系统的五步进化路径，
+                    帮助你将隐性知识转化为可复用的数字资产，实现能力的系统化升级。
+                </p>
+                
+                <div class="card-meta">
+                    <span class="badge badge-primary">能力升级</span>
+                    <span class="badge badge-secondary">进阶指南</span>
+                </div>
+                
+                <div class="card-actions">
+                    <a href="/read.html?doc=5-level-evolution-model.md" class="btn btn-primary">查看模型</a>
+                </div>
+            </article>
+        </div>
+        
+        <!-- 成功路径说明 -->
+        <div style="margin-top: 60px; padding: 40px; background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1)); border-radius: 20px; border: 1px solid rgba(102, 126, 234, 0.3);"
+        >
+            <h3 style="text-align: center; font-size: 24px; color: #fff; margin-bottom: 30px;">🚀 从"第一次"到"成功"的路径</h3>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 30px; text-align: center;"
+            >
+                <div>
+                    <div style="font-size: 40px; margin-bottom: 15px;">🎯</div>
+                    <h4 style="color: #fff; margin-bottom: 10px;">1. 第一次尝试</h4>
+                    <p style="color: #94a3b8; font-size: 14px;">用数字内阁完成从0到1的规划与执行</p>
+                </div>
+                <div>
+                    <div style="font-size: 40px; margin-bottom: 15px;">⚡</div>
+                    <h4 style="color: #fff; margin-bottom: 10px;">2. 沉淀模板</h4>
+                    <p style="color: #94a3b8; font-size: 14px;">史官提取万能模板，转化为标准流程</p>
+                </div>
+                <div>
+                    <div style="font-size: 40px; margin-bottom: 15px;">🔄</div>
+                    <h4 style="color: #fff; margin-bottom: 10px;">3. 重复迭代</h4>
+                    <p style="color: #94a3b8; font-size: 14px;">用模板快速完成同类任务，持续优化</p>
+                </div>
+                <div>
+                    <div style="font-size: 40px; margin-bottom: 15px;">🏆</div>
+                    <h4 style="color: #fff; margin-bottom: 10px;">4. 系统优势</h4>
+                    <p style="color: #94a3b8; font-size: 14px;">形成可复现、可规模化的系统能力</p>
+                </div>
+            </div>
+            
+            <div style="margin-top: 30px; padding: 20px; background: rgba(0,0,0,0.2); border-radius: 12px; text-align: center;"
+            >
+                <p style="color: #e2e8f0; line-height: 1.8;"
+                >
+                    <strong style="color: #fbbf24;">数字内阁</strong> 帮你完成第一次，沉淀成<strong style="color: #667eea;">万能模板</strong>后，<br>
+                    进入 <strong style="color: #f093fb;">五级进化</strong> 的自动化阶段，最终形成 <strong style="color: #10b981;">系统优势</strong>，实现第一次成功。
+                </p>
+            </div>
+        </div>
+        
+        <!-- 知识卡片第二行 -->
+        <div class="cards-container" style="margin-top: 40px;">
+            <!-- 数字内阁 -->
+            <article class="knowledge-card">
+                <div class="card-icon"></div>
+                <h3 class="card-title">数字内阁</h3>
+                <p class="card-subtitle">AI 制衡系统的最佳实践</p>
+                <p class="card-desc">
+                    通过四个专业AI角色的协作，实现从规划到执行的全流程自动化。
+                    谋局者制定策略，执行者落地执行，找茬者质量把控，沉淀者经验复用。
+                </p>
+                
+                <div class="card-meta">
+                    <span class="badge badge-primary">开发工具</span>
+                    <span class="badge badge-secondary">进阶级</span>
+                </div>
+                
+                <div class="card-actions">
+                    <a href="/read.html?doc=quad-brain.md" class="btn btn-primary">阅读文档</a>
+                    <a href="/skills/quad-brain.skill" class="btn btn-secondary">下载技能包</a>
+                </div>
+            </article>
+            
+            <!-- 小红书数字内阁 -->
+            <article class="knowledge-card">
+                <div class="card-icon"></div>
+                <h3 class="card-title">小红书数字内阁</h3>
+                <p class="card-subtitle">用数字内阁批量生产爆款内容</p>
+                <p class="card-desc">
+                    基于数字内阁的内容创作系统，自动检查"含人量"，
+                    生成符合平台算法的爆款文案，提高内容创作效率和质量。
+                </p>
+                
+                <div class="card-meta">
+                    <span class="badge badge-primary">内容创作</span>
+                    <span class="badge badge-secondary">进阶级</span>
+                </div>
+                
+                <div class="card-actions">
+                    <a href="/read.html?doc=xhs-quad-brain.md" class="btn btn-primary">阅读文档</a>
+                    <a href="/skills/xhs-quad-brain.skill" class="btn btn-secondary">下载技能包</a>
+                </div>
+            </article>
+        </div>
+    </section>
+    
+    <!-- Stats Section -->
+    <section class="stats-section">
+        <div class="stats-container">
+            <div class="stat-item">
+                <div class="stat-number">3</div>
+                <div class="stat-label">核心方法</div>
+            </div>
+            
+            <div class="stat-item">
+                <div class="stat-number">3</div>
+                <div class="stat-label">步骤上手</div>
+            </div>
+            
+            <div class="stat-item">
+                <div class="stat-number">∞</div>
+                <div class="stat-label">次复用</div>
             </div>
         </div>
     </section>
     
     <!-- Footer -->
+    <section style="text-align: center; padding: 40px 20px; border-top: 1px solid rgba(255,255,255,0.1);">
+        <a href="/" style="color: #667eea; text-decoration: none; font-weight: 600;">← 返回开始任务</a>
+    </section>
+
     <footer class="footer">
-        <div class="footer-brand">diyici.ai</div>
-        <p class="footer-desc">3分钟，让AI帮你完成第一个任务</p>
-    </footer>
-    
-    <script>
-        function setTask(text) {
-            document.getElementById('task-input').value = text;
-            document.getElementById('task-input').focus();
-        }
+        <div class="footer-brand">第一次</div>
         
-        function startTask() {
-            const input = document.getElementById('task-input').value.trim();
-            if (!input) {
-                alert('请输入你想完成的任务');
-                return;
-            }
-            // 跳转到数字内阁页面并传递任务
-            window.location.href = '/cabinet.html?task=' + encodeURIComponent(input);
+        <p class="footer-desc">
+            diyici.ai · 让每个人都能完成第一次 智能助手 成功体验
+            <br>
+            知识液化 · 经验复用 · 持续进化
+        </p>
+        
+        <div class="footer-links">
+            <a href="/knowledge.html" class="footer-link">知识库</a>
+            <a href="#" class="footer-link" onclick="showProductModal(); return false;">产品介绍</a>
+            <a href="/read.html?doc=getting-started-guide.md" class="footer-link">新手指南</a>
+        </div>
+    </footer>
+
+    <!-- 产品介绍弹窗 -->
+    <div id="product-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 9999; overflow-y: auto;">
+        <div style="max-width: 800px; margin: 40px auto; background: linear-gradient(180deg, #1a1a3e 0%, #0f0f23 100%); border-radius: 20px; padding: 40px; position: relative; border: 1px solid rgba(102, 126, 234, 0.3);">
+            <button onclick="closeProductModal()" style="position: absolute; top: 20px; right: 20px; width: 40px; height: 40px; background: rgba(255,255,255,0.1); border: none; border-radius: 50%; color: #94a3b8; font-size: 20px; cursor: pointer; z-index: 10;">×</button>
+            
+            <div style="color: #e2e8f0; line-height: 1.8;">
+                <h2 style="font-size: 28px; font-weight: 700; color: #fff; margin-bottom: 8px; text-align: center;">diyici.ai</h2>
+                <p style="font-size: 16px; color: #667eea; text-align: center; margin-bottom: 32px;">第一次，用数字内阁，把你的才华变成可复制的方法</p>
+
+                <h3 style="font-size: 20px; font-weight: 600; color: #667eea; margin: 32px 0 16px;">一、核心理念：知识液化</h3>
+                
+                <p style="margin-bottom: 16px;"><strong>什么是知识液化？</strong></p>
+                <p style="margin-bottom: 16px; color: #94a3b8;">想象你脑中有一池石油——那是你多年积累的经验、直觉、技巧。它们很有价值，但被困在你的大脑里，无法为他人所用。</p>
+                
+                <p style="margin-bottom: 16px;"><strong>知识液化就是把这个过程倒过来：</strong></p>
+                <ul style="margin-bottom: 16px; padding-left: 20px; color: #94a3b8;">
+                    <li style="margin-bottom: 8px;">🔧 <strong>开采</strong> —— 把你脑中模糊的想法提取出来</li>
+                    <li style="margin-bottom: 8px;">⚗️ <strong>提炼</strong> —— 去除杂质，保留核心精华</li>
+                    <li style="margin-bottom: 8px;">📦 <strong>标准化</strong> —— 装进标准化的容器，变成可流动的产品</li>
+                    <li style="margin-bottom: 8px;">🚀 <strong>应用</strong> —— 驱动更多人的成功</li>
+                </ul>
+                
+                <p style="margin-bottom: 24px; color: #94a3b8;">就像石油需要开采、提炼才能变成汽油驱动汽车，人脑中的经验才华也需要经过「开采→提炼→标准化」的过程，才能变成可复用的方法。</p>
+                
+                <p style="margin-bottom: 32px; padding: 16px; background: rgba(102, 126, 234, 0.1); border-radius: 12px; border-left: 4px solid #667eea;"><strong>diyici.ai 的使命：</strong>让每个人都能完成这个液化过程，把隐形的经验变成显性的知识资产。</p>
+
+                <h3 style="font-size: 20px; font-weight: 600; color: #667eea; margin: 32px 0 16px;">二、数字内阁：四脑协同的AI智囊团</h3>
+                <p style="margin-bottom: 24px; color: #94a3b8;">一个人思考容易遗漏，四个人协作互相补位。我们把AI拆成四个角色，模拟真实团队的协作流程：</p>
+
+                <div style="background: rgba(102, 126, 234, 0.1); padding: 20px; border-radius: 12px; margin-bottom: 16px;">
+                    <h4 style="color: #667eea; font-size: 16px; margin-bottom: 12px;">🧠 首辅（谋局者）—— 拆解问题，制定策略</h4>
+                    <p style="margin-bottom: 8px; color: #e2e8f0;"><strong>核心职能：</strong></p>
+                    <ul style="padding-left: 20px; color: #94a3b8;">
+                        <li style="margin-bottom: 6px;">识别需求类型（产品规划/学习规划/行业分析等）</li>
+                        <li style="margin-bottom: 6px;">拆解复杂问题，找到关键卡点</li>
+                        <li>制定整体策略和执行路线图</li>
+                    </ul>
+                    <p style="margin-top: 12px; color: #94a3b8;"><strong>提出好问题：</strong>这个问题的本质是什么？最容易失败的环节在哪里？需要什么资源？预算多少？时间多长？</p>
+                </div>
+
+                <div style="background: rgba(245, 158, 11, 0.1); padding: 20px; border-radius: 12px; margin-bottom: 16px;">
+                    <h4 style="color: #f59e0b; font-size: 16px; margin-bottom: 12px;">👨‍💻 干吏（执行者）—— 产出方案，落地执行</h4>
+                    <p style="margin-bottom: 8px; color: #e2e8f0;"><strong>核心职能：</strong></p>
+                    <ul style="padding-left: 20px; color: #94a3b8;">
+                        <li style="margin-bottom: 6px;">基于策略产出具体可执行的方案</li>
+                        <li style="margin-bottom: 6px;">提供3个版本（经济版/标准版/豪华版）</li>
+                        <li>每个步骤包含「做什么+怎么做+验收标准」</li>
+                    </ul>
+                    <p style="margin-top: 12px; color: #94a3b8;"><strong>沉淀好方法：</strong>话术模板（复制粘贴就能用）、执行清单（逐项勾选）、预算表（精确到元）、时间表（精确到天）</p>
+                </div>
+
+                <div style="background: rgba(239, 68, 68, 0.1); padding: 20px; border-radius: 12px; margin-bottom: 16px;">
+                    <h4 style="color: #ef4444; font-size: 16px; margin-bottom: 12px;">🔍 御史（找茬者）—— 审查质量，发现漏洞</h4>
+                    <p style="margin-bottom: 8px; color: #e2e8f0;"><strong>核心职能：</strong></p>
+                    <ul style="padding-left: 20px; color: #94a3b8;">
+                        <li style="margin-bottom: 6px;">检查方案中的"正确的废话"</li>
+                        <li style="margin-bottom: 6px;">找出无法落地的环节</li>
+                        <li>评估需求匹配度（是否真正解决用户问题）</li>
+                    </ul>
+                    <p style="margin-top: 12px; color: #94a3b8;"><strong>质量把关：</strong>目标是否量化？（必须有数字）、步骤是否具体？（必须有执行细节）、资源是否明确？（必须有预算和人力）</p>
+                </div>
+
+                <div style="background: rgba(16, 185, 129, 0.1); padding: 20px; border-radius: 12px; margin-bottom: 24px;">
+                    <h4 style="color: #10b981; font-size: 16px; margin-bottom: 12px;">📚 史官（总结者）—— 总结模板，生成Skill</h4>
+                    <p style="margin-bottom: 8px; color: #e2e8f0;"><strong>核心职能：</strong></p>
+                    <ul style="padding-left: 20px; color: #94a3b8;">
+                        <li style="margin-bottom: 6px;">提炼通用模板（填空式框架）</li>
+                        <li style="margin-bottom: 6px;">生成执行清单（Checklist）</li>
+                        <li>输出YAML格式的Skill配置</li>
+                    </ul>
+                    <p style="margin-top: 12px; color: #94a3b8;"><strong>创造可复制价值：</strong>万能模板（下次遇到类似问题，填空即可）、执行清单（不会遗漏任何步骤）、Skill配置（可一键部署运行）</p>
+                </div>
+
+                <h3 style="font-size: 20px; font-weight: 600; color: #667eea; margin: 32px 0 16px;">三、完整流程：从问题到资产</h3>
+                
+                <p style="margin-bottom: 12px; color: #e2e8f0;"><strong>第一步：用户提出需求</strong></p>
+                <p style="margin-bottom: 16px; color: #94a3b8;">用户输入问题，可以附带文件/图片："我想做一个短视频账号，定位职场成长"、"帮我规划2026年的学习计划"、"看下这个命盘的运势"</p>
+
+                <p style="margin-bottom: 12px; color: #e2e8f0;"><strong>第二步：四脑协同工作（几分钟）</strong></p>
+                <p style="margin-bottom: 8px; color: #94a3b8;">首辅谋局 → 干吏执行 → 御史审查 → 史官总结</p>
+                <p style="margin-bottom: 8px; color: #64748b; font-size: 13px;">(规划) (产出) (质检) (模板)</p>
+                <p style="margin-bottom: 16px; color: #94a3b8;"><strong>如果审查不通过：</strong>御史提出修改意见 → 干吏重新执行 → 最多循环3次</p>
+                <p style="margin-bottom: 16px; color: #94a3b8;"><strong>最终结果：</strong>审核通过 → 进入沉淀；审核不通过 → 输出当前最优版本+改进建议</p>
+
+                <p style="margin-bottom: 12px; color: #e2e8f0;"><strong>第三步：成果交付</strong></p>
+                <p style="margin-bottom: 8px; color: #94a3b8;"><strong>1. 📋 方案文档</strong> —— Markdown/HTML/纯文本三种格式，包含全部四个角色的输出</p>
+                <p style="margin-bottom: 8px; color: #94a3b8;"><strong>2. ⚡ Skill配置</strong> —— YAML格式，可集成到其他系统，支持一键运行</p>
+                <p style="margin-bottom: 16px; color: #94a3b8;"><strong>3. 📊 执行清单</strong> —— To-do List格式，带勾选框，逐项执行不遗漏</p>
+
+                <p style="margin-bottom: 12px; color: #e2e8f0;"><strong>第四步：价值沉淀（可选）</strong></p>
+                <p style="margin-bottom: 8px; color: #94a3b8;"><strong>A. 发布到知识库</strong> —— 成为"开创者"，帮助他人解决问题，积累个人影响力</p>
+                <p style="margin-bottom: 8px; color: #94a3b8;"><strong>B. 分享给朋友</strong> —— QQ分享、微信分享、复制文案</p>
+                <p style="margin-bottom: 24px; color: #94a3b8;"><strong>C. 迭代优化</strong> —— 基于此方案继续优化，多次迭代直到完美</p>
+
+                <h3 style="font-size: 20px; font-weight: 600; color: #667eea; margin: 32px 0 16px;">四、最终价值：你的知识资产</h3>
+                <p style="margin-bottom: 16px; color: #94a3b8;">每一次使用数字内阁，都是在为你的<strong>知识资产</strong>添砖加瓦。</p>
+                
+                <p style="margin-bottom: 8px; color: #e2e8f0;"><strong>对个人：</strong></p>
+                <ul style="margin-bottom: 16px; padding-left: 20px; color: #94a3b8;">
+                    <li style="margin-bottom: 6px;">✅ <strong>显性化</strong> —— 从模糊想法到清晰文字</li>
+                    <li style="margin-bottom: 6px;">✅ <strong>标准化</strong> —— 从随意发挥到规范流程</li>
+                    <li style="margin-bottom: 6px;">✅ <strong>体系化</strong> —— 从单点技巧到完整方案</li>
+                    <li>✅ <strong>工程化</strong> —— 从一次性工作到可复用模板</li>
+                </ul>
+
+                <p style="margin-bottom: 8px; color: #e2e8f0;"><strong>对社会：</strong></p>
+                <ul style="margin-bottom: 24px; padding-left: 20px; color: #94a3b8;">
+                    <li style="margin-bottom: 6px;">🌐 <strong>可发布</strong> —— 发布到知识库，成为开创者</li>
+                    <li style="margin-bottom: 6px;">📤 <strong>可转发</strong> —— 分享给朋友，帮助更多人</li>
+                    <li style="margin-bottom: 6px;">🔄 <strong>可复用</strong> —— 他人可以使用你的方法</li>
+                    <li>📈 <strong>可进化</strong> —— 方法不断迭代优化</li>
+                </ul>
+
+                <h3 style="font-size: 20px; font-weight: 600; color: #667eea; margin: 32px 0 16px;">五、为什么叫"第一次"？</h3>
+                <p style="margin-bottom: 16px; color: #94a3b8;">因为我们相信：</p>
+                <p style="margin-bottom: 24px; padding: 20px; background: rgba(102, 126, 234, 0.1); border-radius: 12px; border-left: 4px solid #667eea; color: #e2e8f0; font-style: italic;">每个人都有第一次尝试新事物的勇气，每个开创者都是从第一次开始的。</p>
+                <p style="margin-bottom: 16px; color: #94a3b8;">第一次做短视频、第一次创业、第一次转型、第一次做命理分析……</p>
+                <p style="margin-bottom: 32px; color: #94a3b8;">diyici.ai 陪伴你完成每一个"第一次"，并把它变成可复制的方法，让你的经验能够帮助更多人完成他们的"第一次"。</p>
+
+                <div style="text-align: center; padding: 24px; background: linear-gradient(135deg, rgba(102, 126, 234, 0.2), rgba(118, 75, 162, 0.2)); border-radius: 12px; margin-top: 32px;">
+                    <p style="font-size: 18px; font-weight: 600; color: #fff; margin-bottom: 8px;">diyici.ai</p>
+                    <p style="color: #667eea; margin-bottom: 16px;">第一次，用数字内阁，把你的才华变成可复制的方法。</p>
+                    <p style="color: #94a3b8; font-size: 14px;">提出好问题 → 沉淀好方法 → 创造可复制价值 → 沉淀知识资产</p>
+                    <p style="color: #94a3b8; font-size: 14px; margin-top: 8px;">这就是知识液化的力量。</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showProductModal() {
+            document.getElementById('product-modal').style.display = 'block';
+            document.body.style.overflow = 'hidden';
         }
+        function closeProductModal() {
+            document.getElementById('product-modal').style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+        document.getElementById('product-modal')?.addEventListener('click', function(e) {
+            if (e.target === this) closeProductModal();
+        });
     </script>
 </body>
 </html>
