@@ -1374,8 +1374,8 @@
 
       // 清除已上传文件
       uploadedFiles.length = 0;
-      fileItems.innerHTML = '';
-      fileList.style.display = 'none';
+      document.getElementById('file-items').innerHTML = '';
+      document.getElementById('file-list').style.display = 'none';
 
       // 重置严格模式
       strictModeCheckbox.checked = false;
