@@ -180,4 +180,55 @@ router.get('/:id', async (req, res) => {
   }
 });
 
+// DELETE /api/knowledge/:id
+// 删除知识库方案
+router.delete('/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    if (!fs.existsSync(KNOWLEDGE_INDEX)) {
+      return res.status(404).json({
+        success: false,
+        error: '知识库为空'
+      });
+    }
+
+    const index = JSON.parse(fs.readFileSync(KNOWLEDGE_INDEX, 'utf-8'));
+    const entryIndex = index.entries?.findIndex((e: any) => e.id === id);
+    
+    if (entryIndex === -1) {
+      return res.status(404).json({
+        success: false,
+        error: '方案不存在'
+      });
+    }
+
+    const entry = index.entries[entryIndex];
+
+    // 删除文件
+    const filepath = path.join(KNOWLEDGE_DIR, entry.file);
+    if (fs.existsSync(filepath)) {
+      fs.unlinkSync(filepath);
+    }
+
+    // 从索引中移除
+    index.entries.splice(entryIndex, 1);
+    index.updated = new Date().toISOString();
+    fs.writeFileSync(KNOWLEDGE_INDEX, JSON.stringify(index, null, 2), 'utf-8');
+
+    console.log(`[知识库] 方案已删除: ${entry.title} (ID: ${id})`);
+
+    res.json({
+      success: true,
+      message: '删除成功'
+    });
+  } catch (error) {
+    console.error('删除知识失败:', error);
+    res.status(500).json({
+      success: false,
+      error: '删除失败'
+    });
+  }
+});
+
 export default router;
