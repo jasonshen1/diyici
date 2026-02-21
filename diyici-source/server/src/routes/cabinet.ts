@@ -7,7 +7,7 @@ const router = express.Router();
 // 接收用户输入的需求，返回任务ID
 router.post('/run', async (req, res) => {
   try {
-    const { text } = req.body;
+    const { text, ocrResult } = req.body;
     
     if (!text || typeof text !== 'string') {
       return res.status(400).json({
@@ -15,7 +15,7 @@ router.post('/run', async (req, res) => {
       });
     }
     
-    const taskId = await cabinetService.runCabinet(text);
+    const taskId = await cabinetService.runCabinet(text, ocrResult);
     
     res.status(200).json({
       taskId,

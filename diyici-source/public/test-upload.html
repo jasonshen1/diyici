@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>文件上传测试</title>
+  <style>
+    body {
+      background: #1a1a2e;
+      color: #fff;
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      padding: 20px;
+    }
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    .upload-area {
+      border: 2px dashed #667eea;
+      border-radius: 12px;
+      padding: 30px;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    input[type="file"] {
+      width: 100%;
+      padding: 10px;
+      background: rgba(102, 126, 234, 0.1);
+      border: 1px solid rgba(102, 126, 234, 0.3);
+      border-radius: 8px;
+      color: #fff;
+    }
+    button {
+      width: 100%;
+      padding: 15px;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      border: none;
+      border-radius: 30px;
+      color: #fff;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+    button:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    .file-list {
+      margin-top: 20px;
+      padding: 15px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 8px;
+    }
+    .file-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 8px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    .debug {
+      margin-top: 20px;
+      padding: 10px;
+      background: rgba(0,0,0,0.3);
+      border-radius: 8px;
+      font-family: monospace;
+      font-size: 12px;
+      white-space: pre-wrap;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🧪 文件上传测试</h1>
+    
+    <div class="upload-area">
+      <p>选择文件（可多选）</p>
+      <input type="file" id="fileInput" accept="image/*,.pdf,.doc,.docx,.txt,.md" multiple>
+    </div>
+    
+    <div class="upload-area">
+      <p>继续添加文件</p>
+      <input type="file" id="fileInput2" accept="image/*,.pdf,.doc,.docx,.txt,.md" multiple>
+    </div>
+
+    <div id="fileList" class="file-list" style="display: none;">
+      <h3>已选择文件：</h3>
+      <div id="fileItems"></div>
+    </div>
+
+    <button id="submitBtn" onclick="submitFiles()">提交文件</button>
+    <button id="clearBtn" onclick="clearFiles()" style="background: rgba(255,255,255,0.1);">清空</button>
+
+    <div id="debug" class="debug">调试日志：</div>
+  </div>
+
+  <script>
+    // 存储所有文件
+    let allFiles = [];
+    
+    function log(msg) {
+      console.log(msg);
+      document.getElementById('debug').textContent += '\n' + msg;
+    }
+    
+    log('页面加载完成');
+    
+    // 监听第一个文件选择
+    document.getElementById('fileInput').addEventListener('change', function(e) {
+      log('第一个 input 选择了 ' + e.target.files.length + ' 个文件');
+      handleFiles(e.target.files);
+      e.target.value = '';
+    });
+    
+    // 监听第二个文件选择
+    document.getElementById('fileInput2').addEventListener('change', function(e) {
+      log('第二个 input 选择了 ' + e.target.files.length + ' 个文件');
+      handleFiles(e.target.files);
+      e.target.value = '';
+    });
+    
+    function handleFiles(files) {
+      if (!files || files.length === 0) {
+        log('没有选择文件');
+        return;
+      }
+      
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i];
+        // 检查是否已存在
+        const exists = allFiles.some(f => f.name === file.name);
+        if (!exists) {
+          allFiles.push(file);
+          log('添加文件: ' + file.name + ' (' + (file.size/1024).toFixed(1) + ' KB)');
+        } else {
+          log('文件已存在: ' + file.name);
+        }
+      }
+      
+      updateFileList();
+    }
+    
+    function updateFileList() {
+      const list = document.getElementById('fileItems');
+      const container = document.getElementById('fileList');
+      
+      if (allFiles.length === 0) {
+        container.style.display = 'none';
+        return;
+      }
+      
+      list.innerHTML = '';
+      allFiles.forEach((file, index) => {
+        const item = document.createElement('div');
+        item.className = 'file-item';
+        item.innerHTML = `
+          <span>${file.name} (${(file.size/1024).toFixed(1)} KB)</span>
+          <button onclick="removeFile(${index})" style="background: transparent; color: #ef4444; border: none; cursor: pointer;">×</button>
+        `;
+        list.appendChild(item);
+      });
+      
+      container.style.display = 'block';
+      log('文件列表已更新，共 ' + allFiles.length + ' 个文件');
+    }
+    
+    function removeFile(index) {
+      const fileName = allFiles[index].name;
+      allFiles.splice(index, 1);
+      log('移除文件: ' + fileName);
+      updateFileList();
+    }
+    
+    function submitFiles() {
+      if (allFiles.length === 0) {
+        alert('请先选择文件');
+        return;
+      }
+      
+      log('准备提交 ' + allFiles.length + ' 个文件');
+      alert('已选择 ' + allFiles.length + ' 个文件，可以提交到服务器');
+    }
+    
+    function clearFiles() {
+      allFiles = [];
+      document.getElementById('fileItems').innerHTML = '';
+      document.getElementById('fileList').style.display = 'none';
+      log('已清空所有文件');
+    }
+  </script>
+</body>
+</html>

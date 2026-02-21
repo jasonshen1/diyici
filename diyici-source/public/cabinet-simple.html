@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>数字内阁 - 文件上传</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #1a1a2e;
+      color: #fff;
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      min-height: 100vh;
+      padding: 20px;
+    }
+    .container { max-width: 800px; margin: 0 auto; }
+    h1 { text-align: center; margin-bottom: 30px; }
+    .input-section {
+      background: rgba(255,255,255,0.05);
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 24px;
+    }
+    .upload-area {
+      border: 2px dashed rgba(102, 126, 234, 0.5);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 12px;
+      background: rgba(102, 126, 234, 0.05);
+    }
+    .upload-area p { color: #94a3b8; margin-bottom: 8px; font-size: 14px; }
+    input[type="file"] {
+      width: 100%;
+      padding: 10px;
+      background: rgba(0,0,0,0.2);
+      border: 1px solid rgba(102, 126, 234, 0.3);
+      border-radius: 8px;
+      color: #e2e8f0;
+    }
+    textarea {
+      width: 100%;
+      padding: 16px;
+      background: rgba(0,0,0,0.2);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px;
+      color: #e2e8f0;
+      font-size: 16px;
+      min-height: 150px;
+      resize: vertical;
+      margin-top: 16px;
+    }
+    textarea::placeholder { color: #64748b; }
+    .file-list {
+      margin-top: 16px;
+      padding: 12px;
+      background: rgba(0,0,0,0.2);
+      border-radius: 8px;
+    }
+    .file-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      font-size: 14px;
+    }
+    .file-item:last-child { border-bottom: none; }
+    button {
+      width: 100%;
+      padding: 16px;
+      border: none;
+      border-radius: 30px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 16px;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      color: #fff;
+    }
+    .btn-secondary {
+      background: rgba(255,255,255,0.1);
+      color: #e2e8f0;
+    }
+    .status { 
+      margin-top: 20px; 
+      padding: 16px; 
+      background: rgba(255,255,255,0.05); 
+      border-radius: 8px; 
+      display: none;
+    }
+    .progress-bar {
+      height: 8px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 4px;
+      margin-top: 12px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #667eea, #764ba2);
+      width: 0%;
+      transition: width 0.3s;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>数字内阁</h1>
+    
+    <div class="input-section">
+      <!-- 第一批文件 -->
+      <div class="upload-area">
+        <p>📎 选择第一批文件</p>
+        <input type="file" id="file1" accept="image/*,.pdf,.doc,.docx,.txt,.md" multiple>
+      </div>
+      
+      <!-- 第二批文件 -->
+      <div class="upload-area">
+        <p>📎 继续添加文件</p>
+        <input type="file" id="file2" accept="image/*,.pdf,.doc,.docx,.txt,.md" multiple>
+      </div>
+      
+      <!-- 文件列表 -->
+      <div id="fileList" class="file-list" style="display: none;">
+        <p style="color: #94a3b8; margin-bottom: 8px;">已选择 <span id="fileCount">0</span> 个文件：</p>
+        <div id="fileItems"></div>
+      </div>
+      
+      <textarea id="userInput" placeholder="请描述您的需求..."></textarea>
+      
+      <button class="btn-primary" onclick="submitTask()">开始执行</button>
+      <button class="btn-secondary" onclick="clearAll()">清空</button>
+    </div>
+    
+    <div id="status" class="status">
+      <p id="statusText">准备中...</p>
+      <div class="progress-bar">
+        <div id="progressFill" class="progress-fill"></div>
+      </div>
+      <p id="progressText" style="text-align: center; margin-top: 8px;">0%</p>
+    </div>
+  </div>
+
+  <script>
+    // 存储所有文件
+    var allFiles = [];
+    
+    // 监听第一个文件选择
+    document.getElementById('file1').addEventListener('change', function(e) {
+      addFiles(e.target.files);
+      e.target.value = '';
+    });
+    
+    // 监听第二个文件选择
+    document.getElementById('file2').addEventListener('change', function(e) {
+      addFiles(e.target.files);
+      e.target.value = '';
+    });
+    
+    function addFiles(files) {
+      if (!files || files.length === 0) return;
+      
+      for (var i = 0; i < files.length; i++) {
+        var file = files[i];
+        // 检查文件大小（最大 10MB）
+        if (file.size > 10 * 1024 * 1024) {
+          alert('文件过大: ' + file.name);
+          continue;
+        }
+        // 检查是否已存在
+        var exists = false;
+        for (var j = 0; j < allFiles.length; j++) {
+          if (allFiles[j].name === file.name) {
+            exists = true;
+            break;
+          }
+        }
+        if (!exists) {
+          allFiles.push(file);
+        }
+      }
+      
+      updateFileList();
+    }
+    
+    function updateFileList() {
+      var list = document.getElementById('fileItems');
+      var container = document.getElementById('fileList');
+      var count = document.getElementById('fileCount');
+      
+      if (allFiles.length === 0) {
+        container.style.display = 'none';
+        return;
+      }
+      
+      list.innerHTML = '';
+      for (var i = 0; i < allFiles.length; i++) {
+        var file = allFiles[i];
+        var item = document.createElement('div');
+        item.className = 'file-item';
+        item.innerHTML = file.name + ' (' + (file.size/1024).toFixed(1) + ' KB)' +
+          ' <button onclick="removeFile(' + i + ')" style="background: transparent; color: #ef4444; border: none; cursor: pointer;">×</button>';
+        list.appendChild(item);
+      }
+      
+      count.textContent = allFiles.length;
+      container.style.display = 'block';
+    }
+    
+    function removeFile(index) {
+      allFiles.splice(index, 1);
+      updateFileList();
+    }
+    
+    function clearAll() {
+      allFiles = [];
+      document.getElementById('userInput').value = '';
+      updateFileList();
+      document.getElementById('status').style.display = 'none';
+    }
+    
+    async function submitTask() {
+      var text = document.getElementById('userInput').value.trim();
+      
+      if (!text && allFiles.length === 0) {
+        alert('请输入需求或上传文件');
+        return;
+      }
+      
+      document.getElementById('status').style.display = 'block';
+      document.getElementById('statusText').textContent = '正在处理...';
+      
+      // 这里可以添加文件上传到服务器的代码
+      alert('已选择 ' + allFiles.length + ' 个文件，可以开始处理');
+    }
+  </script>
+</body>
+</html>

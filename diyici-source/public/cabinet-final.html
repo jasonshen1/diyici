@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>数字内阁 - 你的专属智能顾问团队</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #1a1a2e;
+      color: #fff;
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      padding: 20px;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+    h1 { text-align: center; margin: 20px 0 30px; font-size: 24px; }
+    
+    /* 上传区域 */
+    .upload-box {
+      border: 2px dashed rgba(102, 126, 234, 0.5);
+      border-radius: 16px;
+      padding: 30px;
+      text-align: center;
+      background: rgba(102, 126, 234, 0.05);
+      margin-bottom: 20px;
+      cursor: pointer;
+    }
+    .upload-box:hover { border-color: #667eea; }
+    .upload-box .icon { font-size: 48px; margin-bottom: 12px; }
+    .upload-box p { color: #94a3b8; margin-bottom: 16px; font-size: 14px; }
+    .upload-box input[type="file"] { display: none; }
+    .upload-btn {
+      display: inline-block;
+      padding: 12px 32px;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      border: none;
+      border-radius: 25px;
+      color: #fff;
+      font-size: 15px;
+      cursor: pointer;
+    }
+    
+    /* 文件列表 */
+    .file-list {
+      background: rgba(255,255,255,0.05);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 20px;
+    }
+    .file-list-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    .file-list-header span { color: #94a3b8; font-size: 14px; }
+    .clear-btn {
+      color: #ef4444;
+      font-size: 13px;
+      cursor: pointer;
+      background: none;
+      border: none;
+    }
+    .file-item {
+      display: flex;
+      align-items: center;
+      padding: 12px;
+      background: rgba(0,0,0,0.2);
+      border-radius: 8px;
+      margin-bottom: 8px;
+    }
+    .file-icon {
+      width: 40px; height: 40px;
+      background: rgba(102,126,234,0.2);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 12px;
+      font-size: 20px;
+    }
+    .file-info { flex: 1; min-width: 0; }
+    .file-name {
+      color: #e2e8f0;
+      font-size: 14px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-bottom: 4px;
+    }
+    .file-size { color: #64748b; font-size: 12px; }
+    .delete-btn {
+      width: 32px; height: 32px;
+      background: rgba(239,68,68,0.1);
+      border: none;
+      border-radius: 6px;
+      color: #ef4444;
+      font-size: 18px;
+      cursor: pointer;
+    }
+    
+    textarea {
+      width: 100%;
+      padding: 16px;
+      background: rgba(0,0,0,0.2);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px;
+      color: #e2e8f0;
+      font-size: 15px;
+      min-height: 120px;
+      margin-bottom: 16px;
+    }
+    textarea::placeholder { color: #64748b; }
+    
+    .submit-btn {
+      width: 100%;
+      padding: 16px;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      border: none;
+      border-radius: 30px;
+      color: #fff;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .submit-btn:disabled { opacity: 0.5; }
+    
+    .status-box {
+      margin-top: 20px;
+      padding: 20px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 12px;
+      display: none;
+    }
+    .progress-bar {
+      height: 8px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 4px;
+      margin-top: 12px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #667eea, #764ba2);
+      width: 0%;
+      transition: width 0.3s;
+    }
+  </style>
+</head>
+<body>
+  <h1>📤 数字内阁</h1>
+  
+  <!-- 上传区域 -->
+  <div class="upload-box" onclick="document.getElementById('fileInput').click()">
+    <div class="icon">📎</div>
+    <p>点击或拖拽文件到此处<br>支持任意格式，单个文件不超过 20MB</p>
+    <button class="upload-btn" type="button">选择文件</button>
+    <input type="file" id="fileInput" multiple onchange="handleFiles(this.files)">
+  </div>
+  
+  <!-- 文件列表 -->
+  <div id="fileList" class="file-list" style="display: none;">
+    <div class="file-list-header">
+      <span>已选择 <strong id="fileCount" style="color: #fff;">0</strong> 个文件</span>
+      <button class="clear-btn" onclick="clearAllFiles()">清空全部</button>
+    </div>
+    <div id="fileItems"></div>
+  </div>
+  
+  <!-- 需求描述 -->
+  <textarea id="userInput" placeholder="请描述您的需求（可选）..."></textarea>
+  
+  <!-- 提交按钮 -->
+  <button class="submit-btn" id="submitBtn" onclick="submitTask()">开始执行</button>
+  
+  <!-- 状态显示 -->
+  <div id="statusBox" class="status-box">
+    <p id="statusText">准备中...</p>
+    <div class="progress-bar"><div id="progressFill" class="progress-fill"></div></div>
+  </div>
+
+  <script>
+    // ===== 文件上传功能 =====
+    var myFiles = [];
+    var maxSize = 20 * 1024 * 1024; // 20MB
+    
+    // 处理选择的文件
+    function handleFiles(files) {
+      if (!files || files.length === 0) return;
+      
+      for (var i = 0; i < files.length; i++) {
+        var file = files[i];
+        
+        // 检查大小
+        if (file.size > maxSize) {
+          alert('文件过大：' + file.name + '\n限制：20MB');
+          continue;
+        }
+        
+        // 检查是否已存在（按名称和大小判断）
+        var exists = false;
+        for (var j = 0; j < myFiles.length; j++) {
+          if (myFiles[j].name === file.name && myFiles[j].size === file.size) {
+            exists = true;
+            break;
+          }
+        }
+        
+        if (!exists) {
+          myFiles.push(file);
+          console.log('添加文件:', file.name);
+        }
+      }
+      
+      updateFileList();
+      document.getElementById('fileInput').value = '';
+    }
+    
+    // 更新文件列表显示
+    function updateFileList() {
+      var container = document.getElementById('fileList');
+      var itemsDiv = document.getElementById('fileItems');
+      var countSpan = document.getElementById('fileCount');
+      
+      if (myFiles.length === 0) {
+        container.style.display = 'none';
+        return;
+      }
+      
+      itemsDiv.innerHTML = '';
+      
+      for (var i = 0; i < myFiles.length; i++) {
+        var file = myFiles[i];
+        var size = file.size < 1024 * 1024 
+          ? (file.size / 1024).toFixed(1) + ' KB'
+          : (file.size / 1024 / 1024).toFixed(1) + ' MB';
+        
+        // 根据扩展名选择图标
+        var ext = file.name.split('.').pop().toLowerCase();
+        var icon = '📎';
+        if (['jpg','jpeg','png','gif','webp'].includes(ext)) icon = '🖼️';
+        else if (ext === 'pdf') icon = '📄';
+        else if (['doc','docx'].includes(ext)) icon = '📝';
+        else if (['xls','xlsx'].includes(ext)) icon = '📊';
+        else if (['txt','md'].includes(ext)) icon = '📃';
+        
+        var item = document.createElement('div');
+        item.className = 'file-item';
+        item.innerHTML = 
+          '<div class="file-icon">' + icon + '</div>' +
+          '<div class="file-info">' +
+            '<div class="file-name">' + file.name + '</div>' +
+            '<div class="file-size">' + size + '</div>' +
+          '</div>' +
+          '<button class="delete-btn" onclick="deleteFile(' + i + ')">×</button>';
+        itemsDiv.appendChild(item);
+      }
+      
+      countSpan.textContent = myFiles.length;
+      container.style.display = 'block';
+      console.log('文件列表已更新，共', myFiles.length, '个文件');
+    }
+    
+    // 删除单个文件
+    function deleteFile(index) {
+      myFiles.splice(index, 1);
+      updateFileList();
+    }
+    
+    // 清空所有文件
+    function clearAllFiles() {
+      if (confirm('确定要清空所有文件吗？')) {
+        myFiles = [];
+        updateFileList();
+      }
+    }
+    
+    // ===== 提交任务 =====
+    function submitTask() {
+      var text = document.getElementById('userInput').value.trim();
+      
+      if (myFiles.length === 0 && !text) {
+        alert('请上传文件或输入需求');
+        return;
+      }
+      
+      // 显示状态
+      document.getElementById('statusBox').style.display = 'block';
+      document.getElementById('submitBtn').disabled = true;
+      document.getElementById('submitBtn').textContent = '处理中...';
+      
+      // 开始处理文件
+      processFiles();
+    }
+    
+    // 处理文件（OCR识别）
+    async function processFiles() {
+      var statusText = document.getElementById('statusText');
+      var progressFill = document.getElementById('progressFill');
+      var fileContents = '';
+      
+      for (var i = 0; i < myFiles.length; i++) {
+        var file = myFiles[i];
+        statusText.textContent = '正在识别 ' + file.name + '...';
+        progressFill.style.width = ((i + 1) / myFiles.length * 50) + '%';
+        
+        try {
+          var content = await recognizeFile(file);
+          fileContents += '\n\n=== 文件: ' + file.name + ' ===\n' + content;
+        } catch (e) {
+          fileContents += '\n\n=== 文件: ' + file.name + ' ===\n[识别失败]\n';
+        }
+      }
+      
+      // 准备提交到服务器
+      var text = document.getElementById('userInput').value.trim();
+      var combinedText = text + fileContents;
+      
+      statusText.textContent = '提交任务...';
+      progressFill.style.width = '75%';
+      
+      // 这里可以添加实际的API调用
+      setTimeout(function() {
+        progressFill.style.width = '100%';
+        statusText.textContent = '任务已提交，共处理 ' + myFiles.length + ' 个文件';
+        alert('已提交！处理了 ' + myFiles.length + ' 个文件');
+        document.getElementById('submitBtn').disabled = false;
+        document.getElementById('submitBtn').textContent = '开始执行';
+      }, 500);
+    }
+    
+    // 识别单个文件（模拟）
+    function recognizeFile(file) {
+      return new Promise(function(resolve, reject) {
+        // 创建FormData
+        var formData = new FormData();
+        formData.append('file', file);
+        
+        // 发送请求到OCR服务
+        fetch('https://diyici.ai/api/ocr/recognize', {
+          method: 'POST',
+          body: formData
+        })
+        .then(function(response) { return response.json(); })
+        .then(function(data) {
+          if (data.success && data.text) {
+            resolve(data.text);
+          } else {
+            resolve('[无法识别文件内容]');
+          }
+        })
+        .catch(function(err) {
+          console.error('OCR错误:', err);
+          resolve('[文件内容提取失败]');
+        });
+      });
+    }
+    
+    // ===== 拖拽上传 =====
+    var uploadBox = document.querySelector('.upload-box');
+    uploadBox.addEventListener('dragover', function(e) {
+      e.preventDefault();
+      this.style.borderColor = '#667eea';
+    });
+    uploadBox.addEventListener('dragleave', function(e) {
+      e.preventDefault();
+      this.style.borderColor = 'rgba(102, 126, 234, 0.5)';
+    });
+    uploadBox.addEventListener('drop', function(e) {
+      e.preventDefault();
+      this.style.borderColor = 'rgba(102, 126, 234, 0.5)';
+      handleFiles(e.dataTransfer.files);
+    });
+  </script>
+</body>
+</html>

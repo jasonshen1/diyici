@@ -3,6 +3,8 @@ import dotenv from 'dotenv';
 import cors from 'cors';
 import cabinetRouter from './routes/cabinet';
 import analyticsRouter from './routes/analytics';
+import ocrRouter from './routes/ocr';
+import knowledgeRouter from './routes/knowledge';
 import { syncDatabase } from './models/task';
 
 // 加载环境变量
@@ -20,12 +22,15 @@ const PORT = process.env.PORT || 3000;
 
 // 配置中间件
 app.use(cors());
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+// 增加请求体大小限制以支持大文件上传 (50MB)
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
 // 注册路由
 app.use('/api/cabinet', cabinetRouter);
 app.use('/api/analytics', analyticsRouter);
+app.use('/api/ocr', ocrRouter);
+app.use('/api/knowledge', knowledgeRouter);
 
 // 健康检查端点
 app.get('/health', (req, res) => {

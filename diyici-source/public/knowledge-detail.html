@@ -340,6 +340,8 @@
                     
                     <div class="actions">
                         <button class="btn btn-primary" onclick="copyFullContent()">📋 复制全文</button>
+                        <button class="btn btn-secondary" onclick="shareToQQ()">💬 QQ分享</button>
+                        <button class="btn btn-secondary" onclick="shareToWeChat()">💚 微信分享</button>
                         <button class="btn btn-secondary" onclick="useThisTemplate()">✨ 基于此方案优化</button>
                         <a href="/cabinet.html?use=${encodeURIComponent(knowledge.title)}" class="btn btn-secondary">🚀 去数字内阁创建类似方案</a>
                     </div>
@@ -422,6 +424,94 @@
             try {
                 await navigator.clipboard.writeText(knowledgeData.content || '');
                 alert('✅ 已复制到剪贴板');
+            } catch (error) {
+                alert('❌ 复制失败');
+            }
+        }
+        
+        // 分享到QQ
+        async function shareToQQ() {
+            if (!knowledgeData) return;
+            
+            const shareUrl = window.location.href;
+            const shareText = `【数字内阁知识库】发现一个超实用的方案！
+
+📋 ${knowledgeData.title}
+🏷️ 分类：${knowledgeData.category || '未分类'}
+👤 开创者：${knowledgeData.creator_id || '未知'}
+
+💡 方案简介：
+${knowledgeData.content ? knowledgeData.content.substring(0, 150).replace(/[#*`]/g, '') : '暂无简介'}...
+
+🔗 查看完整方案：${shareUrl}
+
+来自 diyici.ai 数字内阁知识库`;
+            
+            try {
+                await navigator.clipboard.writeText(shareText);
+                
+                // 显示分享弹窗
+                const modal = document.createElement('div');
+                modal.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: flex; align-items: center; justify-content: center; z-index: 1000; padding: 20px; box-sizing: border-box;';
+                
+                modal.innerHTML = `
+                    <div style="background: #1a1a3e; border-radius: 16px; padding: 24px; max-width: 450px; width: 100%; border: 1px solid rgba(18, 183, 245, 0.3);">
+                        <h3 style="color: #fff; margin-bottom: 16px; font-size: 18px;">💬 分享到QQ</h3>
+                        <p style="color: #94a3b8; font-size: 13px; margin-bottom: 16px;">分享文案已复制，快去粘贴给好友吧！</p>
+                        
+                        <div style="background: rgba(255,255,255,0.05); border-radius: 8px; padding: 12px; margin-bottom: 16px; max-height: 150px; overflow-y: auto;">
+                            <pre style="color: #e2e8f0; font-size: 13px; line-height: 1.6; white-space: pre-wrap; word-break: break-word; margin: 0;">${escapeHtml(shareText)}</pre>
+                        </div>
+                        
+                        <button onclick="this.parentElement.parentElement.remove()" style="width: 100%; padding: 12px; background: linear-gradient(135deg, #12B7F5, #0a8bc5); border: none; border-radius: 8px; color: #fff; font-size: 14px; font-weight: 600; cursor: pointer;">知道了</button>
+                    </div>
+                `;
+                
+                document.body.appendChild(modal);
+                modal.onclick = (e) => { if (e.target === modal) modal.remove(); };
+            } catch (error) {
+                alert('❌ 复制失败');
+            }
+        }
+        
+        // 分享到微信
+        async function shareToWeChat() {
+            if (!knowledgeData) return;
+            
+            const shareUrl = window.location.href;
+            const shareText = `发现一个超棒的方案！推荐给你~
+
+📋 ${knowledgeData.title}
+🏷️ ${knowledgeData.category || '未分类'}
+
+💡 简介：${knowledgeData.content ? knowledgeData.content.substring(0, 120).replace(/[#*`]/g, '') : '暂无简介'}...
+
+🔗 ${shareUrl}
+
+来自 diyici.ai 数字内阁`;
+            
+            try {
+                await navigator.clipboard.writeText(shareText);
+                
+                // 显示分享弹窗
+                const modal = document.createElement('div');
+                modal.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); display: flex; align-items: center; justify-content: center; z-index: 1000; padding: 20px; box-sizing: border-box;';
+                
+                modal.innerHTML = `
+                    <div style="background: #1a1a3e; border-radius: 16px; padding: 24px; max-width: 450px; width: 100%; border: 1px solid rgba(7, 193, 96, 0.3);">
+                        <h3 style="color: #fff; margin-bottom: 16px; font-size: 18px;">💚 分享到微信</h3>
+                        <p style="color: #94a3b8; font-size: 13px; margin-bottom: 16px;">分享文案已复制，快去发给朋友吧！</p>
+                        
+                        <div style="background: rgba(255,255,255,0.05); border-radius: 8px; padding: 12px; margin-bottom: 16px; max-height: 150px; overflow-y: auto;">
+                            <pre style="color: #e2e8f0; font-size: 13px; line-height: 1.6; white-space: pre-wrap; word-break: break-word; margin: 0;">${escapeHtml(shareText)}</pre>
+                        </div>
+                        
+                        <button onclick="this.parentElement.parentElement.remove()" style="width: 100%; padding: 12px; background: linear-gradient(135deg, #07C160, #059a4c); border: none; border-radius: 8px; color: #fff; font-size: 14px; font-weight: 600; cursor: pointer;">知道了</button>
+                    </div>
+                `;
+                
+                document.body.appendChild(modal);
+                modal.onclick = (e) => { if (e.target === modal) modal.remove(); };
             } catch (error) {
                 alert('❌ 复制失败');
             }

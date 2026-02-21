@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>数字内阁 - 文件上传</title>
+  <style>
+    body {
+      background: #1a1a2e;
+      color: #fff;
+      font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+      padding: 20px;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    h1 { text-align: center; margin-bottom: 30px; }
+    .section {
+      background: rgba(255,255,255,0.05);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+    .file-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 10px;
+      padding: 10px;
+      background: rgba(102,126,234,0.1);
+      border-radius: 8px;
+    }
+    .file-row input[type="file"] {
+      flex: 1;
+      color: #e2e8f0;
+    }
+    .file-row button {
+      padding: 8px 16px;
+      background: #ef4444;
+      border: none;
+      border-radius: 6px;
+      color: #fff;
+      cursor: pointer;
+    }
+    .add-btn {
+      width: 100%;
+      padding: 12px;
+      background: rgba(102,126,234,0.3);
+      border: 2px dashed rgba(102,126,234,0.5);
+      border-radius: 8px;
+      color: #94a3b8;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+    textarea {
+      width: 100%;
+      padding: 16px;
+      background: rgba(0,0,0,0.2);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 12px;
+      color: #e2e8f0;
+      min-height: 120px;
+      margin-top: 20px;
+    }
+    .submit-btn {
+      width: 100%;
+      padding: 16px;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      border: none;
+      border-radius: 30px;
+      color: #fff;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+    .info {
+      color: #94a3b8;
+      font-size: 14px;
+      margin-bottom: 16px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <h1>数字内阁</h1>
+  
+  <div class="section">
+    <p class="info">📎 逐个选择文件</p>
+    
+    <div id="fileContainer">
+      <!-- 动态添加文件选择行 -->
+    </div>
+    
+    <button class="add-btn" onclick="addFileRow()">+ 添加一个文件</button>
+    
+    <textarea id="userInput" placeholder="请描述您的需求..."></textarea>
+    
+    <button class="submit-btn" onclick="submit()">开始执行</button>
+  </div>
+
+  <script>
+    var fileRowCount = 0;
+    
+    // 添加一个文件选择行
+    function addFileRow() {
+      fileRowCount++;
+      var container = document.getElementById('fileContainer');
+      var row = document.createElement('div');
+      row.className = 'file-row';
+      row.id = 'row-' + fileRowCount;
+      row.innerHTML = `
+        <input type="file" id="file-${fileRowCount}" onchange="onFileSelected(${fileRowCount})">
+        <span id="name-${fileRowCount}" style="flex:1; color:#e2e8f0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; display:none;"></span>
+        <button onclick="removeFileRow(${fileRowCount})">删除</button>
+      `;
+      container.appendChild(row);
+    }
+    
+    // 文件被选择后显示文件名
+    function onFileSelected(index) {
+      var input = document.getElementById('file-' + index);
+      var nameSpan = document.getElementById('name-' + index);
+      if (input.files.length > 0) {
+        nameSpan.textContent = input.files[0].name;
+        nameSpan.style.display = 'block';
+        input.style.display = 'none';
+      }
+    }
+    
+    // 删除一行
+    function removeFileRow(index) {
+      var row = document.getElementById('row-' + index);
+      if (row) row.remove();
+    }
+    
+    // 提交
+    function submit() {
+      var files = [];
+      for (var i = 1; i <= fileRowCount; i++) {
+        var input = document.getElementById('file-' + i);
+        if (input && input.files.length > 0) {
+          files.push(input.files[0]);
+        }
+      }
+      
+      var text = document.getElementById('userInput').value.trim();
+      
+      if (!text && files.length === 0) {
+        alert('请输入需求或添加文件');
+        return;
+      }
+      
+      alert('已选择 ' + files.length + ' 个文件，可以提交');
+    }
+    
+    // 初始添加一行
+    addFileRow();
+  </script>
+</body>
+</html>

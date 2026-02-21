@@ -5,13 +5,14 @@ const task_1 = require("../models/task");
 const ai_1 = require("./ai");
 // 数字内阁服务
 class CabinetService {
-    async runCabinet(userInput) {
+    async runCabinet(userInput, ocrResult) {
         try {
             const task = await task_1.Task.create({
                 user_input: userInput,
+                ocr_result: ocrResult || null,
                 status: task_1.TaskStatus.PENDING
             });
-            this.executeFourStepProcess(task.id).catch(error => {
+            this.executeFourStepProcess(task.id, ocrResult).catch(error => {
                 console.error(`任务 ${task.id} 执行失败:`, error);
                 task_1.Task.update({ status: task_1.TaskStatus.FAILED }, { where: { id: task.id } });
             });
@@ -22,110 +23,70 @@ class CabinetService {
             throw new Error('创建任务失败');
         }
     }
-    async executeFourStepProcess(taskId) {
+    async executeFourStepProcess(taskId, ocrResult) {
         try {
             const task = await task_1.Task.findByPk(taskId);
             if (!task)
                 throw new Error('任务不存在');
             // 第一步：谋局者
+            const planningStart = Date.now();
             await task_1.Task.update({ status: task_1.TaskStatus.PLANNING }, { where: { id: taskId } });
-            const planningResult = await this.callAIWithFallback(ai_1.ROLES.PLANNER, task.user_input);
-            await task_1.Task.update({ planning_result: planningResult }, { where: { id: taskId } });
+            const planningResult = await this.callAIWithFallback(ai_1.ROLES.PLANNER, task.user_input, ocrResult);
+            const planningDuration = Math.floor((Date.now() - planningStart) / 1000);
+            await task_1.Task.update({
+                planning_result: planningResult,
+                planning_duration: planningDuration
+            }, { where: { id: taskId } });
             // 第二步到第三步
             let executionResult = '';
             let reviewResult = '';
             let retryCount = 0;
-            const maxRetries = 5; // 增加重试次数，确保任务能完成
+            let totalExecutionDuration = 0;
+            let totalReviewDuration = 0;
+            const maxRetries = 3;
             do {
+                // 执行者步骤
+                const executionStart = Date.now();
                 await task_1.Task.update({ status: task_1.TaskStatus.EXECUTING }, { where: { id: taskId } });
                 const executorInput = retryCount > 0 && reviewResult
-                    ? `根据以下修改建议重新执行（第${retryCount + 1}轮，最多${maxRetries}轮）：\n${reviewResult}\n\n原始计划：${planningResult}`
+                    ? `根据以下修改建议重新执行：\n${reviewResult}\n\n原始计划：${planningResult}`
                     : planningResult;
-                executionResult = await this.callAIWithFallback(ai_1.ROLES.EXECUTOR, executorInput);
-                await task_1.Task.update({ execution_result: executionResult }, { where: { id: taskId } });
+                executionResult = await this.callAIWithFallback(ai_1.ROLES.EXECUTOR, executorInput, ocrResult);
+                totalExecutionDuration += Math.floor((Date.now() - executionStart) / 1000);
+                await task_1.Task.update({
+                    execution_result: executionResult,
+                    execution_duration: totalExecutionDuration
+                }, { where: { id: taskId } });
+                // 审核者步骤
+                const reviewStart = Date.now();
                 await task_1.Task.update({ status: task_1.TaskStatus.REVIEWING }, { where: { id: taskId } });
-                reviewResult = await this.callAIWithFallback(ai_1.ROLES.REVIEWER, executionResult);
-                await task_1.Task.update({ review_result: reviewResult }, { where: { id: taskId } });
+                reviewResult = await this.callAIWithFallback(ai_1.ROLES.REVIEWER, executionResult, ocrResult);
+                totalReviewDuration += Math.floor((Date.now() - reviewStart) / 1000);
+                await task_1.Task.update({
+                    review_result: reviewResult,
+                    review_duration: totalReviewDuration
+                }, { where: { id: taskId } });
                 retryCount++;
             } while (!(0, ai_1.checkReviewPass)(reviewResult) && retryCount < maxRetries);
-            if (!(0, ai_1.checkReviewPass)(reviewResult)) {
-                await task_1.Task.update({
-                    status: task_1.TaskStatus.FAILED,
-                    fail_reason: `审核未通过，已达到最大重试次数（${maxRetries}次）`,
-                    fail_step: 'reviewing',
-                    retry_count: retryCount,
-                    review_result: reviewResult,
-                    execution_result: executionResult
-                }, { where: { id: taskId } });
-                throw new Error('审核未通过，已达到最大重试次数');
-            }
             // 第四步：沉淀者
+            const finalizingStart = Date.now();
             await task_1.Task.update({ status: task_1.TaskStatus.FINALIZING }, { where: { id: taskId } });
-            const fullProcess = `用户需求: ${task.user_input}\n\n` +
+            const reviewPassed = (0, ai_1.checkReviewPass)(reviewResult);
+            const finalizerInput = `用户需求: ${task.user_input}\n\n` +
+                `OCR识别结果: ${ocrResult || '无'}\n\n` +
                 `第一步 - 谋局者结果: ${planningResult}\n\n` +
                 `第二步 - 执行者结果: ${executionResult}\n\n` +
-                `第三步 - 找茬者结果: ${reviewResult}`;
-            const finalResult = await this.callAIWithFallback(ai_1.ROLES.FINALIZER, fullProcess);
-            
-            // 解析沉淀者的输出，分离总结和模板
-            let finalSummary = finalResult;
-            let template = finalResult;
-            
-            // 尝试提取两部分（支持多种格式）
-            // 格式1: ===== 沉淀者总结 ===== / ===== 万能模板 =====
-            // 格式2: ## 沉淀者总结 / ## 万能模板
-            // 格式3: 沉淀者总结： / 万能模板：
-            
-            const summaryPatterns = [
-                /[=\-#]{3,}\s*沉淀者总结\s*[=\-#]{3,}([\s\S]*?)(?=[=\-#]{3,}\s*万能模板\s*[=\-#]{3,}|$)/i,
-                /沉淀者总结[：:]([\s\S]*?)(?=万能模板[：:]|$)/i,
-                /[=\-#]{3,}\s*总结\s*[=\-#]{3,}([\s\S]*?)(?=[=\-#]{3,}\s*模板\s*[=\-#]{3,}|$)/i
-            ];
-            
-            const templatePatterns = [
-                /[=\-#]{3,}\s*万能模板\s*[=\-#]{3,}([\s\S]*?)$/i,
-                /万能模板[：:]([\s\S]*?)$/i,
-                /[=\-#]{3,}\s*模板\s*[=\-#]{3,}([\s\S]*?)$/i
-            ];
-            
-            // 尝试匹配总结部分
-            for (const pattern of summaryPatterns) {
-                const match = finalResult.match(pattern);
-                if (match && match[1] && match[1].trim().length > 100) {
-                    finalSummary = match[1].trim();
-                    break;
-                }
-            }
-            
-            // 尝试匹配模板部分
-            for (const pattern of templatePatterns) {
-                const match = finalResult.match(pattern);
-                if (match && match[1] && match[1].trim().length > 100) {
-                    template = match[1].trim();
-                    break;
-                }
-            }
-            
-            // 如果模板和总结一样，或者模板为空，从总结中提取简化版
-            if (template === finalSummary || template.length < 100) {
-                // 从总结中提取核心框架作为模板
-                const lines = finalSummary.split('\n');
-                const keyPoints = [];
-                for (const line of lines) {
-                    // 提取标题、列表项、关键数据
-                    if (line.match(/^#{1,3}\s/) || line.match(/^\d+\./) || line.match(/^[-*]\s/) || line.match(/\d+[%\d]/)) {
-                        keyPoints.push(line);
-                    }
-                }
-                if (keyPoints.length > 3) {
-                    template = '【核心要点提取】\n\n' + keyPoints.slice(0, 20).join('\n');
-                }
-            }
-            
+                `第三步 - 找茬者结果: ${reviewResult}\n\n` +
+                `审核状态: ${reviewPassed ? '已通过' : '未通过（已尝试' + retryCount + '次修改）'}\n\n` +
+                `请生成最终成果和万能模板。${!reviewPassed ? '注意：虽然审核未完全通过，但仍需总结当前最优版本，并标注改进建议。' : ''}`;
+            const finalResult = await this.callAIWithFallback(ai_1.ROLES.FINALIZER, finalizerInput, ocrResult);
+            const finalizingDuration = Math.floor((Date.now() - finalizingStart) / 1000);
             await task_1.Task.update({
                 status: task_1.TaskStatus.COMPLETED,
-                final_result: finalSummary,
-                template: template
+                final_result: finalResult,
+                template: finalResult,
+                retry_count: retryCount,
+                finalizing_duration: finalizingDuration
             }, { where: { id: taskId } });
         }
         catch (error) {
@@ -191,6 +152,19 @@ class CabinetService {
         const task = await task_1.Task.findByPk(taskId);
         if (!task)
             throw new Error('任务不存在');
+        // 计算总耗时
+        const createdAt = task.created_at ? new Date(task.created_at) : null;
+        const updatedAt = task.updated_at ? new Date(task.updated_at) : new Date();
+        const totalDuration = createdAt ? Math.floor((updatedAt.getTime() - createdAt.getTime()) / 1000) : 0;
+        // 从 finalResult 中提取 Skill 配置
+        let skillConfig = null;
+        if (task.final_result) {
+            // 查找 YAML 代码块
+            const yamlMatch = task.final_result.match(/```yaml\n([\s\S]*?)\n```/);
+            if (yamlMatch) {
+                skillConfig = yamlMatch[1].trim();
+            }
+        }
         return {
             taskId: task.id,
             status: task.status,
@@ -200,11 +174,18 @@ class CabinetService {
             reviewResult: task.review_result,
             finalResult: task.final_result,
             template: task.template,
+            skillConfig: skillConfig, // 添加 Skill 配置
             failReason: task.fail_reason,
             failStep: task.fail_step,
             retryCount: task.retry_count,
             createdAt: task.created_at,
-            updatedAt: task.updated_at
+            updatedAt: task.updated_at,
+            // 各步骤耗时（秒）
+            planningDuration: task.planning_duration || 0,
+            executionDuration: task.execution_duration || 0,
+            reviewDuration: task.review_duration || 0,
+            finalizingDuration: task.finalizing_duration || 0,
+            totalDuration: totalDuration
         };
     }
 }

@@ -1,0 +1,106 @@
+/* Logo 样式适配 */
+.brand-logo {
+    position: relative;
+    display: inline-block;
+}
+
+.brand-logo img {
+    width: 100px;
+    height: auto;
+    filter: drop-shadow(0 0 20px rgba(255, 140, 0, 0.5)) 
+            drop-shadow(0 0 40px rgba(255, 140, 0, 0.3));
+    transition: all 0.3s ease;
+}
+
+.brand-logo img:hover {
+    filter: drop-shadow(0 0 30px rgba(255, 140, 0, 0.7)) 
+            drop-shadow(0 0 60px rgba(255, 140, 0, 0.5));
+    transform: scale(1.05);
+}
+
+/* 橙色主题色定义 */
+:root {
+    --primary-orange: #FF8C00;
+    --primary-orange-light: #FFA94D;
+    --primary-orange-dark: #E67E00;
+    --orange-glow: rgba(255, 140, 0, 0.3);
+}
+
+/* 主按钮 - 橙色渐变 */
+.cta-btn-primary {
+    background: linear-gradient(135deg, #FF8C00 0%, #FFA94D 100%);
+    box-shadow: 0 4px 20px rgba(255, 140, 0, 0.4);
+}
+
+.cta-btn-primary:hover {
+    background: linear-gradient(135deg, #FFA94D 0%, #FF8C00 100%);
+    box-shadow: 0 6px 30px rgba(255, 140, 0, 0.6);
+    transform: translateY(-2px);
+}
+
+/* 强调文字 - 橙色 */
+.hero-slogan {
+    background: linear-gradient(135deg, #fff 0%, #FFA94D 50%, #FF8C00 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+/* 标签和徽章 - 橙色 */
+.section-tag {
+    background: rgba(255, 140, 0, 0.2);
+    border: 1px solid rgba(255, 140, 0, 0.5);
+    color: #FFA94D;
+}
+
+/* 链接和交互元素 - 橙色 */
+a:hover, .nav-link:hover {
+    color: #FFA94D;
+}
+
+/* 进度条 - 橙色 */
+.progress-fill {
+    background: linear-gradient(90deg, #FF8C00, #FFA94D);
+}
+
+/* 角色卡片边框 - 对应颜色但主按钮用橙色 */
+.role-card {
+    border: 1px solid rgba(255, 140, 0, 0.3);
+}
+
+/* 高亮文字 */
+.highlight {
+    color: #FFA94D;
+}
+
+/* 发光效果 */
+.glow-orange {
+    box-shadow: 0 0 20px rgba(255, 140, 0, 0.3);
+}
+
+/* 分隔线 - 橙色渐变 */
+.divider {
+    background: linear-gradient(90deg, transparent, #FF8C00, transparent);
+}
+
+/* 输入框焦点 - 橙色 */
+input:focus, textarea:focus {
+    border-color: #FF8C00;
+    box-shadow: 0 0 0 3px rgba(255, 140, 0, 0.2);
+}
+
+/* 步骤指示器 - 橙色 */
+.step-number {
+    background: linear-gradient(135deg, #FF8C00, #FFA94D);
+}
+
+/* 成功状态 - 橙色 */
+.status-success {
+    color: #FFA94D;
+}
+
+/* 浮动按钮 - 橙色 */
+.fab {
+    background: linear-gradient(135deg, #FF8C00, #FFA94D);
+    box-shadow: 0 4px 20px rgba(255, 140, 0, 0.4);
+}
