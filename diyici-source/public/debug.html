@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug Test</title>
+</head>
+<body>
+    <h1>JavaScript Debug Test</h1>
+    <div id="result"></div>
+    <button id="test-btn">Test Button</button>
+    <input type="checkbox" id="test-checkbox">
+    
+    <script>
+        document.getElementById('result').innerHTML = 'Script loaded OK<br>';
+        
+        try {
+            const btn = document.getElementById('test-btn');
+            const checkbox = document.getElementById('test-checkbox');
+            
+            document.getElementById('result').innerHTML += 'Elements found OK<br>';
+            
+            btn.addEventListener('click', () => {
+                document.getElementById('result').innerHTML += 'Button clicked!<br>';
+            });
+            
+            checkbox.addEventListener('change', () => {
+                document.getElementById('result').innerHTML += 'Checkbox changed: ' + checkbox.checked + '<br>';
+            });
+            
+            document.getElementById('result').innerHTML += 'Event listeners added OK<br>';
+        } catch (e) {
+            document.getElementById('result').innerHTML += 'ERROR: ' + e.message + '<br>';
+        }
+    </script>
+</body>
+</html>

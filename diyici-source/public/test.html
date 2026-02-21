@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数字内阁测试</title>
+    <style>
+        body { font-family: sans-serif; padding: 20px; background: #1a1a3e; color: #fff; }
+        button { padding: 10px 20px; margin: 10px; cursor: pointer; }
+        .test-box { background: rgba(255,255,255,0.1); padding: 20px; margin: 20px 0; border-radius: 8px; }
+        .success { color: #10b981; }
+        .error { color: #ef4444; }
+        #file-input { display: none; }
+    </style>
+</head>
+<body>
+    <h1>数字内阁功能测试</h1>
+    
+    <div class="test-box">
+        <h2>测试1: 严格模式</h2>
+        <label>
+            <input type="checkbox" id="strict-mode"> 🔒 严格模式
+        </label>
+        <div id="strict-info" style="display: none; background: rgba(102,126,234,0.2); padding: 10px; margin-top: 10px;">
+            ✅ 严格模式已开启！
+        </div>
+        <p id="strict-result"></p>
+    </div>
+    
+    <div class="test-box">
+        <h2>测试2: 重置功能</h2>
+        <input type="text" id="test-input" placeholder="输入一些文字" style="padding: 10px; width: 200px;">
+        <button id="reset-btn">重置</button>
+        <p id="reset-result"></p>
+    </div>
+    
+    <div class="test-box">
+        <h2>测试3: 文件上传</h2>
+        <button id="upload-btn">选择文件</button>
+        <input type="file" id="file-input" accept="image/*">
+        <div id="file-list"></div>
+        <p id="upload-result"></p>
+    </div>
+    
+    <div id="console-output" style="background: #000; padding: 10px; margin-top: 20px; font-family: monospace; font-size: 12px; white-space: pre-wrap;"></div>
+
+    <script>
+        // 简单的日志输出到页面
+        function log(msg) {
+            const output = document.getElementById('console-output');
+            output.textContent += msg + '\n';
+        }
+        
+        log('页面加载完成');
+        
+        // 测试1: 严格模式
+        try {
+            const strictMode = document.getElementById('strict-mode');
+            const strictInfo = document.getElementById('strict-info');
+            const strictResult = document.getElementById('strict-result');
+            
+            if (!strictMode || !strictInfo) {
+                log('❌ 严格模式元素未找到');
+            } else {
+                log('✅ 严格模式元素已找到');
+                
+                strictMode.addEventListener('change', function() {
+                    log('严格模式 change 事件触发: ' + this.checked);
+                    if (this.checked) {
+                        strictInfo.style.display = 'block';
+                        strictResult.textContent = '✅ 严格模式已开启';
+                        strictResult.className = 'success';
+                    } else {
+                        strictInfo.style.display = 'none';
+                        strictResult.textContent = '❌ 严格模式已关闭';
+                        strictResult.className = 'error';
+                    }
+                });
+            }
+        } catch (e) {
+            log('严格模式错误: ' + e.message);
+        }
+        
+        // 测试2: 重置功能
+        try {
+            const testInput = document.getElementById('test-input');
+            const resetBtn = document.getElementById('reset-btn');
+            const resetResult = document.getElementById('reset-result');
+            
+            if (!testInput || !resetBtn) {
+                log('❌ 重置功能元素未找到');
+            } else {
+                log('✅ 重置功能元素已找到');
+                
+                resetBtn.addEventListener('click', function() {
+                    log('重置按钮被点击');
+                    testInput.value = '';
+                    resetResult.textContent = '✅ 输入已清空';
+                    resetResult.className = 'success';
+                });
+            }
+        } catch (e) {
+            log('重置功能错误: ' + e.message);
+        }
+        
+        // 测试3: 文件上传
+        try {
+            const uploadBtn = document.getElementById('upload-btn');
+            const fileInput = document.getElementById('file-input');
+            const fileList = document.getElementById('file-list');
+            const uploadResult = document.getElementById('upload-result');
+            
+            if (!uploadBtn || !fileInput) {
+                log('❌ 文件上传元素未找到');
+            } else {
+                log('✅ 文件上传元素已找到');
+                
+                uploadBtn.addEventListener('click', function() {
+                    log('上传按钮被点击');
+                    fileInput.click();
+                });
+                
+                fileInput.addEventListener('change', function(e) {
+                    log('文件选择事件触发');
+                    const files = e.target.files;
+                    if (files.length > 0) {
+                        const file = files[0];
+                        log('选择了文件: ' + file.name);
+                        fileList.innerHTML = '<div>📎 ' + file.name + ' (' + (file.size/1024).toFixed(1) + ' KB)</div>';
+                        uploadResult.textContent = '✅ 文件已选择';
+                        uploadResult.className = 'success';
+                    } else {
+                        log('没有选择文件');
+                    }
+                });
+            }
+        } catch (e) {
+            log('文件上传错误: ' + e.message);
+        }
+        
+        log('\n所有初始化完成，请测试以上功能');
+    </script>
+</body>
+</html>

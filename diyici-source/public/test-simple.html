@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>数字内阁 - 测试</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(180deg, #0f0f23 0%, #1a1a3e 50%, #0f0f23 100%);
+      min-height: 100vh;
+      color: #e2e8f0;
+      padding: 20px;
+    }
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      background: rgba(255,255,255,0.05);
+      border-radius: 16px;
+      padding: 24px;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 24px;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .section {
+      margin-bottom: 24px;
+      padding: 16px;
+      background: rgba(255,255,255,0.03);
+      border-radius: 12px;
+    }
+    .test-btn {
+      padding: 12px 24px;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      border: none;
+      border-radius: 8px;
+      color: #fff;
+      font-size: 16px;
+      cursor: pointer;
+      margin: 8px;
+    }
+    .test-btn:active {
+      transform: scale(0.98);
+    }
+    #status {
+      margin-top: 16px;
+      padding: 12px;
+      background: rgba(0,0,0,0.2);
+      border-radius: 8px;
+      min-height: 100px;
+    }
+    label {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      padding: 12px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 8px;
+      margin: 8px 0;
+    }
+    input[type="checkbox"] {
+      width: 20px;
+      height: 20px;
+    }
+    textarea {
+      width: 100%;
+      min-height: 100px;
+      padding: 12px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 8px;
+      color: #fff;
+      font-size: 14px;
+      margin-top: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🧪 功能测试</h1>
+    
+    <div class="section">
+      <h3>1. 按钮测试</h3>
+      <button class="test-btn" onclick="testBtn()">点击测试</button>
+      <button class="test-btn" onclick="clearStatus()">清除状态</button>
+    </div>
+    
+    <div class="section">
+      <h3>2. 复选框测试</h3>
+      <label>
+        <input type="checkbox" id="strictMode" onchange="testCheckbox()">
+        <span>严格模式</span>
+      </label>
+      <div id="checkboxStatus"></div>
+    </div>
+    
+    <div class="section">
+      <h3>3. 文本输入</h3>
+      <textarea id="testInput" placeholder="在此输入文字测试..."></textarea>
+    </div>
+    
+    <div class="section">
+      <h3>4. 长内容测试（测试滚动）</h3>
+      <p>下方应该有更多内容，请尝试向下滑动</p>
+      <div style="height: 800px; background: linear-gradient(180deg, rgba(102,126,234,0.1), rgba(118,75,162,0.1)); border-radius: 8px; margin-top: 16px; display: flex; align-items: center; justify-content: center;">
+        <p>长内容区域 - 如果能看到这段文字，说明滚动正常</p>
+      </div>
+    </div>
+    
+    <div id="status">
+      <strong>状态:</strong> 等待测试...
+    </div>
+    
+    <div style="text-align: center; margin-top: 40px; color: #64748b;">
+      <p>如果以上功能都正常，请返回 <a href="/cabinet.html" style="color: #667eea;">数字内阁</a></p>
+    </div>
+  </div>
+  
+  <script>
+    function testBtn() {
+      document.getElementById('status').innerHTML += '<br>✅ 按钮点击正常 - ' + new Date().toLocaleTimeString();
+    }
+    
+    function clearStatus() {
+      document.getElementById('status').innerHTML = '<strong>状态:</strong> 已清除';
+    }
+    
+    function testCheckbox() {
+      const cb = document.getElementById('strictMode');
+      document.getElementById('checkboxStatus').textContent = '复选框状态: ' + (cb.checked ? '✅ 已勾选' : '⬜ 未勾选');
+    }
+    
+    // 页面加载完成提示
+    window.onload = function() {
+      document.getElementById('status').innerHTML = '<strong>状态:</strong> 页面加载完成 ✅<br>JavaScript运行正常 ✅';
+    };
+  </script>
+</body>
+</html>

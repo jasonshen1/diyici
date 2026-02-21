@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test JS</title>
+</head>
+<body>
+    <button id="test">Test</button>
+    <input type="checkbox" id="cb">
+    <script>
+        const btn = document.getElementById('test');
+        const cb = document.getElementById('cb');
+        
+        btn.addEventListener('click', () => alert('Button works!'));
+        cb.addEventListener('change', () => alert('Checkbox: ' + cb.checked));
+        
+        console.log('Script loaded successfully');
+    </script>
+</body>
+</html>
