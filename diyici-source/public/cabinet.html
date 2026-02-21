@@ -1315,12 +1315,25 @@
 
         // 调用 API 创建任务
         statusText.textContent = '提交任务...';
+        
+        // 安全地构造请求数据
+        let requestBody;
+        try {
+          requestBody = JSON.stringify({ 
+            text: String(combinedText || ''), 
+            ocrResult: String(ocrResult || '') 
+          });
+        } catch (jsonError) {
+          console.error('JSON序列化失败:', jsonError);
+          throw new Error('请求数据格式错误');
+        }
+        
         const response = await fetch('https://diyici.ai/api/cabinet/run', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
           },
-          body: JSON.stringify({ text: combinedText, ocrResult: ocrResult })
+          body: requestBody
         });
 
         const data = await response.json();
