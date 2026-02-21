@@ -1595,6 +1595,16 @@
                   <button id="view-kb-btn" style="padding: 12px 24px; background: linear-gradient(135deg, #667eea, #764ba2); border: none; border-radius: 8px; color: #fff; font-size: 14px; font-weight: 600; cursor: pointer;">📚 查看知识库</button>
                   <button id="next-task-btn" style="padding: 12px 24px; background: linear-gradient(135deg, #f59e0b, #d97706); border: none; border-radius: 8px; color: #fff; font-size: 14px; font-weight: 600; cursor: pointer;">开启下一次系统化</button>
                 </div>
+                
+                <!-- 分享功能 -->
+                <div style="margin-top: 24px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); text-align: center;">
+                  <p style="color: #94a3b8; font-size: 13px; margin-bottom: 12px;">分享给朋友，帮助更多人</p>
+                  <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+                    <button onclick="shareToQQ('${title}', '${data.data?.id || ''}')" style="padding: 10px 20px; background: #12B7F5; border: none; border-radius: 8px; color: #fff; font-size: 13px; cursor: pointer;">🐧 QQ</button>
+                    <button onclick="shareToWeChat('${title}', '${data.data?.id || ''}')" style="padding: 10px 20px; background: #07C160; border: none; border-radius: 8px; color: #fff; font-size: 13px; cursor: pointer;">💬 微信</button>
+                    <button onclick="copyShareLink('${data.data?.id || ''}')" style="padding: 10px 20px; background: rgba(102, 126, 234, 0.3); border: 1px solid rgba(102, 126, 234, 0.5); border-radius: 8px; color: #fff; font-size: 13px; cursor: pointer;">🔗 复制链接</button>
+                  </div>
+                </div>
               </div>
             `;
 
@@ -1628,6 +1638,42 @@
           submitBtn.disabled = false;
         }
       };
+    }
+
+    // 分享功能
+    function shareToQQ(title, id) {
+      const url = 'https://diyici.ai/knowledge.html?id=' + id;
+      const shareUrl = `https://connect.qq.com/widget/shareqq/index.html?url=${encodeURIComponent(url)}&title=${encodeURIComponent(title)}&source=${encodeURIComponent('diyici.ai 数字内阁')}`;
+      window.open(shareUrl, '_blank', 'width=600,height=500');
+    }
+
+    function shareToWeChat(title, id) {
+      const url = 'https://diyici.ai/knowledge.html?id=' + id;
+      // 微信分享需要使用微信 JS-SDK 或生成二维码
+      // 这里简单复制链接，用户可以手动粘贴到微信
+      copyToClipboard(url);
+      alert('链接已复制！请粘贴到微信聊天窗口分享');
+    }
+
+    function copyShareLink(id) {
+      const url = 'https://diyici.ai/knowledge.html?id=' + id;
+      copyToClipboard(url);
+      alert('分享链接已复制到剪贴板！');
+    }
+
+    function copyToClipboard(text) {
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(text);
+      } else {
+        const textArea = document.createElement('textarea');
+        textArea.value = text;
+        textArea.style.position = 'fixed';
+        textArea.style.left = '-9999px';
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+      }
     }
 
     // 添加整体优化按钮
@@ -1936,7 +1982,9 @@
       const downloadBtns = [
         { text: '📄 Markdown', color: 'linear-gradient(135deg, #667eea, #764ba2)', action: window.downloadMarkdown },
         { text: '📝 HTML', color: 'linear-gradient(135deg, #f093fb, #f5576c)', action: window.downloadWord },
-        { text: '📃 纯文本', color: 'linear-gradient(135deg, #4facfe, #00f2fe)', action: window.downloadText }
+        { text: '📃 纯文本', color: 'linear-gradient(135deg, #4facfe, #00f2fe)', action: window.downloadText },
+        { text: '⚡ Skill', color: 'linear-gradient(135deg, #f59e0b, #d97706)', action: window.downloadSkill },
+        { text: '📋 一键复制', color: 'linear-gradient(135deg, #10b981, #059669)', action: window.copyFullContent }
       ];
 
       downloadBtns.forEach(btnConfig => {
@@ -1982,6 +2030,7 @@
 
       // 存储内容供下载使用
       window._downloadContent = fullContent;
+      window._currentResult = result;
       window._taskStats = {
         createdAt: result.createdAt,
         updatedAt: result.updatedAt,
@@ -1989,6 +2038,142 @@
         retryCount: result.retryCount || 0
       };
     }
+
+    // 下载 Skill 配置 (YAML格式)
+    window.downloadSkill = function() {
+      try {
+        const result = window._currentResult;
+        if (!result) {
+          alert('暂无内容可下载');
+          return;
+        }
+
+        // 生成 YAML 格式的 Skill 配置
+        const skillConfig = generateSkillConfig(result);
+        
+        const blob = new Blob([skillConfig], { type: 'text/yaml;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `skill_${result.id || 'config'}_${new Date().toISOString().slice(0, 10)}.yaml`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      } catch (error) {
+        console.error('下载Skill配置失败:', error);
+        alert('下载失败，请重试');
+      }
+    };
+
+    // 生成 Skill 配置
+    function generateSkillConfig(result) {
+      const title = result.user_input ? result.user_input.substring(0, 30) : '未命名技能';
+      const timestamp = new Date().toISOString();
+      
+      return `# Skill 配置文件
+# 由 diyici.ai 数字内阁自动生成
+# 生成时间: ${timestamp}
+
+skill:
+  name: "${title}"
+  version: "1.0.0"
+  description: "${result.user_input || ''}"
+  
+  # 元数据
+  metadata:
+    created_at: "${timestamp}"
+    source: "diyici.ai"
+    retry_count: ${result.retryCount || 0}
+    
+  # 输入参数定义
+  inputs:
+    - name: "user_requirement"
+      type: "string"
+      description: "用户需求描述"
+      required: true
+      
+  # 工作流步骤
+  workflow:
+    - step: 1
+      role: "首辅(谋局者)"
+      name: "planning"
+      description: "制定行动计划"
+      output: |
+${(result.planningResult || '').split('\n').map(line => '        ' + line).join('\n')}
+      
+    - step: 2
+      role: "干吏(执行者)"
+      name: "execution"
+      description: "产出执行方案"
+      output: |
+${(result.executionResult || '').split('\n').map(line => '        ' + line).join('\n')}
+      
+    - step: 3
+      role: "御史(审查者)"
+      name: "review"
+      description: "质量审核"
+      output: |
+${(result.reviewResult || '').split('\n').map(line => '        ' + line).join('\n')}
+      
+    - step: 4
+      role: "史官(沉淀者)"
+      name: "finalizing"
+      description: "总结沉淀"
+      output: |
+${(result.finalResult || '').split('\n').map(line => '        ' + line).join('\n')}
+      
+  # 模板 (可复用)
+  template:
+    name: "万能模板"
+    content: |
+${(result.template || '').split('\n').map(line => '      ' + line).join('\n')}
+      
+  # API 集成配置
+  api:
+    endpoint: "https://diyici.ai/api/cabinet/run"
+    method: "POST"
+    headers:
+      Content-Type: "application/json"
+    
+  # 使用说明
+  usage:
+    description: "该Skill配置可被其他系统调用，实现自动化执行"
+    integration: |
+      1. 导入此YAML配置文件
+      2. 调用 API 端点传入需求参数
+      3. 系统将自动执行四步流程并返回结果
+      4. 结果包含完整方案、执行清单和万能模板
+`;
+    }
+
+    // 一键复制完整内容
+    window.copyFullContent = async function() {
+      try {
+        const content = window._downloadContent || '';
+        if (!content) {
+          alert('暂无内容可复制');
+          return;
+        }
+        
+        await navigator.clipboard.writeText(content);
+        
+        // 显示复制成功提示
+        const btn = event.target;
+        const originalText = btn.textContent;
+        btn.textContent = '✅ 已复制';
+        btn.style.opacity = '0.8';
+        
+        setTimeout(() => {
+          btn.textContent = originalText;
+          btn.style.opacity = '1';
+        }, 2000);
+        
+      } catch (err) {
+        console.error('复制失败:', err);
+        alert('复制失败，请使用下载功能');
+      }
+    };
 
     // 下载 Markdown - 美化排版
     window.downloadMarkdown = function() {
