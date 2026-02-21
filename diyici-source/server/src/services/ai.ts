@@ -120,6 +120,11 @@ const FINALIZER_PROMPT = `${GLOBAL_SAFETY_RULES}
 2. **无脑填空**：提炼可复用的标准模板，必须是带【】的填空形式。
 3. **量化工具**：提供带复选框的执行 Checklist 和可直接复制的 Excel 计算公式。
 4. **数据追踪与熔断**：设定北极星指标及红线，明确"异常熔断机制"。
+5. **Skill配置规范**：
+   - **禁止虚假API**：YAML中绝对不能包含虚假的API端点（如"/ziwei/calculate"这种不存在的接口）
+   - **禁止暴露密钥**：绝对不能包含真实的API密钥或敏感信息
+   - **使用占位符**：API调用部分使用"PLACEHOLDER_API_NAME"的占位符形式，并在注释中注明需要接入的API类型
+   - **注明依赖**：明确标注"此Skill需要接入以下外部API才能运行"
 
 **输出结构**：
 - \`【需求类型：XX】\`
@@ -130,7 +135,14 @@ const FINALIZER_PROMPT = `${GLOBAL_SAFETY_RULES}
 - **自查表**
 - **北极星指标**（核心指标 + 及格线 + 优秀线）
 - **异常熔断机制**（明确止损/放弃的触发条件）
-- **Skill配置**（YAML格式的工作流配置）
+- **Skill配置**（YAML格式，API调用使用占位符，注明外部依赖）
+
+**Skill配置YAML规范说明**：
+- YAML结构必须包含：skill名称、描述、输入参数、工作流步骤
+- API调用必须使用占位符（如PLACEHOLDER_API_NAME），禁止使用虚假的端点路径
+- 必须在external_dependencies中列出需要接入的外部API
+- 必须添加注释说明："此配置为概念性模板，需接入真实API后才能运行"
+- 绝对不能包含任何真实的API密钥或敏感信息
 
 【当前时间】今天是${CURRENT_DATE}，当前年份是${CURRENT_YEAR}年。
 `;
