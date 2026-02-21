@@ -1118,10 +1118,19 @@
     }
 
     // 检查URL参数是否有使用某个方案的请求
-    const urlParams = new URLSearchParams(window.location.search);
-    const useTitle = urlParams.get('use');
+    let useTitle = null;
+    try {
+      const urlParams = new URLSearchParams(window.location.search);
+      useTitle = urlParams.get('use');
+      if (useTitle) {
+        useTitle = decodeURIComponent(useTitle);
+      }
+    } catch (e) {
+      console.warn('URL参数解析失败:', e);
+      useTitle = null;
+    }
     if (useTitle && userInput) {
-      const prompt = `我想创建一个类似「${decodeURIComponent(useTitle)}」的方案，但针对我的具体需求进行调整：\n\n我的具体需求是：`;
+      const prompt = `我想创建一个类似「${useTitle}」的方案，但针对我的具体需求进行调整：\n\n我的具体需求是：`;
       userInput.value = prompt;
       // 清除URL参数
       window.history.replaceState({}, document.title, window.location.pathname);
