@@ -3076,7 +3076,7 @@ ${(result.template || '').split('\n').map(line => '      ' + line).join('\n')}
 
     // 将 Markdown 渲染为美观的 HTML
     function renderMarkdown(text) {
-      if (!text) return '';
+      if (!text || typeof text !== 'string') return '';
 
       try {
         let html = '';
@@ -3093,6 +3093,7 @@ ${(result.template || '').split('\n').map(line => '      ' + line).join('\n')}
         };
 
         const escapeHtml = (str) => {
+          if (!str || typeof str !== 'string') return '';
           // 使用 split/join 代替正则，避免 iOS Safari 问题
           return str
             .split('&').join('&amp;')
@@ -3102,6 +3103,7 @@ ${(result.template || '').split('\n').map(line => '      ' + line).join('\n')}
 
         const processInline = (str, lineNum) => {
           try {
+            if (!str || typeof str !== 'string') return '';
             // 先转义 HTML
             let result = escapeHtml(str);
             // 粗体 - 使用字符串处理代替正则，避免iOS Safari问题
@@ -3130,7 +3132,7 @@ ${(result.template || '').split('\n').map(line => '      ' + line).join('\n')}
             return result;
           } catch (e) {
             console.error('processInline错误在行' + lineNum + ':', e, '输入:', str);
-            alert('处理文本时出错(行' + lineNum + '): ' + e.message);
+            // 不再弹出alert，避免影响用户体验
             return escapeHtml(str);
           }
         };

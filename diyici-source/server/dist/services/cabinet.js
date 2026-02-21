@@ -158,11 +158,17 @@ class CabinetService {
         const totalDuration = createdAt ? Math.floor((updatedAt.getTime() - createdAt.getTime()) / 1000) : 0;
         // 从 finalResult 中提取 Skill 配置
         let skillConfig = null;
-        if (task.final_result) {
-            // 查找 YAML 代码块
-            const yamlMatch = task.final_result.match(/```yaml\n([\s\S]*?)\n```/);
-            if (yamlMatch) {
-                skillConfig = yamlMatch[1].trim();
+        if (task.final_result && typeof task.final_result === 'string') {
+            try {
+                // 查找 YAML 代码块 - 使用更安全的正则
+                const yamlMatch = task.final_result.match(/```yaml\n([\s\S]*?)\n```/);
+                if (yamlMatch && yamlMatch[1]) {
+                    skillConfig = yamlMatch[1].trim();
+                }
+            }
+            catch (regexError) {
+                console.error('提取YAML配置时出错:', regexError);
+                skillConfig = null;
             }
         }
         return {
