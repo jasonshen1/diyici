@@ -296,7 +296,7 @@
                     <div class="meta-bar">
                         <span class="meta-item">
                             <span>👤 开创者：</span>
-                            <span class="creator">${knowledge.creator_id || '未知'}</span>
+                            <span class="creator">${knowledge.creator || '未知'}</span>
                         </span>
                         <span class="meta-item">📅 ${createdAt}</span>
                         <span class="meta-item">👁 ${knowledge.views || 0} 浏览</span>
@@ -438,7 +438,7 @@
 
 📋 ${knowledgeData.title}
 🏷️ 分类：${knowledgeData.category || '未分类'}
-👤 开创者：${knowledgeData.creator_id || '未知'}
+👤 开创者：${knowledgeData.creator || '未知'}
 
 💡 方案简介：
 ${knowledgeData.content ? knowledgeData.content.substring(0, 150).replace(/[#*`]/g, '') : '暂无简介'}...

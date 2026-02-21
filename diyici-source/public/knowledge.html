@@ -336,7 +336,7 @@
                         <h3 class="card-title">${escapeHtml(k.title)}</h3>
                         <p class="card-summary">${escapeHtml(k.summary || '暂无简介')}</p>
                         <div class="card-meta">
-                            <span class="card-creator">👤 ${k.creator_id || '开创者'}</span>
+                            <span class="card-creator">👤 ${k.creator || '开创者'}</span>
                             <div class="card-stats">
                                 <span class="card-stat">👁 ${k.views || 0}</span>
                                 <span class="card-stat">❤ ${k.likes || 0}</span>
@@ -356,7 +356,7 @@
         
         function updateStats(knowledges) {
             const totalCount = knowledges.length;
-            const creatorCount = new Set(knowledges.map(k => k.creator_id).filter(Boolean)).size;
+            const creatorCount = new Set(knowledges.map(k => k.creator).filter(Boolean)).size;
             const viewCount = knowledges.reduce((sum, k) => sum + (k.views || 0), 0);
             
             document.getElementById('total-count').textContent = totalCount;
