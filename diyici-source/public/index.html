@@ -599,6 +599,73 @@
             margin: 0 auto 24px;
         }
         
+        /* 顶部导航栏 */
+        .top-nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: rgba(15, 15, 35, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(102, 126, 234, 0.2);
+            padding: 0 20px;
+        }
+        
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 60px;
+        }
+        
+        .nav-logo {
+            font-size: 20px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+        
+        .nav-link {
+            color: #94a3b8;
+            text-decoration: none;
+            font-size: 14px;
+            padding: 8px 16px;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+        
+        .nav-link:hover {
+            color: #fff;
+            background: rgba(102, 126, 234, 0.2);
+        }
+        
+        .nav-link-primary {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: #fff;
+        }
+        
+        .nav-link-primary:hover {
+            background: linear-gradient(135deg, #764ba2, #667eea);
+            transform: translateY(-1px);
+        }
+        
+        /* 调整 Hero 区域，为导航栏留出空间 */
+        .hero {
+            padding-top: 140px;
+        }
+        
         .footer-links {
             display: flex;
             gap: 24px;
@@ -619,9 +686,31 @@
         
         /* Responsive */
         @media (max-width: 768px) {
+            /* 顶部导航栏移动端 */
+            .nav-container {
+                height: 56px;
+            }
+            
+            .nav-logo {
+                font-size: 18px;
+            }
+            
+            .nav-links {
+                gap: 4px;
+            }
+            
+            .nav-link {
+                font-size: 13px;
+                padding: 6px 10px;
+            }
+            
+            .nav-link-primary {
+                padding: 6px 12px;
+            }
+            
             /* Hero Section */
             .hero {
-                padding: 80px 16px 60px;
+                padding: 100px 16px 60px;
             }
             
             .brand-name {
@@ -856,6 +945,19 @@
   <script src="/js/analytics.js" defer></script>
 </head>
 <body>
+    <!-- 顶部导航栏 -->
+    <nav class="top-nav">
+        <div class="nav-container">
+            <a href="/" class="nav-logo">diyici.ai</a>
+            <div class="nav-links">
+                <a href="/knowledge.html" class="nav-link">知识库</a>
+                <a href="#" class="nav-link" onclick="showProductModal(); return false;">产品介绍</a>
+                <a href="#" class="nav-link" onclick="showAboutModal(); return false;">关于我们</a>
+                <a href="/cabinet.html" class="nav-link nav-link-primary">开始使用</a>
+            </div>
+        </div>
+    </nav>
+    
     <!-- Hero Section -->
     <section class="hero">
         <div class="hero-content">
