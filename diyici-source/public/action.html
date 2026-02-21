@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>diyici.ai - 把想法变成步骤</title>
+    <script src="/js/analytics.js" defer></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(180deg, #0f0f23 0%, #1a1a3e 50%, #0f0f23 100%);
+            min-height: 100vh;
+            color: #e2e8f0;
+            line-height: 1.6;
+        }
+        
+        /* Hero Section - 动作入口 */
+        .hero {
+            text-align: center;
+            padding: 80px 20px 60px;
+            position: relative;
+            overflow: hidden;
+            background: linear-gradient(180deg, #1a1a3e 0%, #0f0f23 100%);
+        }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: 
+                radial-gradient(circle at 50% 30%, rgba(102, 126, 234, 0.4) 0%, transparent 60%),
+                radial-gradient(circle at 80% 70%, rgba(255, 119, 198, 0.3) 0%, transparent 50%);
+            pointer-events: none;
+        }
+        
+        .hero-content {
+            position: relative;
+            z-index: 1;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .brand-name {
+            font-size: 80px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea 0%, #f093fb 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 8px;
+            letter-spacing: 2px;
+        }
+        
+        .brand-domain {
+            font-size: 18px;
+            color: #64748b;
+            margin-bottom: 40px;
+            font-family: 'Courier New', monospace;
+        }
+        
+        /* 核心问题 */
+        .hero-question {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 24px;
+            color: #fff;
+        }
+        
+        .hero-subtitle {
+            font-size: 18px;
+            color: #94a3b8;
+            margin-bottom: 40px;
+        }
+        
+        /* 输入框区域 */
+        .action-box {
+            background: rgba(255,255,255,0.05);
+            border-radius: 16px;
+            padding: 32px;
+            border: 1px solid rgba(102, 126, 234, 0.3);
+            max-width: 600px;
+            margin: 0 auto 40px;
+        }
+        
+        .action-input {
+            width: 100%;
+            padding: 16px 20px;
+            border-radius: 12px;
+            border: 2px solid rgba(102, 126, 234, 0.3);
+            background: rgba(0,0,0,0.3);
+            color: #fff;
+            font-size: 16px;
+            margin-bottom: 16px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        
+        .action-input:focus {
+            border-color: #667eea;
+        }
+        
+        .action-input::placeholder {
+            color: #64748b;
+        }
+        
+        .action-btn {
+            width: 100%;
+            padding: 16px 32px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(102, 126, 234, 0.4);
+        }
+        
+        /* 快捷任务按钮 */
+        .quick-tasks {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 24px;
+        }
+        
+        .task-chip {
+            padding: 10px 20px;
+            background: rgba(255,255,255,0.08);
+            border: 1px solid rgba(255,255,255,0.15);
+            border-radius: 30px;
+            color: #e2e8f0;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .task-chip:hover {
+            background: rgba(102, 126, 234, 0.2);
+            border-color: #667eea;
+        }
+        
+        /* 三步流程 */
+        .steps-section {
+            padding: 60px 20px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        .steps-title {
+            text-align: center;
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 40px;
+            color: #fff;
+        }
+        
+        .steps-container {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .step-card {
+            flex: 1;
+            min-width: 250px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 16px;
+            padding: 32px 24px;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.1);
+            position: relative;
+        }
+        
+        .step-number {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            font-weight: 700;
+            color: white;
+            margin: 0 auto 16px;
+        }
+        
+        .step-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: #fff;
+        }
+        
+        .step-desc {
+            font-size: 14px;
+            color: #94a3b8;
+            line-height: 1.7;
+        }
+        
+        /* 数字内阁团队介绍 */
+        .team-section {
+            padding: 60px 20px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        
+        .team-title {
+            text-align: center;
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: #fff;
+        }
+        
+        .team-subtitle {
+            text-align: center;
+            color: #94a3b8;
+            margin-bottom: 48px;
+        }
+        
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+        }
+        
+        .team-card {
+            background: rgba(255,255,255,0.05);
+            border-radius: 16px;
+            padding: 28px 20px;
+            text-align: center;
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .team-icon {
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            margin: 0 auto 16px;
+        }
+        
+        .team-role {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #fff;
+        }
+        
+        .team-benefit {
+            font-size: 14px;
+            color: #94a3b8;
+            line-height: 1.6;
+        }
+        
+        /* 成果展示 */
+        .result-section {
+            padding: 60px 20px;
+            background: rgba(102, 126, 234, 0.1);
+        }
+        
+        .result-container {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        
+        .result-title {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: #fff;
+        }
+        
+        .result-subtitle {
+            color: #94a3b8;
+            margin-bottom: 40px;
+        }
+        
+        .result-cards {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .result-card {
+            background: rgba(255,255,255,0.08);
+            border-radius: 16px;
+            padding: 28px;
+            min-width: 200px;
+            text-align: center;
+        }
+        
+        .result-icon {
+            font-size: 36px;
+            margin-bottom: 12px;
+        }
+        
+        .result-text {
+            font-size: 16px;
+            color: #e2e8f0;
+        }
+        
+        /* 示例场景 */
+        .examples-section {
+            padding: 60px 20px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        .examples-title {
+            text-align: center;
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 40px;
+            color: #fff;
+        }
+        
+        .example-card {
+            background: rgba(255,255,255,0.05);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 20px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .example-input {
+            font-size: 16px;
+            color: #fff;
+            margin-bottom: 16px;
+            padding: 12px 16px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 8px;
+            font-family: inherit;
+        }
+        
+        .example-output {
+            font-size: 14px;
+            color: #94a3b8;
+            line-height: 1.8;
+        }
+        
+        .example-output strong {
+            color: #667eea;
+        }
+        
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 40px 20px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+        
+        .footer-brand {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: #fff;
+        }
+        
+        .footer-desc {
+            color: #64748b;
+            font-size: 14px;
+        }
+        
+        /* Mobile */
+        @media (max-width: 768px) {
+            .brand-name {
+                font-size: 48px;
+            }
+            
+            .hero-question {
+                font-size: 24px;
+            }
+            
+            .steps-container {
+                flex-direction: column;
+            }
+            
+            .quick-tasks {
+                gap: 8px;
+            }
+            
+            .task-chip {
+                padding: 8px 16px;
+                font-size: 13px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Hero - 动作入口 -->
+    <section class="hero">
+        <div class="hero-content">
+            <div class="brand-name">diyici</div>
+            <div class="brand-domain">diyici.ai</div>
+            
+            <h1 class="hero-question">你现在想让 数字内阁 帮你完成什么？</h1>
+            <p class="hero-subtitle">3分钟，让 数字内阁 团队帮你完成第一个任务</p>
+            
+            <div class="action-box">
+                <input type="text" 
+                       class="action-input" 
+                       id="task-input"
+                       placeholder="例如：帮我写一个招聘文案、生成一份推广方案..."
+                       onkeypress="if(event.key==='Enter')startTask()">
+                <button class="action-btn" onclick="startTask()">
+                    立即开始
+                </button>
+                
+                <div class="quick-tasks">
+                    <span class="task-chip" onclick="setTask('帮我写一段产品推广文案')">写文案</span>
+                    <span class="task-chip" onclick="setTask('生成一份活动策划方案')">生成方案</span>
+                    <span class="task-chip" onclick="setTask('优化这篇内容的表达')">优化内容</span>
+                    <span class="task-chip" onclick="setTask('把这个流程做成模板')">制作模板</span>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- 三步流程 -->
+    <section class="steps-section">
+        <h2 class="steps-title">只需三步，完成你的任务</h2>
+        <div class="steps-container">
+            <div class="step-card">
+                <div class="step-number">1</div>
+                <h3 class="step-title">说出你的任务</h3>
+                <p class="step-desc">用一句话描述你想做什么<br>比如"帮我写一段招聘文案"</p>
+            </div>
+            <div class="step-card">
+                <div class="step-number">2</div>
+                <h3 class="step-title">数字内阁 团队自动执行</h3>
+                <p class="step-desc">四个数字内阁角色分工协作<br>规划、执行、审核、优化</p>
+            </div>
+            <div class="step-card">
+                <div class="step-number">3</div>
+                <h3 class="step-title">一键获取成果</h3>
+                <p class="step-desc">获得完整方案 + 优化版本<br>+ 可复用的万能模板</p>
+            </div>
+        </div>
+    </section>
+    
+    <!-- 数字内阁团队介绍 -->
+    <section class="team-section">
+        <h2 class="team-title">我们的 数字内阁 团队会这样帮你</h2>
+        <p class="team-subtitle">不是抽象的概念，是具体的帮助</p>
+        
+        <div class="team-grid">
+            <div class="team-card">
+                <div class="team-icon">1</div>
+                <h3 class="team-role">谋局者</h3>
+                <p class="team-benefit">把你的想法拆成清晰的执行计划，明确每一步该做什么</p>
+            </div>
+            <div class="team-card">
+                <div class="team-icon">2</div>
+                <h3 class="team-role">执行者</h3>
+                <p class="team-benefit">帮你生成第一版完整成果，不用从零开始写</p>
+            </div>
+            <div class="team-card">
+                <div class="team-icon">3</div>
+                <h3 class="team-role">找茬者</h3>
+                <p class="team-benefit">自动审核和优化，找出问题并给出改进建议</p>
+            </div>
+            <div class="team-card">
+                <div class="team-icon">4</div>
+                <h3 class="team-role">沉淀者</h3>
+                <p class="team-benefit">把结果变成可复用模板，下次直接套用</p>
+            </div>
+        </div>
+    </section>
+    
+    <!-- 成果展示 -->
+    <section class="result-section">
+        <div class="result-container">
+            <h2 class="result-title">这一次体验，你将得到</h2>
+            <p class="result-subtitle">不是概念，是具体可用的成果</p>
+            
+            <div class="result-cards">
+                <div class="result-card">
+                    <div class="result-icon">1</div>
+                    <p class="result-text">一份完整方案文档</p>
+                </div>
+                <div class="result-card">
+                    <div class="result-icon">2</div>
+                    <p class="result-text">自动优化后的版本</p>
+                </div>
+                <div class="result-card">
+                    <div class="result-icon">3</div>
+                    <p class="result-text">可重复使用的模板</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- 示例场景 -->
+    <section class="examples-section">
+        <h2 class="examples-title">具体使用场景</h2>
+        
+        <div class="example-card">
+            <div class="example-input">"帮我写一个招聘文案"</div>
+            <div class="example-output">
+                <strong>数字内阁 会自动：</strong><br>
+                • 规划文案结构（岗位要求、公司亮点、联系方式）<br>
+                • 生成初稿（3个不同风格的版本）<br>
+                • 自动优化（检查吸引力、清晰度）<br>
+                • 输出模板（下次招聘直接改数字就能用）
+            </div>
+        </div>
+        
+        <div class="example-card">
+            <div class="example-input">"帮我生成一份推广方案"</div>
+            <div class="example-output">
+                <strong>数字内阁 会自动：</strong><br>
+                • 规划方案框架（目标、策略、执行步骤、预算）<br>
+                • 生成完整方案（可直接提交的版本）<br>
+                • 自动审核（检查可行性、补充遗漏点）<br>
+                • 输出模板（以后做方案直接套用）
+            </div>
+        </div>
+    </section>
+    
+    <!-- Back to Home -->
+    <section style="text-align: center; padding: 30px 20px; border-top: 1px solid rgba(255,255,255,0.1);">
+        <a href="/" style="color: #64748b; text-decoration: none; font-size: 14px; display: inline-flex; align-items: center; gap: 8px;">
+            ← 返回理念首页
+        </a>
+    </section>
+    
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-brand">diyici.ai</div>
+        <p class="footer-desc">3分钟，让数字内阁帮你完成第一个任务</p>
+    </footer>
+    
+    <script>
+        function setTask(text) {
+            document.getElementById('task-input').value = text;
+            document.getElementById('task-input').focus();
+        }
+        
+        function startTask() {
+            const input = document.getElementById('task-input').value.trim();
+            if (!input) {
+                alert('请输入你想完成的任务');
+                return;
+            }
+            // 跳转到数字内阁页面并传递任务
+            window.location.href = '/cabinet.html?task=' + encodeURIComponent(input);
+        }
+    </script>
+</body>
+</html>

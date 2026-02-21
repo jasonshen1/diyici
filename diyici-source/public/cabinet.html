@@ -654,7 +654,7 @@
     <!-- 数字内阁介绍 -->
     <div class="cabinet-intro" style="margin-bottom: 40px; position: relative; z-index: 1;">
       <h2 style="font-size: 20px; font-weight: 700; color: #fff; margin-bottom: 24px; text-align: center;">数字内阁工作流程</h2>
-      <p style="text-align: center; color: #94a3b8; margin-bottom: 32px;">首辅谋局、干吏执行、御史审查、史官沉淀，四脑协同为你完成从规划到执行的全流程</p>
+      <p style="text-align: center; color: #94a3b8; margin-bottom: 32px;">谋局的人、干活的人、挑毛病的人、整理的人，一起帮你完成从规划到执行的全流程</p>
 
       <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-bottom: 24px;" class="roles-grid">
         <!-- 谋局者 -->
@@ -1713,7 +1713,7 @@
         if (result.executionResult) summary.push('【执行者方案】' + result.executionResult.substring(0, 200) + '...');
         if (result.finalResult) summary.push('【沉淀者总结】' + result.finalResult.substring(0, 200) + '...');
 
-        const context = `【基于完整方案继续优化】\n\n之前四脑协作生成的方案核心内容：\n\n${summary.join('\n\n')}\n\n我需要进一步优化和完善：\n`;
+        const context = `【基于完整方案继续优化】\n\n之前团队协作生成的方案核心内容：\n\n${summary.join('\n\n')}\n\n我需要进一步优化和完善：\n`;
 
         userInput.value = context;
         userInput.focus();
@@ -1773,7 +1773,7 @@
         <div class="result-icon" style="background: linear-gradient(135deg, #667eea, #764ba2);">📊</div>
         <div class="result-title">
           <h3>执行统计报告</h3>
-          <p>四脑协作工作量概览</p>
+          <p>团队协作工作量概览</p>
         </div>
       `;
       statsCard.appendChild(header);
@@ -2239,7 +2239,7 @@ ${(result.template || '').split('\n').map(line => '      ' + line).join('\n')}
 
 ─────────────────────────────────────────────────────────────────
 📋 本报告由数字内阁自动生成
-🎯 四脑协同：首辅谋局 → 干吏执行 → 御史审查 → 史官沉淀
+🎯 四个角色一起：谋局 → 执行 → 审查 → 整理
 ⏱️ 执行耗时：${stats.duration || '计算中...'}  |  审核轮次：${stats.retryCount || 0} 轮
 🔒 diyici.ai - 驯服硅基怪兽的制衡工具
 ─────────────────────────────────────────────────────────────────`;
@@ -2654,7 +2654,7 @@ ${(result.template || '').split('\n').map(line => '      ' + line).join('\n')}
   <div class="container">
     <div class="header">
       <h1>数字内阁执行成果报告</h1>
-      <div class="subtitle">四脑协同 · 深度定制 · 可落地执行方案</div>
+      <div class="subtitle">四个角色一起 · 深度定制 · 可落地执行方案</div>
       <div class="stats">
         <div class="stat-item">
           <div class="stat-value">${stats.duration || '计算中...'}</div>
@@ -2683,7 +2683,7 @@ ${(result.template || '').split('\n').map(line => '      ' + line).join('\n')}
 
     <div class="footer">
       <div class="brand">🏛️ diyici.ai - 数字内阁</div>
-      <p>四脑协同：首辅谋局 → 干吏执行 → 御史审查 → 史官沉淀</p>
+      <p>四个角色一起：谋局 → 执行 → 审查 → 整理</p>
       <p>⏱️ 执行耗时：${stats.duration || '计算中...'}  |  审核轮次：${stats.retryCount || 0} 轮</p>
       <p>驯服硅基怪兽的制衡工具</p>
     </div>
@@ -2799,7 +2799,7 @@ ${(result.template || '').split('\n').map(line => '      ' + line).join('\n')}
         beautifiedLines.push(`  ⏱️ 执行耗时：${stats.duration || '计算中...'}  |  审核轮次：${stats.retryCount || 0} 轮`);
         beautifiedLines.push('');
         beautifiedLines.push('  📋 本报告由数字内阁自动生成');
-        beautifiedLines.push('  🎯 四脑协同：首辅谋局 → 干吏执行 → 御史审查 → 史官沉淀');
+        beautifiedLines.push('  🎯 四个角色一起：谋局 → 执行 → 审查 → 整理');
         beautifiedLines.push('  🔒 diyici.ai - 驯服硅基怪兽的制衡工具');
         beautifiedLines.push('');
         beautifiedLines.push('─────────────────────────────────────────────────────────────────');
@@ -3200,7 +3200,7 @@ ${(result.template || '').split('\n').map(line => '      ' + line).join('\n')}
           <div class="result-icon" style="background: linear-gradient(135deg, #ef4444, #dc2626);">❌</div>
           <div class="result-title">
             <h3>任务执行失败</h3>
-            <p>四脑协作未能完成任务</p>
+            <p>团队协作未能完成任务</p>
           </div>
         </div>
       `;
