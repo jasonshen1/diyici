@@ -129,4 +129,55 @@ router.get('/list', async (req, res) => {
   }
 });
 
+// GET /api/knowledge/:id
+// 获取单个知识详情
+router.get('/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    
+    if (!fs.existsSync(KNOWLEDGE_INDEX)) {
+      return res.status(404).json({
+        success: false,
+        error: '知识库为空'
+      });
+    }
+
+    const index = JSON.parse(fs.readFileSync(KNOWLEDGE_INDEX, 'utf-8'));
+    const entry = index.entries?.find((e: any) => e.id === id);
+    
+    if (!entry) {
+      return res.status(404).json({
+        success: false,
+        error: '方案不存在'
+      });
+    }
+
+    // 读取文件内容
+    const filepath = path.join(KNOWLEDGE_DIR, entry.file);
+    let content = '';
+    
+    if (fs.existsSync(filepath)) {
+      content = fs.readFileSync(filepath, 'utf-8');
+    }
+
+    // 增加浏览量
+    entry.views = (entry.views || 0) + 1;
+    fs.writeFileSync(KNOWLEDGE_INDEX, JSON.stringify(index, null, 2), 'utf-8');
+
+    res.json({
+      success: true,
+      data: {
+        ...entry,
+        content
+      }
+    });
+  } catch (error) {
+    console.error('获取知识详情失败:', error);
+    res.status(500).json({
+      success: false,
+      error: '获取详情失败'
+    });
+  }
+});
+
 export default router;
