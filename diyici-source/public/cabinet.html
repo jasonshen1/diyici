@@ -1028,28 +1028,48 @@
     });
     // 文件上传处理
     // 为华为手机等移动端添加备用点击方案
-    document.getElementById('file-upload-area').addEventListener('touchstart', function(e) {
-      e.preventDefault();
-      document.getElementById('file-input').click();
-    });
+    var fileInput = document.getElementById('file-input');
+    var uploadArea = document.getElementById('file-upload-area');
     
-    // 同时保留click事件
-    document.getElementById('file-upload-area').addEventListener('click', function(e) {
-      // 如果点击的不是label本身（避免重复触发）
-      if (e.target.tagName !== 'INPUT') {
-        document.getElementById('file-input').click();
-      }
-    });
+    // 使用addEventListener绑定change事件（更可靠）
+    if (fileInput) {
+      fileInput.addEventListener('change', function(e) {
+        console.log('File input change event triggered');
+        handleFiles(this.files);
+      });
+    }
+    
+    // touchstart事件
+    if (uploadArea) {
+      uploadArea.addEventListener('touchstart', function(e) {
+        e.preventDefault();
+        console.log('Touchstart triggered');
+        if (fileInput) fileInput.click();
+      });
+    }
 
     function handleFiles(files) {
-      if (!files || files.length === 0) return;
+      console.log('handleFiles called, files:', files ? files.length : 0);
+      
+      // 兼容处理：确保files是有效的FileList
+      if (!files || files.length === 0) {
+        console.log('No files selected');
+        return;
+      }
 
       var container = document.getElementById('file-list');
       var listDiv = document.getElementById('file-items');
-      if (!container || !listDiv) return;
+      if (!container || !listDiv) {
+        console.error('Container not found');
+        return;
+      }
 
-      for (var i = 0; i < files.length; i++) {
-        var file = files[i];
+      // 转为数组处理，兼容不同浏览器
+      var filesArray = Array.from(files);
+      
+      for (var i = 0; i < filesArray.length; i++) {
+        var file = filesArray[i];
+        console.log('Processing file:', file.name, 'size:', file.size);
 
         // 检查大小（20MB）
         if (file.size > 20 * 1024 * 1024) {
@@ -1069,6 +1089,7 @@
         if (!exists) {
           uploadedFiles.push(file);
           addFileToList(file);
+          console.log('File added:', file.name);
         }
       }
 
@@ -1077,7 +1098,21 @@
         updateFileCount();
       }
 
-      document.getElementById('file-input').value = '';
+      // 重要：重置input以允许重复选择相同文件
+      var input = document.getElementById('file-input');
+      if (input) {
+        input.value = '';
+        // 华为等手机可能需要重新创建input
+        try {
+          var newInput = input.cloneNode(true);
+          input.parentNode.replaceChild(newInput, input);
+          newInput.addEventListener('change', function(e) {
+            handleFiles(this.files);
+          });
+        } catch(e) {
+          console.log('Reset input error:', e);
+        }
+      }
     }
 
     function addFileToList(file) {
