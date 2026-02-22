@@ -1372,8 +1372,15 @@
         });
         
         function showInfoModal() {
-            document.getElementById('info-modal').style.display = 'block';
-            document.body.style.overflow = 'hidden';
+            console.log('showInfoModal called');
+            var modal = document.getElementById('info-modal');
+            if (modal) {
+                modal.style.display = 'block';
+                document.body.style.overflow = 'hidden';
+                console.log('Modal opened');
+            } else {
+                console.error('Modal element not found');
+            }
         }
         function closeInfoModal() {
             document.getElementById('info-modal').style.display = 'none';
