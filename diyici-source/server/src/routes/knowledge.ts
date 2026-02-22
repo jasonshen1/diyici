@@ -116,9 +116,50 @@ router.get('/list', async (req, res) => {
     }
 
     const index = JSON.parse(fs.readFileSync(KNOWLEDGE_INDEX, 'utf-8'));
+    const entries = index.entries || [];
+    
+    // 为每个条目添加内容预览
+    const entriesWithPreview = entries.map((entry: any) => {
+      // 读取文件内容生成预览
+      let preview = entry.subtitle || entry.description || '暂无简介';
+      
+      if (preview.length < 50 && entry.file) {
+        try {
+          const filepath = path.join(KNOWLEDGE_DIR, entry.file);
+          if (fs.existsSync(filepath)) {
+            const content = fs.readFileSync(filepath, 'utf-8');
+            // 提取前300个字符作为预览，去除Markdown标记
+            const cleanContent = content
+              .replace(/#{1,6}\s+/g, '') // 移除标题标记
+              .replace(/\*\*/g, '') // 移除粗体
+              .replace(/\*/g, '') // 移除斜体
+              .replace(/`/g, '') // 移除代码标记
+              .replace(/\[([^\]]+)\]\([^\)]+\)/g, '$1') // 移除链接
+              .replace(/!\[([^\]]*)\]\([^\)]+\)/g, '') // 移除图片
+              .replace(/\n+/g, ' ') // 换行转为空格
+              .trim();
+            
+            if (cleanContent.length > 0) {
+              preview = cleanContent.substring(0, 200);
+              if (cleanContent.length > 200) {
+                preview += '...';
+              }
+            }
+          }
+        } catch (e) {
+          // 读取失败则使用原有简介
+        }
+      }
+      
+      return {
+        ...entry,
+        summary: preview // 返回处理后的预览
+      };
+    });
+    
     res.json({
       success: true,
-      data: index.entries || []
+      data: entriesWithPreview
     });
   } catch (error) {
     console.error('获取知识库列表失败:', error);
