@@ -1363,6 +1363,14 @@
         </div>
     </div>
     <script>
+        // 页面加载时检查是否需要自动打开关于弹窗
+        window.addEventListener('load', function() {
+            if (localStorage.getItem('openAboutModal') === 'true') {
+                localStorage.removeItem('openAboutModal');
+                showInfoModal();
+            }
+        });
+        
         function showInfoModal() {
             document.getElementById('info-modal').style.display = 'block';
             document.body.style.overflow = 'hidden';
