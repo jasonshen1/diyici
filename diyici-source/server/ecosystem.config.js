@@ -16,16 +16,13 @@ module.exports = {
     max_restarts: 5,
     min_uptime: '10s',
     
-    // 环境变量
+    // 环境变量 - 从系统环境变量读取，不在文件中硬编码
     env: {
       NODE_ENV: 'production',
       NODE_OPTIONS: '--max-old-space-size=400',
-      // API Keys
-      KIMI_API_KEY: 'sk-kimi-AMPYGt7VOAINlBACe1qsJe02dIfMdkeenrqURyMRfnyFHzaBJIkoldfLbXEqUSE5',
-      DEEPSEEK_API_KEY: 'sk-1872e462e6824d4bba4649e438c78668',
-      TENCENT_SECRET_ID: 'AKIDKn5qW4axAFCzPk5TjmliULLBpGUWP5iC',
-      TENCENT_SECRET_KEY: 'QcbNwOcdQ0NWTGEBBFOSO7e4MSOAmGYu',
       PORT: '3000'
+      // API Keys从系统环境变量读取，不要在这里硬编码！
+      // KIMI_API_KEY, DEEPSEEK_API_KEY, TENCENT_SECRET_ID, TENCENT_SECRET_KEY
     },
     
     // 日志配置
