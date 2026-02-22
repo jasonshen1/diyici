@@ -843,7 +843,7 @@
             <p style="color: #fbbf24; font-size: 11px; margin: 0;">💡 提示：为保证最佳处理效果，建议上传内容精炼的文档。超长篇内容可能会被智能精简处理。</p>
           </div>
         </label>
-        <input type="file" id="file-input" style="position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); border: 0;" onchange="handleFiles(this.files)" multiple accept="*/*" capture="filesystem">
+        <input type="file" id="file-input" style="position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); border: 0;" onchange="handleFiles(this.files)" multiple>
 
         <!-- 已上传文件列表 -->
         <div id="file-list" style="margin-top: 12px; display: none;">
@@ -1039,13 +1039,12 @@
       });
     }
     
-    // touchstart事件
+    // touchstart事件 - 不阻止默认行为，避免影响其他元素
     if (uploadArea) {
       uploadArea.addEventListener('touchstart', function(e) {
-        e.preventDefault();
         console.log('Touchstart triggered');
         if (fileInput) fileInput.click();
-      });
+      }, {passive: true});
     }
 
     function handleFiles(files) {
