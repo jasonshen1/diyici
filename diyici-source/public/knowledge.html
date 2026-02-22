@@ -165,9 +165,15 @@
             line-height: 1.6;
             margin-bottom: 16px;
             display: -webkit-box;
-            -webkit-line-clamp: 3;
+            -webkit-line-clamp: 4;
             -webkit-box-orient: vertical;
             overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .knowledge-card:hover .card-summary {
+            -webkit-line-clamp: unset;
+            display: block;
         }
         
         .card-meta {
@@ -329,12 +335,27 @@
                 return;
             }
             
-            container.innerHTML = knowledges.map(k => `
+            container.innerHTML = knowledges.map(k => {
+                // 提取更好的预览内容
+                let preview = k.summary || '暂无简介';
+                // 如果简介太短，尝试从content中提取
+                if (preview.length < 50 && k.content) {
+                    const contentText = k.content.replace(/[#*`\[\]()]/g, ' ').trim();
+                    preview = contentText.substring(0, 150) + (contentText.length > 150 ? '...' : '');
+                }
+                // 限制预览长度
+                if (preview.length > 200) {
+                    preview = preview.substring(0, 200) + '...';
+                }
+                
+                return `
                 <div class="knowledge-card" style="position: relative;">
                     <div onclick="viewKnowledge('${k.id}')" style="cursor: pointer;">
                         <span class="card-category">${k.category || '未分类'}</span>
                         <h3 class="card-title">${escapeHtml(k.title)}</h3>
-                        <p class="card-summary">${escapeHtml(k.summary || '暂无简介')}</p>
+                        <div class="card-preview">
+                            <p class="card-summary">${escapeHtml(preview)}</p>
+                        </div>
                         <div class="card-meta">
                             <span class="card-creator">👤 ${k.creator || '开创者'}</span>
                             <div class="card-stats">
@@ -351,7 +372,7 @@
                         🔗
                     </button>
                 </div>
-            `).join('');
+            `}).join('');
         }
         
         function updateStats(knowledges) {
