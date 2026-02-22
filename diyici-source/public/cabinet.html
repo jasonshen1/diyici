@@ -834,7 +834,7 @@
 
       <!-- 文件上传区域 -->
       <div class="file-upload-section" style="margin-bottom: 16px;">
-        <div class="file-upload-area" id="file-upload-area" onclick="document.getElementById('file-input').click()" ondragover="event.preventDefault(); this.style.borderColor='#667eea';" ondragleave="event.preventDefault(); this.style.borderColor='rgba(102, 126, 234, 0.5)';" ondrop="event.preventDefault(); this.style.borderColor='rgba(102, 126, 234, 0.5)'; handleFiles(event.dataTransfer.files);" style="border: 2px dashed rgba(102, 126, 234, 0.5); border-radius: 12px; padding: 24px; text-align: center; background: rgba(102, 126, 234, 0.05); cursor: pointer; transition: all 0.3s ease;">
+        <label for="file-input" class="file-upload-area" id="file-upload-area" ondragover="event.preventDefault(); this.style.borderColor='#667eea';" ondragleave="event.preventDefault(); this.style.borderColor='rgba(102, 126, 234, 0.5)';" ondrop="event.preventDefault(); this.style.borderColor='rgba(102, 126, 234, 0.5)'; handleFiles(event.dataTransfer.files);" style="border: 2px dashed rgba(102, 126, 234, 0.5); border-radius: 12px; padding: 24px; text-align: center; background: rgba(102, 126, 234, 0.05); cursor: pointer; transition: all 0.3s ease; display: block;">
           <div class="upload-icon" style="font-size: 48px; margin-bottom: 12px;">📎</div>
           <p style="color: #94a3b8; margin-bottom: 8px;">点击或拖拽文件到此处上传</p>
           <p style="color: #64748b; font-size: 12px;">支持任意文件格式</p>
@@ -842,8 +842,8 @@
           <div style="margin-top: 12px; padding: 10px; background: rgba(251, 191, 36, 0.1); border-radius: 8px; border-left: 3px solid #fbbf24;">
             <p style="color: #fbbf24; font-size: 11px; margin: 0;">💡 提示：为保证最佳处理效果，建议上传内容精炼的文档。超长篇内容可能会被智能精简处理。</p>
           </div>
-          <input type="file" id="file-input" style="display: none;" onchange="handleFiles(this.files)" multiple>
-        </div>
+        </label>
+        <input type="file" id="file-input" style="position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); border: 0;" onchange="handleFiles(this.files)" multiple>
 
         <!-- 已上传文件列表 -->
         <div id="file-list" style="margin-top: 12px; display: none;">
