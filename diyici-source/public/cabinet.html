@@ -649,7 +649,7 @@
       <a href="/" class="nav-logo">diyici.ai</a>
       <div class="nav-links">
         <a href="/knowledge.html" class="nav-link">开创者知识库</a>
-        <a href="#" class="nav-link" onclick="document.getElementById('info-modal').style.display='block'; document.body.style.overflow='hidden'; return false;">关于</a>
+        <a href="#" class="nav-link" onclick="openInfoModal(); return false;">关于</a>
         <a href="/cabinet.html" class="nav-link nav-link-primary">开始使用</a>
       </div>
     </div>
@@ -976,144 +976,43 @@
     </div>
   </div>
 
-    <div id="info-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 9999; overflow-y: auto;">
-        <div style="max-width: 800px; margin: 40px auto; background: linear-gradient(180deg, #1a1a3e 0%, #0f0f23 100%); border-radius: 20px; padding: 40px; position: relative; border: 1px solid rgba(102, 126, 234, 0.3);">
-            <button onclick="closeInfoModal()" style="position: absolute; top: 20px; right: 20px; width: 40px; height: 40px; background: rgba(255,255,255,0.1); border: none; border-radius: 50%; color: #94a3b8; font-size: 20px; cursor: pointer; z-index: 10;">×</button>
-            
-            <div style="color: #e2e8f0; line-height: 1.8;">
-                <h2 style="font-size: 28px; font-weight: 700; color: #fff; margin-bottom: 8px; text-align: center;">关于 diyici.ai</h2>
-                <p style="font-size: 16px; color: #667eea; text-align: center; margin-bottom: 32px;">第一次，组建你的数字内阁</p>
 
-                <!-- 一、痛点引入 -->
-                <div style="padding: 24px; background: rgba(255,255,255,0.05); border-radius: 12px; margin-bottom: 32px; border-left: 4px solid #ef4444;">
-                    <p style="margin-bottom: 16px; color: #e2e8f0; font-weight: 600;">很多人都有想法：</p>
-                    <p style="margin-bottom: 8px; color: #94a3b8;">想做自媒体、想转行、想创业、想学习一门新技能...</p>
-                    <p style="margin-bottom: 12px; color: #e2e8f0; font-weight: 600;">但问题是：</p>
-                    <p style="margin-bottom: 8px; color: #94a3b8;">脑子里很乱，不知道从哪开始，怕走弯路，怕做错决定。</p>
-                    <p style="margin-bottom: 8px; color: #94a3b8;">问AI？它给一堆建议，看起来都对，但不知道该先做哪一步。</p>
-                    <p style="color: #ef4444; font-weight: 600;">最后还是迷茫。</p>
-                </div>
-
-                <!-- 二、我们是谁 -->
-                <h3 style="font-size: 20px; font-weight: 600; color: #667eea; margin: 32px 0 16px;">我们是谁？</h3>
-                <p style="margin-bottom: 16px; color: #94a3b8;"><strong style="color: #fff;">diyici.ai</strong> 是干什么的？</p>
-                <p style="margin-bottom: 24px; color: #94a3b8;">一句话：<span style="color: #667eea; font-weight: 600;">帮你把"模糊的想法"，变成"可以照着做的步骤"。</span></p>
-                <p style="margin-bottom: 32px; color: #94a3b8;">而且不是随便给建议，而是像一个<strong>真正的团队在帮你思考</strong>。</p>
-
-                <!-- 三、四角色 -->
-                <h3 style="font-size: 20px; font-weight: 600; color: #667eea; margin: 32px 0 16px;">数字内阁——你的专属智能顾问</h3>
-                <p style="margin-bottom: 24px; color: #94a3b8;">一个人思考容易遗漏，四个人协作互相补位：</p>
-
-                <div style="background: rgba(102, 126, 234, 0.1); padding: 20px; border-radius: 12px; margin-bottom: 16px;">
-                    <h4 style="color: #667eea; font-size: 16px; margin-bottom: 12px;">🧠 首辅（谋局）</h4>
-                    <p style="color: #94a3b8;">帮你定目标、找关键、避风险——搞清楚你要解决什么问题</p>
-                </div>
-
-                <div style="background: rgba(245, 158, 11, 0.1); padding: 20px; border-radius: 12px; margin-bottom: 16px;">
-                    <h4 style="color: #f59e0b; font-size: 16px; margin-bottom: 12px;">👨‍💻 干吏（执行）</h4>
-                    <p style="color: #94a3b8;">给你可执行的步骤，不是空话——具体怎么做、做到什么程度</p>
-                </div>
-
-                <div style="background: rgba(239, 68, 68, 0.1); padding: 20px; border-radius: 12px; margin-bottom: 16px;">
-                    <h4 style="color: #ef4444; font-size: 16px; margin-bottom: 12px;">🔍 御史（审查）</h4>
-                    <p style="color: #94a3b8;">专门找漏洞——不现实的地方、模糊的目标、漏掉的步骤，最多改三轮直到够清楚</p>
-                </div>
-
-                <div style="background: rgba(16, 185, 129, 0.1); padding: 20px; border-radius: 12px; margin-bottom: 32px;">
-                    <h4 style="color: #10b981; font-size: 16px; margin-bottom: 12px;">📚 史官（沉淀）</h4>
-                    <p style="color: #94a3b8;">整理成清单和模板——下次遇到类似问题，不用从零开始</p>
-                </div>
-
-                <!-- 四、完整流程 -->
-                <h3 style="font-size: 20px; font-weight: 600; color: #667eea; margin: 32px 0 16px;">完整流程：从想法到方法</h3>
-                
-                <p style="margin-bottom: 12px; color: #e2e8f0;"><strong>第一步：你说出想法</strong></p>
-                <p style="margin-bottom: 16px; color: #94a3b8;">简单描述你的问题就行</p>
-
-                <p style="margin-bottom: 12px; color: #e2e8f0;"><strong>第二步：四个角色一起工作（几分钟）</strong></p>
-                <p style="margin-bottom: 8px; color: #94a3b8;">谋局 → 执行 → 审查 → 整理</p>
-                <p style="margin-bottom: 16px; color: #94a3b8;">如果审查不通过，最多循环3次</p>
-
-                <p style="margin-bottom: 12px; color: #e2e8f0;"><strong>第三步：你拿到成果</strong></p>
-                <ul style="margin-bottom: 16px; padding-left: 20px; color: #94a3b8;">
-                    <li style="margin-bottom: 6px;">📋 方案文档 —— 包含全部四个角色的完整输出</li>
-                    <li style="margin-bottom: 6px;">⚡ Skill配置 —— 可被其他系统调用，实现自动化</li>
-                    <li style="margin-bottom: 6px;">📊 执行清单 —— To-do List格式，逐项执行不遗漏</li>
-                </ul>
-
-                <p style="margin-bottom: 12px; color: #e2e8f0;"><strong>第四步：沉淀价值（可选）</strong></p>
-                <ul style="margin-bottom: 24px; padding-left: 20px; color: #94a3b8;">
-                    <li style="margin-bottom: 6px;">🌐 发布到开创者知识库 —— 成为开创者，帮助他人</li>
-                    <li style="margin-bottom: 6px;">📤 分享给朋友 —— QQ、微信、复制文案</li>
-                    <li style="margin-bottom: 6px;">🔄 下次复用 —— 基于此方案继续优化迭代</li>
-                </ul>
-
-                <!-- 五、对比 -->
-                <h3 style="font-size: 20px; font-weight: 600; color: #667eea; margin: 32px 0 16px;">和直接问AI有什么不同？</h3>
-                
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 32px;">
-                    <div style="padding: 20px; background: rgba(255,255,255,0.05); border-radius: 12px;">
-                        <p style="color: #94a3b8; font-size: 14px; margin-bottom: 8px;">普通问AI：</p>
-                        <p style="color: #fff;">给你一个回答</p>
-                    </div>
-                    <div style="padding: 20px; background: rgba(102, 126, 234, 0.2); border-radius: 12px; border: 1px solid rgba(102, 126, 234, 0.3);">
-                        <p style="color: #667eea; font-size: 14px; margin-bottom: 8px;">数字内阁：</p>
-                        <p style="color: #fff;">给你一套<strong>可执行的步骤</strong> + <strong>漏洞检查</strong> + <strong>可复用模板</strong></p>
-                    </div>
-                </div>
-
-                <!-- 六、实际案例 -->
-                <h3 style="font-size: 20px; font-weight: 600; color: #667eea; margin: 32px 0 16px;">举个简单例子</h3>
-                
-                <p style="margin-bottom: 16px; color: #e2e8f0;"><strong>你说："我想做一个职场成长类账号"</strong></p>
-                <p style="margin-bottom: 12px; color: #94a3b8;">普通AI会告诉你：定位、内容方向、变现方式...</p>
-                <p style="margin-bottom: 12px; color: #94a3b8;">数字内阁会给你：</p>
-                <ul style="margin-bottom: 24px; padding-left: 20px; color: #94a3b8;">
-                    <li style="margin-bottom: 6px;">账号定位怎么定</li>
-                    <li style="margin-bottom: 6px;">目标人群是谁</li>
-                    <li style="margin-bottom: 6px;">前30条视频怎么规划</li>
-                    <li style="margin-bottom: 6px;">每周更新几次</li>
-                    <li style="margin-bottom: 6px;">需要花多少钱</li>
-                    <li style="margin-bottom: 6px;">三个月后怎么判断成不成功</li>
-                </ul>
-                <p style="margin-bottom: 32px; color: #94a3b8;">最后给你一份清单，照着做就行。</p>
-
-                <!-- 七、价值 -->
-                <h3 style="font-size: 20px; font-weight: 600; color: #667eea; margin: 32px 0 16px;">最终价值：把经验变成资产</h3>
-                
-                <p style="margin-bottom: 8px; color: #e2e8f0;"><strong>对个人：</strong></p>
-                <ul style="margin-bottom: 16px; padding-left: 20px; color: #94a3b8;">
-                    <li style="margin-bottom: 6px;">✅ 想法变清楚 —— 从模糊想法到清晰步骤</li>
-                    <li style="margin-bottom: 6px;">✅ 执行有依据 —— 从随意发挥到规范流程</li>
-                    <li style="margin-bottom: 6px;">✅ 能力成体系 —— 从单点技巧到完整方案</li>
-                    <li>✅ 经验可复用 —— 从一次性工作到可复用模板</li>
-                </ul>
-
-                <p style="margin-bottom: 8px; color: #e2e8f0;"><strong>对社会：</strong></p>
-                <ul style="margin-bottom: 32px; padding-left: 20px; color: #94a3b8;">
-                    <li style="margin-bottom: 6px;">🌐 可发布 —— 发布到开创者知识库</li>
-                    <li style="margin-bottom: 6px;">📤 可转发 —— 分享给朋友，帮助更多人</li>
-                    <li style="margin-bottom: 6px;">🔄 可复用 —— 他人可以使用你的方法</li>
-                    <li>📈 可进化 —— 方法不断迭代优化</li>
-                </ul>
-
-                <!-- 八、为什么叫第一次 -->
-                <h3 style="font-size: 20px; font-weight: 600; color: #667eea; margin: 32px 0 16px;">为什么叫"第一次"？</h3>
-                
-                <p style="margin-bottom: 16px; color: #94a3b8;">每个人都有很多第一次。</p>
-                <p style="margin-bottom: 16px; color: #94a3b8;">第一次做账号、第一次创业、第一次认真规划未来。</p>
-                <p style="margin-bottom: 16px; color: #94a3b8;">很多人卡在第一步，不是因为不聪明，而是<strong style="color: #fff;">没人帮他把事情想清楚</strong>。</p>
-                <p style="margin-bottom: 32px; color: #94a3b8;">diyici.ai 做的事很简单：<span style="color: #667eea; font-weight: 600;">陪你把第一次想清楚，并且把它变成可以复制的方法。</span></p>
-
-                <!-- 结尾 -->
-                <div style="text-align: center; padding: 32px; background: linear-gradient(135deg, rgba(102, 126, 234, 0.2), rgba(118, 75, 162, 0.2)); border-radius: 12px; margin-top: 40px;">
-                    <p style="font-size: 24px; font-weight: 700; color: #fff; margin-bottom: 12px;">这就是把"经验"，变成"资产"</p>
-                    <p style="color: #667eea; font-size: 16px; margin-bottom: 24px;">diyici.ai · 第一次，组建你的数字内阁</p>
-                    <a href="/cabinet.html" style="display: inline-block; padding: 14px 32px; background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 8px; color: #fff; text-decoration: none; font-weight: 600; font-size: 16px;">开始使用</a>
-                </div>
-            </div>
+    <!-- 关于弹窗 -->
+    <div id="info-modal" style="display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.9);z-index:99999;overflow-y:auto;">
+      <div style="max-width:800px;margin:40px auto;background:linear-gradient(180deg,#1a1a3e 0%,#0f0f23 100%);border-radius:20px;padding:40px;position:relative;border:1px solid rgba(102,126,234,0.3);">
+        <button onclick="closeInfoModal()" style="position:absolute;top:20px;right:20px;width:40px;height:40px;background:rgba(255,255,255,0.1);border:none;border-radius:50%;color:#94a3b8;font-size:20px;cursor:pointer;">×</button>
+        <div style="color:#e2e8f0;line-height:1.8;">
+          <h2 style="font-size:28px;font-weight:700;color:#fff;margin-bottom:8px;text-align:center;">关于 diyici.ai</h2>
+          <p style="font-size:16px;color:#667eea;text-align:center;margin-bottom:32px;">第一次，组建你的数字内阁</p>
+          <p style="margin-bottom:16px;color:#94a3b8;">diyici.ai 帮你把"模糊的想法"，变成"可以照着做的步骤"。</p>
+          <p style="margin-bottom:24px;color:#94a3b8;">四个角色一起协作：首辅谋局、干吏执行、御史审查、史官沉淀。</p>
+          <div style="text-align:center;padding:24px;background:linear-gradient(135deg,rgba(102,126,234,0.2),rgba(118,75,162,0.2));border-radius:12px;margin-top:32px;">
+            <a href="/cabinet.html" style="display:inline-block;padding:14px 32px;background:linear-gradient(135deg,#667eea,#764ba2);border-radius:8px;color:#fff;text-decoration:none;font-weight:600;font-size:16px;">开始使用</a>
+          </div>
         </div>
+      </div>
     </div>
+    <script>
+    function openInfoModal() {
+      var modal = document.getElementById('info-modal');
+      if (modal) {
+        modal.style.display = 'block';
+        document.body.style.overflow = 'hidden';
+      }
+    }
+    function closeInfoModal() {
+      var modal = document.getElementById('info-modal');
+      if (modal) {
+        modal.style.display = 'none';
+        document.body.style.overflow = 'auto';
+      }
+    }
+    document.addEventListener('click', function(e) {
+      if (e.target.id === 'info-modal') {
+        closeInfoModal();
+      }
+    });
+    </script>
     <script>
     function showInfoModal() {
       console.log("showInfoModal called");
