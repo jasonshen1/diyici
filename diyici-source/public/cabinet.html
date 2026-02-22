@@ -843,7 +843,7 @@
             <p style="color: #fbbf24; font-size: 11px; margin: 0;">💡 提示：为保证最佳处理效果，建议上传内容精炼的文档。超长篇内容可能会被智能精简处理。</p>
           </div>
         </label>
-        <input type="file" id="file-input" style="position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); border: 0;" onchange="handleFiles(this.files)" multiple>
+        <input type="file" id="file-input" style="position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); border: 0;" onchange="handleFiles(this.files)" multiple accept="*/*" capture="filesystem">
 
         <!-- 已上传文件列表 -->
         <div id="file-list" style="margin-top: 12px; display: none;">
@@ -1027,7 +1027,19 @@
       if (e.target === this) closeInfoModal();
     });
     // 文件上传处理
-    var uploadedFiles = [];
+    // 为华为手机等移动端添加备用点击方案
+    document.getElementById('file-upload-area').addEventListener('touchstart', function(e) {
+      e.preventDefault();
+      document.getElementById('file-input').click();
+    });
+    
+    // 同时保留click事件
+    document.getElementById('file-upload-area').addEventListener('click', function(e) {
+      // 如果点击的不是label本身（避免重复触发）
+      if (e.target.tagName !== 'INPUT') {
+        document.getElementById('file-input').click();
+      }
+    });
 
     function handleFiles(files) {
       if (!files || files.length === 0) return;
