@@ -1038,14 +1038,6 @@
         handleFiles(this.files);
       });
     }
-    
-    // touchstart事件 - 不阻止默认行为，避免影响其他元素
-    if (uploadArea) {
-      uploadArea.addEventListener('touchstart', function(e) {
-        console.log('Touchstart triggered');
-        if (fileInput) fileInput.click();
-      }, {passive: true});
-    }
 
     function handleFiles(files) {
       console.log('handleFiles called, files:', files ? files.length : 0);
