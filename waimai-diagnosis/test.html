@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>外卖店诊断系统 - 测试页面</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            opacity: 0.9;
+            font-size: 14px;
+        }
+        
+        .form-section {
+            padding: 30px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 20px;
+            padding-left: 12px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .form-group label {
+            font-size: 14px;
+            color: #555;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        
+        .form-group input,
+        .form-group select {
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+        
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+        
+        .form-group small {
+            font-size: 12px;
+            color: #999;
+            margin-top: 4px;
+        }
+        
+        .submit-btn {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            margin-top: 20px;
+        }
+        
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        .result-section {
+            padding: 30px;
+            background: #f8f9fa;
+            display: none;
+        }
+        
+        .result-section.active {
+            display: block;
+        }
+        
+        .score-card {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            text-align: center;
+            margin-bottom: 24px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .score-value {
+            font-size: 48px;
+            font-weight: 700;
+            color: #667eea;
+        }
+        
+        .score-label {
+            font-size: 18px;
+            color: #666;
+            margin-top: 8px;
+        }
+        
+        .dimension-list {
+            display: grid;
+            gap: 12px;
+        }
+        
+        .dimension-item {
+            background: white;
+            border-radius: 8px;
+            padding: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .dimension-name {
+            font-weight: 500;
+            color: #333;
+        }
+        
+        .dimension-score {
+            font-weight: 700;
+            font-size: 18px;
+        }
+        
+        .dimension-score.good {
+            color: #10b981;
+        }
+        
+        .dimension-score.warning {
+            color: #f59e0b;
+        }
+        
+        .dimension-score.danger {
+            color: #ef4444;
+        }
+        
+        .suggestions {
+            background: white;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        
+        .suggestions h3 {
+            font-size: 16px;
+            margin-bottom: 16px;
+            color: #333;
+        }
+        
+        .suggestion-item {
+            padding: 12px;
+            background: #f0f9ff;
+            border-left: 4px solid #667eea;
+            border-radius: 4px;
+            margin-bottom: 12px;
+        }
+        
+        .suggestion-item strong {
+            color: #667eea;
+        }
+        
+        .preset-buttons {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .preset-btn {
+            padding: 8px 16px;
+            background: #f0f0f0;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.2s;
+        }
+        
+        .preset-btn:hover {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🍜 外卖店智能诊断系统</h1>
+            <p>输入店铺运营数据，自动生成专业诊断报告</p>
+        </div>
+        
+        <div class="form-section">
+            <div class="preset-buttons">
+                <button class="preset-btn" onclick="fillPreset('good')">🟢 优秀店铺示例</button>
+                <button class="preset-btn" onclick="fillPreset('average')">🟡 普通店铺示例</button>
+                <button class="preset-btn" onclick="fillPreset('poor')">🔴 待改进店铺示例</button>
+                <button class="preset-btn" onclick="fillPreset('clear')">📝 清空表单</button>
+            </div>
+            
+            <form id="diagnosisForm">
+                <div class="section-title">📍 店铺基本信息</div>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>店铺名称</label>
+                        <input type="text" id="shopName" placeholder="例如：老张牛肉面" value="测试店铺">
+                    </div>
+                    <div class="form-group">
+                        <label>经营品类</label>
+                        <select id="category">
+                            <option value="fastfood">快餐便当</option>
+                            <option value="drink">饮品甜品</option>
+                            <option value="bbq">烧烤夜宵</option>
+                            <option value="noodles">粉面粥点</option>
+                            <option value="other">其他</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="section-title">📊 流量数据（近7日日均）</div>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>曝光人数</label>
+                        <input type="number" id="exposure" placeholder="例如：5000" value="3500">
+                        <small>用户看到你的店铺的次数</small>
+                    </div>
+                    <div class="form-group">
+                        <label>访问人数</label>
+                        <input type="number" id="visit" placeholder="例如：400" value="280">
+                        <small>点击进入你店铺的人数</small>
+                    </div>
+                    <div class="form-group">
+                        <label>下单人数</label>
+                        <input type="number" id="order" placeholder="例如：80" value="45">
+                        <small>成功下单的人数</small>
+                    </div>
+                    <div class="form-group">
+                        <label>推广花费（元）</label>
+                        <input type="number" id="promotion" placeholder="例如：200" value="150">
+                        <small>近7日日均推广费用</small>
+                    </div>
+                </div>
+                
+                <div class="section-title">💰 订单数据（近7日日均）</div>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>订单量</label>
+                        <input type="number" id="orderCount" placeholder="例如：100" value="50">
+                    </div>
+                    <div class="form-group">
+                        <label>营业额（元）</label>
+                        <input type="number" id="revenue" placeholder="例如：2500" value="1200">
+                    </div>
+                    <div class="form-group">
+                        <label>取消订单数</label>
+                        <input type="number" id="cancel" placeholder="例如：5" value="3">
+                    </div>
+                </div>
+                
+                <div class="section-title">⭐ 评价数据（近30日）</div>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>平台评分（1-5分）</label>
+                        <input type="number" id="rating" min="1" max="5" step="0.1" placeholder="例如：4.5" value="4.2">
+                    </div>
+                    <div class="form-group">
+                        <label>好评数</label>
+                        <input type="number" id="positive" placeholder="例如：100" value="85">
+                    </div>
+                    <div class="form-group">
+                        <label>差评数</label>
+                        <input type="number" id="negative" placeholder="例如：5" value="8">
+                    </div>
+                    <div class="form-group">
+                        <label>投诉数</label>
+                        <input type="number" id="complaint" placeholder="例如：0" value="1">
+                    </div>
+                </div>
+                
+                <div class="section-title">⚡ 运营数据（近7日平均）</div>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>平均出餐时间（分钟）</label>
+                        <input type="number" id="cookTime" step="0.1" placeholder="例如：8" value="10.5">
+                    </div>
+                    <div class="form-group">
+                        <label>准时率（%）</label>
+                        <input type="number" id="ontime" min="0" max="100" placeholder="例如：95" value="88">
+                    </div>
+                    <div class="form-group">
+                        <label>退单率（%）</label>
+                        <input type="number" id="refund" min="0" max="100" placeholder="例如：2" value="3.5">
+                    </div>
+                </div>
+                
+                <button type="button" class="submit-btn" onclick="runDiagnosis()">
+                    🚀 开始诊断分析
+                </button>
+            </form>
+        </div>
+        
+        <div class="result-section" id="resultSection">
+            <div class="score-card">
+                <div class="score-value" id="totalScore">--</div>
+                <div class="score-label" id="scoreLabel">综合诊断评分</div>
+            </div>
+            
+            <div class="section-title">📈 各维度评分</div>
+            <div class="dimension-list" id="dimensionList">
+                <!-- 动态生成 -->
+            </div>
+            
+            <div class="suggestions" id="suggestions">
+                <h3>💡 优化建议</h3>
+                <div id="suggestionList">
+                    <!-- 动态生成 -->
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // 预设数据
+        const presets = {
+            good: {
+                shopName: "🟢 优秀示范店",
+                exposure: 8000, visit: 960, order: 240,
+                promotion: 200, orderCount: 260, revenue: 6500,
+                cancel: 5, rating: 4.8, positive: 200,
+                negative: 3, complaint: 0,
+                cookTime: 7, ontime: 97, refund: 1
+            },
+            average: {
+                shopName: "🟡 普通示范店",
+                exposure: 4500, visit: 405, order: 81,
+                promotion: 180, orderCount: 85, revenue: 2125,
+                cancel: 8, rating: 4.3, positive: 85,
+                negative: 10, complaint: 2,
+                cookTime: 10, ontime: 92, refund: 3
+            },
+            poor: {
+                shopName: "🔴 待改进示范店",
+                exposure: 2000, visit: 120, order: 18,
+                promotion: 150, orderCount: 20, revenue: 400,
+                cancel: 5, rating: 3.8, positive: 20,
+                negative: 15, complaint: 5,
+                cookTime: 18, ontime: 82, refund: 8
+            }
+        };
+        
+        function fillPreset(type) {
+            if (type === 'clear') {
+                document.getElementById('diagnosisForm').reset();
+                return;
+            }
+            
+            const data = presets[type];
+            for (let key in data) {
+                const el = document.getElementById(key);
+                if (el) el.value = data[key];
+            }
+        }
+        
+        function runDiagnosis() {
+            // 获取表单数据
+            const data = {
+                name: document.getElementById('shopName').value,
+                exposure: parseFloat(document.getElementById('exposure').value) || 0,
+                visit: parseFloat(document.getElementById('visit').value) || 0,
+                order: parseFloat(document.getElementById('order').value) || 0,
+                promotion: parseFloat(document.getElementById('promotion').value) || 0,
+                orderCount: parseFloat(document.getElementById('orderCount').value) || 0,
+                revenue: parseFloat(document.getElementById('revenue').value) || 0,
+                cancel: parseFloat(document.getElementById('cancel').value) || 0,
+                rating: parseFloat(document.getElementById('rating').value) || 0,
+                positive: parseFloat(document.getElementById('positive').value) || 0,
+                negative: parseFloat(document.getElementById('negative').value) || 0,
+                complaint: parseFloat(document.getElementById('complaint').value) || 0,
+                cookTime: parseFloat(document.getElementById('cookTime').value) || 0,
+                ontime: parseFloat(document.getElementById('ontime').value) || 0,
+                refund: parseFloat(document.getElementById('refund').value) || 0,
+            };
+            
+            // 计算指标
+            const visitRate = data.exposure > 0 ? (data.visit / data.exposure * 100).toFixed(2) : 0;
+            const orderRate = data.visit > 0 ? (data.order / data.visit * 100).toFixed(2) : 0;
+            const aov = data.orderCount > 0 ? (data.revenue / data.orderCount).toFixed(2) : 0;
+            const exposureCost = data.exposure > 0 ? (data.promotion / data.exposure).toFixed(2) : 0;
+            const positiveRate = data.positive + data.negative > 0 ? 
+                (data.positive / (data.positive + data.negative) * 100).toFixed(2) : 100;
+            
+            // 计算各维度得分（简化算法）
+            const trafficScore = Math.min(100, (visitRate / 10 * 50 + orderRate / 25 * 50));
+            const conversionScore = Math.min(100, orderRate / 25 * 100);
+            const aovScore = Math.min(100, aov / 30 * 100);
+            const satisfactionScore = data.rating / 5 * 100;
+            const efficiencyScore = (data.ontime * 0.5 + (20 - data.cookTime) * 2.5);
+            
+            // 总评分
+            const totalScore = Math.round(
+                trafficScore * 0.25 + 
+                conversionScore * 0.25 + 
+                aovScore * 0.15 + 
+                satisfactionScore * 0.20 + 
+                efficiencyScore * 0.15
+            );
+            
+            // 显示结果
+            document.getElementById('totalScore').textContent = totalScore + '分';
+            document.getElementById('scoreLabel').textContent = getScoreLabel(totalScore);
+            document.getElementById('totalScore').style.color = getScoreColor(totalScore);
+            
+            // 显示各维度
+            const dimensions = [
+                { name: '流量健康度', score: Math.round(trafficScore) },
+                { name: '转化能力', score: Math.round(conversionScore) },
+                { name: '客单价水平', score: Math.round(aovScore) },
+                { name: '顾客满意度', score: Math.round(satisfactionScore) },
+                { name: '运营效率', score: Math.round(efficiencyScore) },
+            ];
+            
+            document.getElementById('dimensionList').innerHTML = dimensions.map(d => `
+                <div class="dimension-item">
+                    <span class="dimension-name">${d.name}</span>
+                    <span class="dimension-score ${getScoreClass(d.score)}">${d.score}分</span>
+                </div>
+            `).join('');
+            
+            // 生成建议
+            const suggestions = generateSuggestions(data, {
+                visitRate, orderRate, aov, positiveRate
+            });
+            
+            document.getElementById('suggestionList').innerHTML = suggestions.map(s => `
+                <div class="suggestion-item">
+                    <strong>${s.title}</strong><br>
+                    ${s.content}
+                </div>
+            `).join('');
+            
+            // 显示结果区域
+            document.getElementById('resultSection').classList.add('active');
+            document.getElementById('resultSection').scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        function getScoreLabel(score) {
+            if (score >= 90) return 'S级 - 卓越';
+            if (score >= 80) return 'A级 - 优秀';
+            if (score >= 70) return 'B级 - 良好';
+            if (score >= 60) return 'C级 - 及格';
+            return 'D级 - 需改进';
+        }
+        
+        function getScoreColor(score) {
+            if (score >= 90) return '#10b981';
+            if (score >= 80) return '#22c55e';
+            if (score >= 70) return '#f59e0b';
+            if (score >= 60) return '#f97316';
+            return '#ef4444';
+        }
+        
+        function getScoreClass(score) {
+            if (score >= 80) return 'good';
+            if (score >= 60) return 'warning';
+            return 'danger';
+        }
+        
+        function generateSuggestions(data, rates) {
+            const suggestions = [];
+            
+            if (rates.visitRate < 8) {
+                suggestions.push({
+                    title: '⚠️ 入店转化率偏低',
+                    content: '建议优化店铺头像和名称，设置有吸引力的满减活动并突出展示。当前入店转化率' + rates.visitRate + '%，行业平均水平为8-12%。'
+                });
+            }
+            
+            if (rates.orderRate < 18) {
+                suggestions.push({
+                    title: '⚠️ 下单转化率待提升',
+                    content: '建议优化菜品图片质量，调整价格策略，增加套餐组合。当前下单转化率' + rates.orderRate + '%，建议提升至18%以上。'
+                });
+            }
+            
+            if (data.rating < 4.5) {
+                suggestions.push({
+                    title: '⭐ 提升平台评分',
+                    content: '主动邀请满意顾客留评，及时回复差评并解决问题。评分提升0.1分可显著增加自然流量。'
+                });
+            }
+            
+            if (data.cookTime > 12) {
+                suggestions.push({
+                    title: '⏱️ 缩短出餐时间',
+                    content: '当前出餐时间' + data.cookTime + '分钟，建议优化后厨动线，目标控制在12分钟以内。'
+                });
+            }
+            
+            if (suggestions.length === 0) {
+                suggestions.push({
+                    title: '✅ 整体表现良好',
+                    content: '店铺各项指标健康，建议继续保持并关注竞品动态，持续优化经营。'
+                });
+            }
+            
+            return suggestions;
+        }
+    </script>
+</body>
+</html>

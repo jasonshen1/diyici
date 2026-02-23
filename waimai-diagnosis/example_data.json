@@ -1,0 +1,18 @@
+{
+  "shop_name": "示例店铺",
+  "platform": "美团外卖",
+  "period": "2024年2月",
+  "metrics": {
+    "exposure_count": 15000,
+    "visit_rate": 8.5,
+    "order_rate": 25.0,
+    "avg_order_value": 35.0,
+    "order_count": 320,
+    "repurchase_rate": 15.0,
+    "positive_rate": 92.0,
+    "negative_rate": 3.0,
+    "ontime_rate": 95.0,
+    "refund_rate": 2.0,
+    "complaint_rate": 0.5
+  }
+}

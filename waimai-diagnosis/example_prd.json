@@ -1,0 +1,33 @@
+{
+  "shop_name": "川味小厨",
+  "category": "中式快餐",
+  "district": "朝阳区国贸",
+  "period": "2024年2月",
+  "metrics": {
+    "EXP_DAILY": 3850,
+    "CTR_VISIT": 7.2,
+    "SEARCH_RANK": 8,
+    "AD_CTR": 2.5,
+    "NEW_USER_RATE": 28,
+    "CVR_ORDER": 11.5,
+    "CVR_CART": 22,
+    "ORDER_PER_USER": 1.3,
+    "ORDER_SUCCESS": 93,
+    "CVR_FAVORITE": 4.2,
+    "RATING_OVERALL": 4.5,
+    "BAD_RATE": 3.2,
+    "COMPLAINT_RATE": 0.8,
+    "REPLY_RATE": 85,
+    "REPLY_TIME": 36,
+    "COOK_TIME": 24,
+    "ON_TIME_RATE": 91,
+    "CANCEL_RATE": 5.5,
+    "EXCEPTION_RATE": 2.8,
+    "CAPACITY_USE": 72,
+    "AOV": 32,
+    "GROSS_MARGIN": 38,
+    "REPEAT_7D": 18,
+    "REPEAT_30D": 28,
+    "ROI": 280
+  }
+}
